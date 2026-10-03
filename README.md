@@ -156,6 +156,18 @@ Signing in as different roles is the fastest way to see how permissions shape th
 
 ## Scripts
 
+All of these can be run from the repository root, which delegates to the right application.
+
+| Root script | Purpose |
+| ----------- | ------- |
+| `npm run install:all` | Install dependencies for both applications |
+| `npm run dev:server` | Watch-mode API on :5000 |
+| `npm run dev:client` | Vite dev server on :5173 |
+| `npm run build` | Build the server, then the client |
+| `npm run typecheck` | `tsc --noEmit` on both applications |
+| `npm run verify` | Typecheck both sides, then audit Arabic/English key parity |
+| `npm run seed` | Seed the demo tenant |
+
 ### server
 
 | Script | Purpose |
@@ -177,6 +189,14 @@ Signing in as different roles is the fastest way to see how permissions shape th
 | `npm run build` | Typecheck, then build to `dist/` |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run preview` | Serve the production build locally |
+
+### verification
+
+| Script | Purpose |
+| ------ | ------- |
+| `npm run verify:i18n` | Flatten both locale trees and fail on any missing key or mismatched interpolation placeholder (392 keys each, Phase 01) |
+
+Bilingual parity is enforced in CI-able form because nothing in the type system keeps `en.ts` and `ar.ts` in lockstep. Every phase that adds copy runs it.
 
 ---
 
@@ -215,8 +235,10 @@ repairflow/
 │       └── server.ts           # listener + graceful shutdown
 │
 ├── docs/                       # ARCHITECTURE · DEPLOY · QA_CHECKLIST · SEED · PROJECT_PHASES
+├── scripts/                    # check-i18n-parity.ts — bilingual key audit
 ├── client/vercel.json
 ├── server/vercel.json
+├── package.json                # root task runner (delegates to client/ and server/)
 └── .gitignore
 ```
 

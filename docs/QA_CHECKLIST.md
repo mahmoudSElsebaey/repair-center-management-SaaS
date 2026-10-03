@@ -7,7 +7,7 @@ How to verify RepairFlow. The per-phase checklist is what is run after each phas
 ## Phase 01 — Verification record
 
 **Environment:** Windows · Node v22.14.0 · npm 11.19.0 · MongoDB 6.0.5 (local, port 27017)
-**Result:** 28 API checks passed · 13 full-stack checks passed · 0 failures
+**Result:** 62 checks passed · 0 failures — 28 API · 13 full-stack · 21 module-load/runtime · parity audit clean
 
 ### Toolchain
 
@@ -20,6 +20,35 @@ How to verify RepairFlow. The per-phase checklist is what is run after each phas
 | Entry chunk size | 143.5 kB (49.8 kB gzipped) |
 | Three.js chunk | 821.7 kB, isolated and lazy — never loaded by the console |
 | Seed run | ✅ 2 branches, 7 employees, all passwords bcrypt cost 12 |
+| `npm run verify` at the root | ✅ typecheck both sides + i18n parity |
+
+### Bilingual parity audit — `npm run verify:i18n`
+
+| Check | Result |
+| ----- | ------ |
+| Key count matches | ✅ 392 English · 392 Arabic |
+| Keys present in `ar.ts` but not `en.ts` | ✅ none |
+| Keys present in `en.ts` but not `ar.ts` | ✅ none |
+| Interpolation placeholders agree (`{{name}}`, `{{count}}`, `{{from}}`/`{{to}}`/`{{total}}`) | ✅ every shared key |
+
+This runs from `scripts/check-i18n-parity.ts` using Node's built-in type stripping — no build step and no dependency. It is part of `npm run verify`, so every later phase that adds copy is checked automatically.
+
+### Module-load and runtime smoke suite (21 checks)
+
+Typechecking proves types and a build proves bundling; neither proves a module **executes**. This suite runs the real dev server and pulls the entire application through Vite's transform pipeline.
+
+| Area | Checks | Result |
+| ---- | ------ | ------ |
+| Servers | API on :5000, Vite dev server on :5173 | ✅ 2/2 |
+| Module graph | **all 65 application modules** transform with no error payload | ✅ 1/1 |
+| Entry wiring | `createRoot` present, store imported, React refresh client injected | ✅ 3/3 |
+| Client routing | deep links `/login`, `/app`, `/forgot-password`, and an unknown path all return the shell | ✅ 4/4 |
+| Super admin semantics | sign-in via the dev proxy, `role=super_admin`, `branch=null` (spans all branches) | ✅ 3/3 |
+| Session payload | `me` returns `locale` and a serialised `createdAt` | ✅ 2/2 |
+| Production bundle | `vite preview` serves it, root mount present, dev entry stripped | ✅ 3/3 |
+| Asset integrity | all 7 hashed assets referenced by the shell return 200 with real content | ✅ 1/1 |
+| Production routing | deep link on the built bundle serves the shell | ✅ 1/1 |
+| Code splitting | Three.js emitted as its own `three-*.js` chunk | ✅ 1/1 |
 
 ### API suite (28 checks)
 
