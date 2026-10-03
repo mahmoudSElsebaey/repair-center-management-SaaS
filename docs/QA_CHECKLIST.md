@@ -7,7 +7,33 @@ How to verify RepairFlow. The per-phase checklist is what is run after each phas
 ## Phase 01 — Verification record
 
 **Environment:** Windows · Node v22.14.0 · npm 11.19.0 · MongoDB 6.0.5 (local, port 27017)
-**Result:** 62 checks passed · 0 failures — 28 API · 13 full-stack · 21 module-load/runtime · parity audit clean
+**Result:** 79 checks passed · 0 failures — 58 API · 21 module-load/runtime · parity audit clean
+**Reproduce:** `npm run verify` (typecheck → bilingual parity → API suite)
+
+### API suite (58 checks) — `npm run verify:api`
+
+Committed as `scripts/verify-api.mjs`. It seeds its own isolated `repairflow_verify` database, starts the compiled API, runs every group below, and drops the database on exit. It never touches the seeded demo tenant.
+
+| Group | Covers | Result |
+| ----- | ------ | ------ |
+| health | status, `success`, `database: connected`, version | ✅ 4/4 |
+| login | 200, tokens issued, role, locale, no password leak, no refresh-hash leak | ✅ 8/8 |
+| authorization | `me` with token, without token (`TOKEN_MISSING`), malformed token (`TOKEN_INVALID`) | ✅ 6/6 |
+| credential safety | wrong password, unknown account, **identical** message for both | ✅ 4/4 |
+| validation | 400 `VALIDATION_ERROR` with per-field errors | ✅ 3/3 |
+| token refresh | rotation, new token works, **rotated-away token rejected** (`REFRESH_REVOKED`) | ✅ 6/6 |
+| profile | update, re-read persistence, empty update rejected | ✅ 4/4 |
+| password lifecycle | change, sessions revoked, old password dead, new works, wrong current rejected, restore | ✅ 7/7 |
+| logout | 200, refresh dead, access-token window pinned, re-sign-in works | ✅ 4/4 |
+| password reset | no enumeration, dev token surfaced, single-use, unknown token rejected | ✅ 7/7 |
+| error contract | 404 `ROUTE_NOT_FOUND`, no stack trace, always a `code`, always `success:false` | ✅ 5/5 |
+
+### Behavior pinned by the suite
+
+The suite deliberately locks two behaviours that are easy to change by accident:
+
+1. **Rotated-away refresh tokens must be rejected.** This is what makes refresh-token theft detectable rather than silently tolerated.
+2. **An already-issued access token survives logout until it expires.** Access tokens are stateless JWTs with a 15-minute lifetime; logout revokes the refresh token so the session cannot be renewed. Account deactivation is the exception and takes effect immediately. Documented in full at [ARCHITECTURE.md §3.7](./ARCHITECTURE.md).
 
 ### Toolchain
 
@@ -50,21 +76,13 @@ Typechecking proves types and a build proves bundling; neither proves a module *
 | Production routing | deep link on the built bundle serves the shell | ✅ 1/1 |
 | Code splitting | Three.js emitted as its own `three-*.js` chunk | ✅ 1/1 |
 
-### API suite (28 checks)
+### API suite (28 checks) — superseded
 
-| Area | Checks | Result |
-| ---- | ------ | ------ |
-| Health and database | endpoint, `mongo connected`, environment, version | ✅ 4/4 |
-| Login | success, access token, refresh token, role, no password leak, no refresh-hash leak | ✅ 6/6 |
-| Authorization | `GET /auth/me`, unauthenticated request blocked with 401 | ✅ 2/2 |
-| Credential safety | wrong password 401, generic message, unknown account 401, **identical** message | ✅ 4/4 |
-| Validation | bad input 400 `VALIDATION_ERROR` with per-field errors | ✅ 2/2 |
-| Refresh | new tokens issued, new access token works, **rotated-away token rejected** | ✅ 3/3 |
-| Profile | `PATCH /auth/me` persists | ✅ 1/1 |
-| Password change | accepted, revokes existing sessions, sign-in with new password works, seed password restored | ✅ 4/4 |
-| Error contract | unknown route 404 `ROUTE_NOT_FOUND` | ✅ 1/1 |
+An earlier, narrower PowerShell run of the same surface. Every one of its checks is included in the 58-check suite above, which is committed and reproducible, so that suite is the record of truth. Listed here only to explain the history.
 
-### Full-stack suite (13 checks)
+### Full-stack integration suite (13 checks)
+
+Verified during Phase 01 with a machine-local script (now archived outside the repository, since it hardcodes absolute paths). Retained here as an evidence record.
 
 | Area | Checks | Result |
 | ---- | ------ | ------ |

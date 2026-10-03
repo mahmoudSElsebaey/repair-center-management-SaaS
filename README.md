@@ -192,11 +192,25 @@ All of these can be run from the repository root, which delegates to the right a
 
 ### verification
 
+Reproducible checks, committed to the repository so anyone can re-run them — no test framework and no extra dependency to install.
+
 | Script | Purpose |
 | ------ | ------- |
-| `npm run verify:i18n` | Flatten both locale trees and fail on any missing key or mismatched interpolation placeholder (392 keys each, Phase 01) |
+| `npm run verify` | The whole gate: typecheck both sides → bilingual parity → API suite |
+| `npm run verify:i18n` | Flatten both locale trees and fail on any missing key or mismatched interpolation placeholder (392 keys each) |
+| `npm run verify:api` | Build the server, then run the **58-check API suite** against an isolated `repairflow_verify` database |
 
-Bilingual parity is enforced in CI-able form because nothing in the type system keeps `en.ts` and `ar.ts` in lockstep. Every phase that adds copy runs it.
+`scripts/verify-api.mjs` seeds its own database, starts the compiled API, exercises health, login, authorization, credential safety, validation, token rotation, profile updates, the password lifecycle, logout, password reset and the error contract — then drops the database. It never touches the seeded demo tenant, and `--keep-db` leaves the database behind for inspection.
+
+```bash
+node scripts/verify-api.mjs                # default port 5000
+node scripts/verify-api.mjs --port 5055    # if 5000 is busy
+node scripts/verify-api.mjs --keep-db      # inspect afterwards
+```
+
+Two behaviours the suite deliberately pins, because they are easy to break by accident: a rotated-away refresh token must be rejected (`REFRESH_REVOKED`), and an already-issued access token legitimately survives logout until it expires. Both are explained in [ARCHITECTURE.md §3.7](./docs/ARCHITECTURE.md).
+
+Bilingual parity is enforced this way because nothing in the type system keeps `en.ts` and `ar.ts` in lockstep. Every phase that adds copy runs it.
 
 ---
 

@@ -41,6 +41,8 @@ coverage/
 # Vite
 *.local
 .vite/
+# Vite writes a hashed temp copy of the config while loading it.
+vite.config.*.timestamp-*.mjs
 
 # Tooling caches
 .eslintcache

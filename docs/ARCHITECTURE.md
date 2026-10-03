@@ -106,7 +106,25 @@ POST /auth/login ──► access token (15 min, JWT)
 - `POST /auth/logout` unsets the stored refresh token server-side.
 - `restrictTo(...roles)` is the only authorization primitive. It always runs after `protect`.
 
-### 3.7 Rate limiting
+### 3.7 Session and token lifecycle
+
+What revocation does and does not do — stated precisely, because "logout" means different things in different products:
+
+| Event | Refresh token | Access token (already issued) | Other devices |
+| ----- | ------------- | ----------------------------- | ------------- |
+| `POST /auth/logout` | Revoked (hash unset) | **Stays valid until it expires** | Unaffected |
+| `POST /auth/refresh` | Rotated; the previous one is rejected (`REFRESH_REVOKED`) | New token issued | Unaffected |
+| `PATCH /auth/password` | Revoked | **Stays valid until it expires** | Signed out on next refresh |
+| Account deactivated | Revoked | Rejected on the next request | Immediate |
+| Password reset | Revoked | **Stays valid until it expires** | Signed out on next refresh |
+
+The access token is a stateless JWT with a **15-minute** lifetime. Verifying it costs a signature check plus the user lookup that `protect` already performs; it does **not** consult the database for revocation state on every call. This keeps the hot path cheap and is why an already-issued access token survives logout.
+
+The window is bounded by `JWT_ACCESS_EXPIRES_IN` (default `15m`), so the worst case for a leaked access token is 15 minutes of access to an account that has already signed out. Account deactivation is the exception and takes effect immediately, because `protect` reloads the user and rejects inactive accounts.
+
+`scripts/verify-api.mjs` pins this behaviour with an explicit assertion, so it cannot drift silently. If the product later needs immediate access-token revocation, the standard fix is a `tokenVersion` counter on `User` carried in the token payload and compared in `protect` — one integer field, no new infrastructure.
+
+### 3.8 Rate limiting
 
 Three tiers, all skipped under `NODE_ENV=test`:
 
