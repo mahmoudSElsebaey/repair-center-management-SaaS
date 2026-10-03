@@ -1,0 +1,98 @@
+/* ============================================================================
+   THIRD-PARTY OVERRIDES — RepairFlow theme applied to Swiper and Recharts.
+   Kept separate from the token layer so library churn stays contained here.
+   ========================================================================= */
+
+/* ---------- Swiper ---------- */
+.rf-swiper .swiper-pagination {
+  position: static;
+  margin-top: var(--space-6);
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.rf-swiper .swiper-pagination-bullet {
+  width: 1.75rem;
+  height: 0.25rem;
+  border-radius: var(--radius-full);
+  background-color: var(--border-strong);
+  opacity: 1;
+  transition: background-color var(--duration-normal) var(--ease-out-soft),
+    width var(--duration-normal) var(--ease-out-soft);
+}
+
+.rf-swiper .swiper-pagination-bullet-active {
+  width: 2.75rem;
+  background-image: var(--gradient-brand);
+}
+
+.rf-swiper .swiper-button-next,
+.rf-swiper .swiper-button-prev {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--duration-fast) var(--ease-out-soft);
+}
+
+.rf-swiper .swiper-button-next:hover,
+.rf-swiper .swiper-button-prev:hover {
+  background-color: var(--surface-hover);
+}
+
+.rf-swiper .swiper-button-next::after,
+.rf-swiper .swiper-button-prev::after {
+  font-size: 0.875rem;
+  font-weight: var(--weight-bold);
+}
+
+.rf-swiper .swiper-slide {
+  height: auto;
+}
+
+/* Swiper's arrow glyphs are baked in as LTR arrows; mirror them for Arabic. */
+html[dir='rtl'] .rf-swiper .swiper-button-next::after,
+html[dir='rtl'] .rf-swiper .swiper-button-prev::after {
+  transform: scaleX(-1);
+}
+
+html[dir='rtl'] .rf-swiper .swiper-wrapper {
+  direction: rtl;
+}
+
+/* ---------- Recharts ---------- */
+.rf-chart .recharts-cartesian-axis-tick-value {
+  fill: var(--foreground-muted);
+  font-size: var(--text-xs);
+}
+
+.rf-chart .recharts-cartesian-grid line {
+  stroke: var(--border-soft);
+}
+
+.rf-chart .recharts-tooltip-wrapper {
+  outline: none;
+}
+
+.rf-chart .recharts-default-tooltip {
+  background-color: var(--elevated) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+  padding: var(--space-3) var(--space-4) !important;
+}
+
+.rf-chart .recharts-tooltip-label {
+  color: var(--foreground-muted) !important;
+  font-size: var(--text-xs) !important;
+  margin-bottom: var(--space-1) !important;
+}
+
+/* Recharts renders SVG text without direction awareness. */
+html[dir='rtl'] .rf-chart svg {
+  direction: ltr;
+}

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" role="img" aria-label="RepairFlow">
+  <defs>
+    <linearGradient id="rfBrand" x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4F5BF5" />
+      <stop offset="1" stop-color="#22D3EE" />
+    </linearGradient>
+  </defs>
+
+  <!-- Machined container: a square with one cut corner, reading as a service badge -->
+  <path
+    d="M9 3h24l12 12v24a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6V9a6 6 0 0 1 6-6Z"
+    fill="url(#rfBrand)"
+    fill-opacity="0.16"
+    stroke="url(#rfBrand)"
+    stroke-width="2"
+  />
+
+  <!-- Flow path arcing through the mark -->
+  <path
+    d="M14 31c0-8 6.5-13 14-13h3"
+    stroke="url(#rfBrand)"
+    stroke-width="3.2"
+    stroke-linecap="round"
+  />
+
+  <!-- Integrated wrench head: the repair half of the identity -->
+  <path
+    d="M31.5 12.2a5.6 5.6 0 0 0-6.9 6.9l-9.4 9.4a2.6 2.6 0 1 0 3.7 3.7l9.4-9.4a5.6 5.6 0 0 0 6.9-6.9l-3.3 3.3-3.2-.9-.9-3.2 3.7-2.9Z"
+    fill="url(#rfBrand)"
+  />
+</svg>
