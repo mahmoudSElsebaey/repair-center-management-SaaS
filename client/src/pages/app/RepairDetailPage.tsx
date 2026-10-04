@@ -29,6 +29,7 @@ import { RepairHistory, RepairTimeline } from '@/features/repairs/components/Rep
 import { PriorityBadge, StatusBadge, TicketCode } from '@/features/repairs/components/TicketBadges';
 import { repairsApi } from '@/features/repairs/api';
 import type { RepairDetail, RepairStatus } from '@/features/repairs/types';
+import { HAPPY_PATH, happyPathIndex } from '@/features/repairs/workflow';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { activeLocale, translate } from '@/lib/i18nText';
 import { cn, formatCurrency, formatDate, getErrorMessage } from '@/lib/utils';
@@ -92,7 +93,6 @@ export default function RepairDetailPage() {
     void load();
   }, [load]);
 
-  /** Opens the confirmation dialog, seeding any values it needs. */
   const beginAction = (target: RepairStatus) => {
     setPendingAction(target);
     setActionNote('');
@@ -107,7 +107,6 @@ export default function RepairDetailPage() {
       await repairsApi.changeStatus(detail.ticket.id, {
         status: pendingAction,
         note: actionNote.trim() || undefined,
-        // The approval move records the customer's decision with it.
         ...(pendingAction === APPROVAL_ACTION ? { customerApproved: true } : {}),
         ...(pendingAction === CANCEL_ACTION && rejectionReason.trim()
           ? { customerApproved: false, customerRejectionReason: rejectionReason.trim() }
@@ -160,7 +159,6 @@ export default function RepairDetailPage() {
     setEditOpen(true);
   };
 
-  /* ------------------------------------------------------------- states */
   if (status === 'loading') {
     return (
       <PageTransition>
@@ -211,7 +209,6 @@ export default function RepairDetailPage() {
   return (
     <PageTransition>
       <div className="mx-auto max-w-6xl space-y-5">
-        {/* ---------------------------------------------------------- header */}
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex min-w-0 items-start gap-4">
             <Link
@@ -255,7 +252,6 @@ export default function RepairDetailPage() {
               </Button>
             )}
 
-            {/* Exactly the moves the server will accept for this role and state. */}
             {availableActions.map((action) => {
               const isCancel = action.to === 'cancelled';
               const isDeliver = action.to === 'delivered';
@@ -290,13 +286,10 @@ export default function RepairDetailPage() {
         )}
 
         <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr]">
-          {/* ------------------------------------------------------ main */}
           <div className="space-y-5">
             <Card>
               <CardHeader title={t('repairs.issueSection')} />
-              <p className="whitespace-pre-line px-2 text-sm leading-relaxed text-foreground-muted">
-                {ticket.issue}
-              </p>
+              <p className="whitespace-pre-line px-2 text-sm leading-relaxed text-foreground-muted">{ticket.issue}</p>
             </Card>
 
             <Card>
@@ -311,18 +304,14 @@ export default function RepairDetailPage() {
                 }
               />
               {ticket.diagnosis ? (
-                <p className="whitespace-pre-line px-2 text-sm leading-relaxed text-foreground-muted">
-                  {ticket.diagnosis}
-                </p>
+                <p className="whitespace-pre-line px-2 text-sm leading-relaxed text-foreground-muted">{ticket.diagnosis}</p>
               ) : (
                 <p className="px-2 text-sm text-foreground-subtle">{t('repairs.diagnosisEmpty')}</p>
               )}
             </Card>
 
-            {/* ------------------------------------------------------ costs */}
             <Card>
               <CardHeader title={t('repairs.costsSection')} />
-
               {ticket.estimatedCost === undefined && ticket.finalCost === undefined ? (
                 <p className="px-2 text-sm text-foreground-subtle">{t('repairs.costsEmpty')}</p>
               ) : (
@@ -335,15 +324,9 @@ export default function RepairDetailPage() {
                         : formatCurrency(ticket.estimatedCost, 'EGP', locale)}
                     </dd>
                   </div>
-
                   <div>
                     <dt className="text-xs text-foreground-subtle">{t('repairs.final')}</dt>
-                    <dd
-                      className={cn(
-                        'numeric mt-1 text-lg font-semibold',
-                        ticket.finalCost === undefined ? 'text-foreground-subtle' : 'text-success'
-                      )}
-                    >
+                    <dd className={cn('numeric mt-1 text-lg font-semibold', ticket.finalCost === undefined ? 'text-foreground-subtle' : 'text-success')}>
                       {ticket.finalCost === undefined
                         ? t('common.notAvailable')
                         : formatCurrency(ticket.finalCost, 'EGP', locale)}
@@ -351,20 +334,15 @@ export default function RepairDetailPage() {
                   </div>
                 </dl>
               )}
-
-              {/* The customer decision is a fact about the ticket, not a note. */}
               <div className="mt-5 border-t border-border px-2 pt-4">
                 <p className="text-xs text-foreground-subtle">{t('repairs.approvalSection')}</p>
-
                 {ticket.customerApproved === true ? (
                   <p className="mt-1.5 inline-flex items-center gap-2 text-sm font-medium text-success">
                     <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
                     {t('repairs.approvalApproved')}
                     {ticket.customerApprovedAt && (
                       <span className="font-normal text-foreground-subtle">
-                        {t('repairs.approvalOn', {
-                          date: formatDate(ticket.customerApprovedAt, locale),
-                        })}
+                        {t('repairs.approvalOn', { date: formatDate(ticket.customerApprovedAt, locale) })}
                       </span>
                     )}
                   </p>
@@ -381,15 +359,10 @@ export default function RepairDetailPage() {
                     )}
                   </div>
                 ) : (
-                  <p className="mt-1.5 text-sm text-foreground-subtle">
-                    {t('repairs.approvalPending')}
-                  </p>
+                  <p className="mt-1.5 text-sm text-foreground-subtle">{t('repairs.approvalPending')}</p>
                 )}
               </div>
-
-              <p className="mt-4 px-2 text-xs text-foreground-subtle">
-                {t('repairs.registerPaymentNotice')}
-              </p>
+              <p className="mt-4 px-2 text-xs text-foreground-subtle">{t('repairs.registerPaymentNotice')}</p>
             </Card>
 
             {(ticket.notes || ticket.statusHistory.length > 0) && (
@@ -404,14 +377,11 @@ export default function RepairDetailPage() {
             {ticket.notes && (
               <Card>
                 <CardHeader title={t('repairs.notesSection')} />
-                <p className="whitespace-pre-line px-2 text-sm text-foreground-muted">
-                  {ticket.notes}
-                </p>
+                <p className="whitespace-pre-line px-2 text-sm text-foreground-muted">{ticket.notes}</p>
               </Card>
             )}
           </div>
 
-          {/* ------------------------------------------------------ side */}
           <div className="space-y-5">
             <Card>
               <CardHeader
@@ -436,12 +406,7 @@ export default function RepairDetailPage() {
                   <p className="numeric text-xs text-foreground-subtle" dir="ltr">
                     {customer.customerCode} · {customer.phone}
                   </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    fullWidth
-                    onClick={() => navigate(`/app/customers/${customer.id}`)}
-                  >
+                  <Button variant="outline" size="sm" fullWidth onClick={() => navigate(`/app/customers/${customer.id}`)}>
                     {t('repairs.viewCustomer')}
                   </Button>
                 </div>
@@ -462,12 +427,7 @@ export default function RepairDetailPage() {
                     {t(`devices.types.${device.deviceType}`)}
                     {device.serialNumber && ` · ${device.serialNumber}`}
                   </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    fullWidth
-                    onClick={() => navigate(`/app/devices/${device.id}`)}
-                  >
+                  <Button variant="outline" size="sm" fullWidth onClick={() => navigate(`/app/devices/${device.id}`)}>
                     {t('repairs.viewDevice')}
                   </Button>
                 </div>
@@ -487,18 +447,27 @@ export default function RepairDetailPage() {
             <Card>
               <CardHeader title={t('common.dates')} />
               <dl className="space-y-2 px-2 text-sm">
-                <DateRow label={t('repairs.received')} value={formatDate(ticket.createdAt, locale)} />
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="text-foreground-subtle">{t('repairs.received')}</dt>
+                  <dd className="numeric text-foreground">{formatDate(ticket.createdAt, locale)}</dd>
+                </div>
                 {ticket.expectedCompletionAt && (
-                  <DateRow
-                    label={t('repairs.expectedCompletion')}
-                    value={formatDate(ticket.expectedCompletionAt, locale)}
-                  />
+                  <div className="flex items-center justify-between gap-3">
+                    <dt className="text-foreground-subtle">{t('repairs.expectedCompletion')}</dt>
+                    <dd className="numeric text-foreground">{formatDate(ticket.expectedCompletionAt, locale)}</dd>
+                  </div>
                 )}
                 {ticket.completedAt && (
-                  <DateRow label={t('repairs.completedAt')} value={formatDate(ticket.completedAt, locale)} />
+                  <div className="flex items-center justify-between gap-3">
+                    <dt className="text-foreground-subtle">{t('repairs.completedAt')}</dt>
+                    <dd className="numeric text-foreground">{formatDate(ticket.completedAt, locale)}</dd>
+                  </div>
                 )}
                 {ticket.deliveredAt && (
-                  <DateRow label={t('repairs.deliveredAt')} value={formatDate(ticket.deliveredAt, locale)} />
+                  <div className="flex items-center justify-between gap-3">
+                    <dt className="text-foreground-subtle">{t('repairs.deliveredAt')}</dt>
+                    <dd className="numeric text-foreground">{formatDate(ticket.deliveredAt, locale)}</dd>
+                  </div>
                 )}
               </dl>
             </Card>
@@ -506,7 +475,6 @@ export default function RepairDetailPage() {
         </div>
       </div>
 
-      {/* --------------------------------------------------- confirm action */}
       <Modal
         open={Boolean(pendingAction)}
         onClose={() => setPendingAction(null)}
@@ -518,11 +486,7 @@ export default function RepairDetailPage() {
             <Button variant="ghost" onClick={() => setPendingAction(null)} disabled={isSubmitting}>
               {t('common.cancel')}
             </Button>
-            <Button
-              variant={pendingAction === 'cancelled' ? 'danger' : 'primary'}
-              onClick={confirmAction}
-              isLoading={isSubmitting}
-            >
+            <Button variant={pendingAction === 'cancelled' ? 'danger' : 'primary'} onClick={confirmAction} isLoading={isSubmitting}>
               {t('common.confirm')}
             </Button>
           </>
@@ -533,45 +497,28 @@ export default function RepairDetailPage() {
             <CalendarClock className="h-4 w-4 shrink-0 text-foreground-subtle" aria-hidden="true" />
             <div className="min-w-0">
               <p className="text-sm text-foreground">{translate('repairs.updateStatus')}</p>
-              <p className="mt-0.5 text-xs text-foreground-subtle">
-                {pendingAction ? t(`repairs.status.${pendingAction}`) : ''}
-              </p>
+              <p className="mt-0.5 text-xs text-foreground-subtle">{pendingAction ? t(`repairs.status.${pendingAction}`) : ''}</p>
             </div>
           </div>
-
           {pendingAction === APPROVAL_ACTION && (
             <div className="flex items-start gap-2.5 rounded-lg border border-success/30 bg-success-soft px-3.5 py-3">
               <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" aria-hidden="true" />
               <p className="text-sm text-foreground">{t('repairs.confirmApprove')}</p>
             </div>
           )}
-
           {pendingAction === CANCEL_ACTION && (
             <>
               <div className="flex items-start gap-2.5 rounded-lg border border-danger/30 bg-danger-soft px-3.5 py-3">
                 <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-danger" aria-hidden="true" />
                 <p className="text-sm text-foreground">{t('repairs.confirmCancel')}</p>
               </div>
-
-              <Input
-                label={t('repairs.rejectionReasonLabel')}
-                value={rejectionReason}
-                onChange={(event) => setRejectionReason(event.target.value)}
-              />
+              <Input label={t('repairs.rejectionReasonLabel')} value={rejectionReason} onChange={(e) => setRejectionReason(e.target.value)} />
             </>
           )}
-
-          <Textarea
-            label={t('repairs.noteLabel')}
-            placeholder={t('repairs.notePlaceholder')}
-            rows={2}
-            value={actionNote}
-            onChange={(event) => setActionNote(event.target.value)}
-          />
+          <Textarea label={t('repairs.noteLabel')} placeholder={t('repairs.notePlaceholder')} rows={2} value={actionNote} onChange={(e) => setActionNote(e.target.value)} />
         </div>
       </Modal>
 
-      {/* ------------------------------------------------------- edit panel */}
       <Modal
         open={editOpen}
         onClose={() => setEditOpen(false)}
@@ -580,44 +527,16 @@ export default function RepairDetailPage() {
         description={t('repairs.diagnosisSection')}
         footer={
           <>
-            <Button variant="ghost" onClick={() => setEditOpen(false)} disabled={isSubmitting}>
-              {t('common.cancel')}
-            </Button>
-            <Button onClick={saveEdits} isLoading={isSubmitting}>
-              {t('common.save')}
-            </Button>
+            <Button variant="ghost" onClick={() => setEditOpen(false)} disabled={isSubmitting}>{t('common.cancel')}</Button>
+            <Button onClick={saveEdits} isLoading={isSubmitting}>{t('common.save')}</Button>
           </>
         }
       >
         <div className="space-y-4">
-          <Textarea
-            label={t('repairs.fields.diagnosis')}
-            placeholder={t('repairs.fields.diagnosisPlaceholder')}
-            rows={4}
-            value={editDiagnosis}
-            onChange={(event) => setEditDiagnosis(event.target.value)}
-          />
-
+          <Textarea label={t('repairs.fields.diagnosis')} placeholder={t('repairs.fields.diagnosisPlaceholder')} rows={4} value={editDiagnosis} onChange={(e) => setEditDiagnosis(e.target.value)} />
           <div className="grid gap-4 sm:grid-cols-2">
-            <Input
-              label={t('repairs.fields.estimatedCost')}
-              type="number"
-              min={0}
-              step="0.01"
-              dir="ltr"
-              value={editEstimated}
-              onChange={(event) => setEditEstimated(event.target.value)}
-            />
-
-            <Input
-              label={t('repairs.fields.finalCost')}
-              type="number"
-              min={0}
-              step="0.01"
-              dir="ltr"
-              value={editFinal}
-              onChange={(event) => setEditFinal(event.target.value)}
-            />
+            <Input label={t('repairs.fields.estimatedCost')} type="number" min={0} step="0.01" dir="ltr" value={editEstimated} onChange={(e) => setEditEstimated(e.target.value)} />
+            <Input label={t('repairs.fields.finalCost')} type="number" min={0} step="0.01" dir="ltr" value={editFinal} onChange={(e) => setEditFinal(e.target.value)} />
           </div>
         </div>
       </Modal>
@@ -625,40 +544,16 @@ export default function RepairDetailPage() {
   );
 }
 
-function DateRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <dt className="text-foreground-subtle">{label}</dt>
-      <dd className="numeric text-foreground">{value}</dd>
-    </div>
-  );
-}
-
-/**
- * Maps a target status back to its action label key.
- *
- * Several statuses have more than one way in (`in_repair` can be reached from
- * `diagnosing`, `approved` or `waiting_parts`), so the confirmation dialog shows
- * the generic label for those and a specific one where the wording matters.
- */
 function actionKeyFor(status: RepairStatus): string {
   switch (status) {
-    case 'approved':
-      return 'recordApproval';
-    case 'cancelled':
-      return 'cancel';
-    case 'ready':
-      return 'markReady';
-    case 'delivered':
-      return 'deliver';
-    case 'waiting_parts':
-      return 'waitForParts';
-    case 'waiting_customer':
-      return 'sendForApproval';
-    case 'diagnosing':
-      return 'startDiagnosis';
-    default:
-      return 'startRepair';
+    case 'approved': return 'recordApproval';
+    case 'cancelled': return 'cancel';
+    case 'ready': return 'markReady';
+    case 'delivered': return 'deliver';
+    case 'waiting_parts': return 'waitForParts';
+    case 'waiting_customer': return 'sendForApproval';
+    case 'diagnosing': return 'startDiagnosis';
+    default: return 'startRepair';
   }
 }
 
