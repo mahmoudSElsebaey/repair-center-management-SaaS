@@ -77,3 +77,6 @@ export type QuotationLineType = (typeof QUOTATION_LINE_TYPES)[number];
 
 /** Roles allowed to reach administrative surfaces. */
 export const ADMIN_ROLES: UserRole[] = ['super_admin', 'admin', 'manager'];
+
+export const INVOICE_STATUSES = ['draft', 'issued', 'partially_paid', 'paid', 'void'] as const;
+export type InvoiceStatus = (typeof INVOICE_STATUSES)[number];
