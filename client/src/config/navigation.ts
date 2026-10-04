@@ -17,27 +17,15 @@ import {
 import type { UserRole } from '@/types/domain';
 import { USER_ROLES } from '@/types/domain';
 
-/**
- * Navigation model.
- *
- * The sidebar renders from this single declaration, filtered by the signed-in
- * user's role. `available` is flipped on as each phase ships, so no link ever
- * points at a screen that does not exist yet.
- */
-
 export type NavPhase = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14;
 
 export interface NavItem {
   key: string;
-  /** i18n key under `nav.*`. */
   labelKey: string;
   path: string;
   icon: LucideIcon;
-  /** Roles allowed to see this entry. Omit to allow every staff role. */
   roles?: UserRole[];
-  /** Phase in which the route becomes available. */
   phase: NavPhase;
-  /** Marks the feature as not yet implemented so the UI can say so honestly. */
   available: boolean;
 }
 
@@ -106,7 +94,7 @@ export const NAV_GROUPS: NavGroup[] = [
         icon: Package,
         roles: ['super_admin', 'admin', 'manager', 'inventory_manager', 'technician'],
         phase: 6,
-        available: false,
+        available: true,
       },
       {
         key: 'technicians',
@@ -195,10 +183,6 @@ export const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
-/* -------------------------------------------------------------------------- */
-/* Permission helpers — shared by the sidebar, routes and pages                */
-/* -------------------------------------------------------------------------- */
-
 export function hasRole(userRole: UserRole | undefined, allowed?: UserRole[]): boolean {
   if (!allowed || allowed.length === 0) return true;
   if (!userRole) return false;
@@ -212,20 +196,13 @@ export function visibleNavGroups(userRole: UserRole | undefined): NavGroup[] {
   })).filter((group) => group.items.length > 0);
 }
 
-/** Flat lookup used by the topbar to title the current screen. */
 export function findNavItem(pathname: string): NavItem | undefined {
   const items = NAV_GROUPS.flatMap((group) => group.items);
-
-  // Longest match wins so `/app/repairs/RF-2026-00421` still resolves to repairs.
   return items
     .filter((item) => pathname === item.path || pathname.startsWith(`${item.path}/`))
     .sort((a, b) => b.path.length - a.path.length)[0];
 }
 
-/**
- * Roles that can reach a path. Used by `RoleRoute` so a typed URL cannot open a
- * screen the sidebar deliberately hides.
- */
 export function rolesForPath(pathname: string): UserRole[] | undefined {
   return findNavItem(pathname)?.roles;
 }

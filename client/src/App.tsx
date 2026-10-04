@@ -11,10 +11,6 @@ import { applyDocumentLanguage } from '@/i18n';
 import { useAppSelector } from '@/store/hooks';
 import type { Locale } from '@/types/domain';
 
-/* -------------------------------------------------------------------------- */
-/* Route-level code splitting                                                  */
-/* -------------------------------------------------------------------------- */
-
 const LandingPage = lazy(() => import('@/pages/LandingPage'));
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
 const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'));
@@ -33,6 +29,7 @@ const RepairsPage = lazy(() => import('@/pages/app/RepairsPage'));
 const RepairDetailPage = lazy(() => import('@/pages/app/RepairDetailPage'));
 const StaffPage = lazy(() => import('@/pages/app/StaffPage'));
 const TechniciansPage = lazy(() => import('@/pages/app/TechniciansPage'));
+const InventoryPage = lazy(() => import('@/pages/app/InventoryPage'));
 
 function RouteFallback() {
   return (
@@ -46,13 +43,6 @@ export default function App() {
   const locale = useAppSelector((state) => state.ui.locale);
   const { i18n } = useTranslation();
 
-  /**
-   * Keep the document in step with the stored preference.
-   *
-   * This covers the first paint after a reload (where the inline script in
-   * index.html and the persisted token already agree) as well as a locale that
-   * arrives from the server with the user profile.
-   */
   useEffect(() => {
     if (i18n.language !== locale) {
       void i18n.changeLanguage(locale);
@@ -64,38 +54,46 @@ export default function App() {
     <SessionBootstrap>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
-          {/* ---------------- Public site ---------------- */}
           <Route element={<MainLayout />}>
             <Route index element={<LandingPage />} />
           </Route>
 
-          {/* ---------------- Authentication ---------------- */}
           <Route element={<PublicOnlyRoute />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
           </Route>
 
-          {/* ---------------- Operations console ---------------- */}
           <Route path="/app" element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
               <Route index element={<DashboardPage />} />
               <Route path="profile" element={<ProfilePage />} />
-
-              {/* Every staff role: the API scopes notifications to the recipient. */}
               <Route path="notifications" element={<NotificationsPage />} />
 
-              {/* Customers and devices: branch-scoped inside the API. */}
               <Route path="customers" element={<CustomersPage />} />
               <Route path="customers/:id" element={<CustomerDetailPage />} />
               <Route path="devices" element={<DevicesPage />} />
               <Route path="devices/:id" element={<DeviceDetailPage />} />
 
-              {/* Repair tickets — core workflow; branch-scoped inside the API. */}
               <Route path="repairs" element={<RepairsPage />} />
               <Route path="repairs/:id" element={<RepairDetailPage />} />
 
-              {/* Staff & technicians — management roles; API enforces the same. */}
+              <Route
+                element={
+                  <ProtectedRoute
+                    roles={[
+                      'super_admin',
+                      'admin',
+                      'manager',
+                      'inventory_manager',
+                      'technician',
+                    ]}
+                  />
+                }
+              >
+                <Route path="inventory" element={<InventoryPage />} />
+              </Route>
+
               <Route
                 element={
                   <ProtectedRoute roles={['super_admin', 'admin', 'manager']} />
