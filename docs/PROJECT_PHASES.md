@@ -86,9 +86,11 @@ Rule: after each phase the application is installed, run, verified, typechecked 
 
 ---
 
-## Phase 11 — Reports and analytics
+## Phase 11 — Reports and analytics ✅
 
-**Ships** revenue and performance reports from real data.
+**Ships** revenue and performance reports from real MongoDB aggregates: payments over time, payment methods, invoice status, repairs opened/completed, technician performance; date-range presets; bilingual Reports page.
+
+**End state:** managers open `/app/reports`, pick a range (7 / 30 / 90 days or custom), and see live KPIs and Recharts from invoices, payments and repair tickets — branch-scoped for non–super-admin roles.
 
 ---
 
@@ -118,7 +120,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 
 ## Current position
 
-**Phases 01–10 are complete.**
+**Phases 01–11 are complete.**
 
 | Phase | Status | Notes |
 | ----- | ------ | ----- |
@@ -132,6 +134,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 | 08 Invoices · payments | ✅ Complete | Invoice from repair, payments, balance, void |
 | 09 Customer tracking · QR | ✅ Complete | Public `/track/:code`, QR card, rate limit, privacy-limited payload |
 | 10 Appointments | ✅ Complete | Calendar week view, conflict detection, status machine |
-| 11–14 | Not started | — |
+| 11 Reports · analytics | ✅ Complete | `/reports/analytics`, date range, KPIs, Recharts, i18n EN/AR |
+| 12–14 | Not started | — |
 
-**Next phase:** Phase 11 — Reports and analytics.
+**Next phase:** Phase 12 — Notifications and activity logs.
