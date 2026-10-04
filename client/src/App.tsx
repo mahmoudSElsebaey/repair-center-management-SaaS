@@ -30,6 +30,9 @@ const RepairDetailPage = lazy(() => import('@/pages/app/RepairDetailPage'));
 const StaffPage = lazy(() => import('@/pages/app/StaffPage'));
 const TechniciansPage = lazy(() => import('@/pages/app/TechniciansPage'));
 const InventoryPage = lazy(() => import('@/pages/app/InventoryPage'));
+const InvoicesPage = lazy(() => import('@/pages/app/InvoicesPage'));
+const InvoiceDetailPage = lazy(() => import('@/pages/app/InvoiceDetailPage'));
+const PaymentsPage = lazy(() => import('@/pages/app/PaymentsPage'));
 
 function RouteFallback() {
   return (
@@ -92,6 +95,18 @@ export default function App() {
                 }
               >
                 <Route path="inventory" element={<InventoryPage />} />
+              </Route>
+
+              <Route
+                element={
+                  <ProtectedRoute
+                    roles={['super_admin', 'admin', 'manager', 'receptionist']}
+                  />
+                }
+              >
+                <Route path="invoices" element={<InvoicesPage />} />
+                <Route path="invoices/:id" element={<InvoiceDetailPage />} />
+                <Route path="payments" element={<PaymentsPage />} />
               </Route>
 
               <Route
