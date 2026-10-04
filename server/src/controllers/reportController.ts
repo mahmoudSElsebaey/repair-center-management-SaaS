@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 import type { Response } from 'express';
 import { User } from '../models/User.js';
 import { Branch } from '../models/Branch.js';
@@ -6,6 +6,7 @@ import { ActivityLog } from '../models/ActivityLog.js';
 import { AppNotification } from '../models/AppNotification.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import type { AuthRequest } from '../middleware/auth.js';
+import { ACTIVE_STATUSES } from '../domain/repairWorkflow.js';
 import { REPAIR_STATUSES, USER_ROLES, type RepairStatus, type UserRole } from '../types/domain.js';
 
 /* -------------------------------------------------------------------------- */
@@ -16,7 +17,7 @@ import { REPAIR_STATUSES, USER_ROLES, type RepairStatus, type UserRole } from '.
  * Section availability.
  *
  * The dashboard is built in Phase 02, but most of its richest figures are
- * aggregates over customers, devices and repair tickets — data that does not
+ * aggregates over customers, devices and repair tickets â€” data that does not
  * exist until Phases 03 and 04. Rather than invent placeholder numbers or leave
  * a "coming soon" panel, each section reports whether it is `available`, and the
  * client renders exactly what is real.
@@ -141,6 +142,69 @@ async function topActions(branchFilter: Record<string, unknown>, limit = 6) {
   ]);
 }
 
+/**
+ * How much each technician is currently holding.
+ *
+ * "Currently" means tickets in an active status â€” a technician with twenty
+ * delivered tickets behind them is not busy, so counting those would make the
+ * workload panel useless for deciding who to assign next.
+ */
+async function technicianWorkload(branchFilter: Record<string, unknown>) {
+  return User.aggregate<{
+    userId: mongoose.Types.ObjectId;
+    name: string;
+    role: string;
+    active: number;
+    urgent: number;
+    ready: number;
+  }>([
+    { $match: { role: 'technician', isActive: true, ...branchFilter } },
+    {
+      $lookup: {
+        from: 'repairtickets',
+        let: { technicianId: '$_id' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$technician', '$$technicianId'] } } },
+          {
+            $group: {
+              _id: null,
+              active: { $sum: { $cond: [{ $in: ['$status', ACTIVE_STATUSES] }, 1, 0] } },
+              urgent: {
+                $sum: {
+                  $cond: [
+                    {
+                      $and: [
+                        { $in: ['$status', ACTIVE_STATUSES] },
+                        { $eq: ['$priority', 'urgent'] },
+                      ],
+                    },
+                    1,
+                    0,
+                  ],
+                },
+              },
+              ready: { $sum: { $cond: [{ $eq: ['$status', 'ready'] }, 1, 0] } },
+            },
+          },
+        ],
+        as: 'work',
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        userId: '$_id',
+        name: '$name',
+        role: '$role',
+        active: { $ifNull: [{ $first: '$work.active' }, 0] },
+        urgent: { $ifNull: [{ $first: '$work.urgent' }, 0] },
+        ready: { $ifNull: [{ $first: '$work.ready' }, 0] },
+      },
+    },
+    { $sort: { active: -1, name: 1 } },
+  ]);
+}
+
 /* -------------------------------------------------------------------------- */
 /* Controller                                                                  */
 /* -------------------------------------------------------------------------- */
@@ -177,33 +241,40 @@ export const getDashboard = asyncHandler(async (req: AuthRequest, res: Response)
       AppNotification.countDocuments({ recipient: user._id, readAt: null }),
     ]);
 
-  const staff = roleBreakdown.reduce((sum, row) => sum + row.count, 0);
-  const totalStaffAllBranches = await User.countDocuments({});
-
   const recentActivity = await ActivityLog.find(branchFilter)
     .sort({ createdAt: -1 })
     .limit(12)
     .select('action category messageKey messageParams actorName actorRole entityType entityLabel createdAt');
 
+  const staff = roleBreakdown.reduce((sum, row) => sum + row.count, 0);
+  const totalStaffAllBranches = await User.countDocuments({});
+
   /**
-   * Repair metrics. These are `null` until Phase 04 creates the collection, and
-   * the client shows the real figures as soon as they exist.
+   * Repair metrics and bench load. Both are `null` until Phase 04 creates the
+   * collection, and the client shows the real figures as soon as they exist.
    */
   let repairMetrics: Record<string, number> | null = null;
+  let workload: Awaited<ReturnType<typeof technicianWorkload>> | null = null;
+
   if (availability.repairs) {
-    const rows = await mongoose.connection
-      .db!.collection('repairtickets')
-      .aggregate<{ _id: RepairStatus; count: number }>([
-        { $match: branchFilter },
-        { $group: { _id: '$status', count: { $sum: 1 } } },
-      ])
-      .toArray();
+    const [rows, bench] = await Promise.all([
+      mongoose.connection
+        .db!.collection('repairtickets')
+        .aggregate<{ _id: RepairStatus; count: number }>([
+          { $match: branchFilter },
+          { $group: { _id: '$status', count: { $sum: 1 } } },
+        ])
+        .toArray(),
+      technicianWorkload(branchFilter),
+    ]);
 
     const counts = new Map(rows.map((row) => [row._id, row.count]));
     repairMetrics = {};
     for (const status of REPAIR_STATUSES) {
       repairMetrics[status] = counts.get(status) ?? 0;
     }
+
+    workload = bench;
   }
 
   res.status(200).json({
@@ -220,7 +291,6 @@ export const getDashboard = asyncHandler(async (req: AuthRequest, res: Response)
         branches: branchCounts[0]?.total ?? 0,
         activeBranches: branchCounts[0]?.active ?? 0,
         unreadNotifications: unread,
-        /** null until Phase 03 creates the customers collection. */
         customers: availability.customers
           ? await mongoose.connection.db!.collection('customers').countDocuments(branchFilter)
           : null,
@@ -234,6 +304,7 @@ export const getDashboard = asyncHandler(async (req: AuthRequest, res: Response)
         staffByBranch: branchBreakdown,
         activityOverTime: activity,
         topActions: actions,
+        technicianWorkload: workload,
       },
       recentActivity: recentActivity.map((entry) => ({
         id: entry._id.toString(),
@@ -250,3 +321,4 @@ export const getDashboard = asyncHandler(async (req: AuthRequest, res: Response)
     },
   });
 });
+

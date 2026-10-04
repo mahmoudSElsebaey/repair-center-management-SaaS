@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 import { config } from '../config/index.js';
 import { Branch } from '../models/Branch.js';
 import { User } from '../models/User.js';
@@ -6,7 +6,10 @@ import { ActivityLog, ACTION_CATEGORY } from '../models/ActivityLog.js';
 import { AppNotification } from '../models/AppNotification.js';
 import { Customer } from '../models/Customer.js';
 import { Device } from '../models/Device.js';
-import { generateCode } from '../utils/codes.js';
+import { formatTicketCode, generateCode } from '../utils/codes.js';
+import { Counter, nextTicketSequence } from '../models/Counter.js';
+import { RepairTicket } from '../models/RepairTicket.js';
+import { REPAIR_TICKETS } from './data/repairs.js';
 import { BRANCHES, STAFF } from './data/staff.js';
 import { CUSTOMERS } from './data/customers.js';
 import { ACTIVITY_SEED, NOTIFICATION_SEED } from './data/activity.js';
@@ -45,14 +48,14 @@ async function seedBranches(): Promise<Map<string, mongoose.Types.ObjectId>> {
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
     byCode.set(branch.code, doc._id);
-    console.log(`  ✓ ${branch.code}  ${branch.name} (${branch.city})`);
+    console.log(`  âœ“ ${branch.code}  ${branch.name} (${branch.city})`);
   }
 
   return byCode;
 }
 
 async function seedStaff(branches: Map<string, mongoose.Types.ObjectId>): Promise<void> {
-  heading(`Employees — shared password: ${SEED_PASSWORD}`);
+  heading(`Employees â€” shared password: ${SEED_PASSWORD}`);
 
   for (const person of STAFF) {
     const existing = await User.findOne({ email: person.email }).select('+password');
@@ -81,7 +84,7 @@ async function seedStaff(branches: Map<string, mongoose.Types.ObjectId>): Promis
     }
 
     const scope = person.branchCode ?? 'all branches';
-    console.log(`  ✓ ${person.role.padEnd(18)} ${person.email.padEnd(38)} ${scope}`);
+    console.log(`  âœ“ ${person.role.padEnd(18)} ${person.email.padEnd(38)} ${scope}`);
   }
 }
 
@@ -123,7 +126,7 @@ async function seedActivity(): Promise<void> {
   });
 
   await ActivityLog.insertMany(documents);
-  console.log(`  ✓ ${documents.length} entries across the last 14 days`);
+  console.log(`  âœ“ ${documents.length} entries across the last 14 days`);
 }
 
 async function seedCustomers(branches: Map<string, mongoose.Types.ObjectId>): Promise<void> {
@@ -163,11 +166,131 @@ async function seedCustomers(branches: Map<string, mongoose.Types.ObjectId>): Pr
 
     deviceTotal += created.length;
     console.log(
-      `  ✓ ${customer.customerCode}  ${customer.name.padEnd(26)} ${created.length} device(s)`
+      `  âœ“ ${customer.customerCode}  ${customer.name.padEnd(26)} ${created.length} device(s)`
     );
   }
 
-  console.log(`  ${CUSTOMERS.length} customers · ${deviceTotal} devices`);
+  console.log(`  ${CUSTOMERS.length} customers Â· ${deviceTotal} devices`);
+}
+
+async function seedRepairs(): Promise<void> {
+  heading('Repair tickets');
+
+  await RepairTicket.deleteMany({});
+  await Counter.deleteMany({ _id: /^repair_ticket_/ });
+
+  const customers = await Customer.find({}).lean();
+  const devices = await Device.find({}).lean();
+  const users = await User.find({}).select('name role').lean();
+
+  const findCustomer = (fragment: string) =>
+    customers.find((customer) => customer.name.includes(fragment));
+
+  const findDevice = (customerId: string, fragment: string) =>
+    devices.find(
+      (device) =>
+        String(device.customer) === customerId &&
+        `${device.brand} ${device.modelName}`.toLowerCase().includes(fragment.toLowerCase())
+    );
+
+  const findUser = (name: string) => users.find((user) => user.name === name);
+
+  const created: Array<{ code: string; status: string; technician?: string }> = [];
+
+  for (const entry of REPAIR_TICKETS) {
+    const customer = findCustomer(entry.customer);
+    if (!customer) {
+      console.warn(`  ! skipped: customer "${entry.customer}" not found`);
+      continue;
+    }
+
+    const device = findDevice(String(customer._id), entry.device);
+    if (!device) {
+      console.warn(`  ! skipped: device "${entry.device}" not found for ${customer.name}`);
+      continue;
+    }
+
+    const technician = entry.technician ? findUser(entry.technician) : undefined;
+
+    const sequence = await nextTicketSequence(new Date().getFullYear());
+    const code = formatTicketCode(sequence);
+
+    // Build a believable history: an opening entry plus each recorded step.
+    const openedAt = at(entry.openedDaysAgo, 9, 30);
+    const history: Array<Record<string, unknown>> = [
+      {
+        from: null,
+        to: 'received',
+        at: openedAt,
+        byName: 'Ahmed Gamal Sherif',
+        byRole: 'receptionist',
+        note: 'Ticket opened at the counter',
+      },
+    ];
+
+    let previous: string = 'received';
+    for (const step of entry.journey ?? []) {
+      history.push({
+        from: previous,
+        to: step.status,
+        at: at(step.daysAgo, 11, 15),
+        byName: technician?.name ?? 'Karim Fathy Mansour',
+        byRole: technician?.role ?? 'manager',
+        note: step.note,
+      });
+      previous = step.status;
+    }
+
+    // The final status is the ticket's own, recorded last.
+    if (previous !== entry.status) {
+      history.push({
+        from: previous,
+        to: entry.status,
+        at: at(entry.statusDaysAgo ?? entry.openedDaysAgo, 14, 20),
+        byName: technician?.name ?? 'Karim Fathy Mansour',
+        byRole: technician?.role ?? 'manager',
+      });
+    }
+
+    const readyAt = at(entry.statusDaysAgo ?? entry.openedDaysAgo, 14, 20);
+
+    await RepairTicket.create({
+      code,
+      customer: customer._id,
+      device: device._id,
+      branch: device.branch,
+      technician: technician?._id,
+      status: entry.status,
+      priority: entry.priority,
+      issue: entry.issue,
+      diagnosis: entry.diagnosis,
+      estimatedCost: entry.estimatedCost,
+      finalCost: entry.finalCost,
+      customerApproved: entry.customerApproved,
+      customerApprovedAt: entry.customerApproved ? at(entry.openedDaysAgo - 1, 16, 0) : undefined,
+      notes: entry.notes,
+      warrantyDays: entry.warrantyDays ?? 90,
+      completedAt: entry.status === 'ready' || entry.status === 'delivered' ? readyAt : undefined,
+      deliveredAt: entry.status === 'delivered' ? readyAt : undefined,
+      statusHistory: history,
+      createdAt: openedAt,
+      updatedAt: readyAt,
+    });
+
+    created.push({ code, status: entry.status, technician: entry.technician });
+  }
+
+  const byStatus = created.reduce<Record<string, number>>((acc, ticket) => {
+    acc[ticket.status] = (acc[ticket.status] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  console.log(`  âœ“ ${created.length} tickets`);
+  console.log(
+    `    ${Object.entries(byStatus)
+      .map(([status, count]) => `${status}=${count}`)
+      .join('  ')}`
+  );
 }
 
 async function seedNotifications(): Promise<void> {
@@ -203,32 +326,33 @@ async function seedNotifications(): Promise<void> {
   await AppNotification.insertMany(documents);
 
   const unread = documents.filter((doc) => doc.readAt === null).length;
-  console.log(`  ✓ ${documents.length} notifications (${unread} unread)`);
+  console.log(`  âœ“ ${documents.length} notifications (${unread} unread)`);
 }
 
 async function main(): Promise<void> {
   const started = Date.now();
 
-  console.log('\x1b[36m╭──────────────────────────────────────────────╮');
-  console.log('│  RepairFlow — development seed               │');
-  console.log('╰──────────────────────────────────────────────╯\x1b[0m');
+  console.log('\x1b[36mâ•­â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â•®');
+  console.log('â”‚  RepairFlow â€” development seed               â”‚');
+  console.log('â•°â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â•¯\x1b[0m');
 
   await mongoose.connect(config.mongodbUri, { serverSelectionTimeoutMS: 10_000 });
-  console.log(`\n  connected → ${mongoose.connection.name}`);
+  console.log(`\n  connected â†’ ${mongoose.connection.name}`);
 
   if (isFresh) {
     heading('Resetting RepairFlow collections (--fresh)');
-    const ours = ['users', 'branches', 'activitylogs', 'appnotifications', 'customers', 'devices'];
+    const ours = ['users', 'branches', 'activitylogs', 'appnotifications', 'customers', 'devices', 'repairtickets', 'counters'];
 
     for (const name of ours) {
       await mongoose.connection.db!.collection(name).deleteMany({});
-      console.log(`  ✓ cleared ${name}`);
+      console.log(`  âœ“ cleared ${name}`);
     }
   }
 
   const branches = await seedBranches();
   await seedStaff(branches);
   await seedCustomers(branches);
+  await seedRepairs();
   await seedActivity();
   await seedNotifications();
 
@@ -237,11 +361,12 @@ async function main(): Promise<void> {
   const activityCount = await ActivityLog.countDocuments();
   const customerCount = await Customer.countDocuments();
   const deviceCount = await Device.countDocuments();
-
+  const repairCount = await RepairTicket.countDocuments();
   heading('Done');
   console.log(
-    `  ${branchCount} branches · ${userCount} employees · ${customerCount} customers · ` +
-      `${deviceCount} devices · ${activityCount} activity entries · ${Date.now() - started}ms\n`
+    `  ${branchCount} branches | ${userCount} employees | ${customerCount} customers | ` +
+      `${deviceCount} devices | ${repairCount} tickets | ${activityCount} activity entries | ` +
+      `${Date.now() - started}ms\n`
   );
 
   console.log('\x1b[36m  Sign in with any address below:\x1b[0m');
@@ -259,3 +384,4 @@ main().catch(async (error) => {
   await mongoose.connection.close().catch(() => undefined);
   process.exit(1);
 });
+

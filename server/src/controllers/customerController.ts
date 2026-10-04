@@ -1,3 +1,4 @@
+﻿import mongoose from 'mongoose';
 import type { Response } from 'express';
 import { Customer } from '../models/Customer.js';
 import { Device } from '../models/Device.js';
@@ -24,19 +25,24 @@ const SORTABLE = ['name', 'createdAt', 'lastVisitAt'] as const;
  * A super admin works across the organisation; everyone else is confined to
  * their own branch. This is applied to the query itself, never by filtering the
  * response in the browser, so a crafted request cannot read another branch.
+ *
+ * The branch is returned as a real `ObjectId`. That matters more than it looks:
+ * Mongoose casts strings inside `find()`, but an aggregation pipeline receives
+ * the filter verbatim, so a string branch silently matches nothing. Returning a
+ * typed id means every caller â€” query or aggregation â€” behaves identically.
  */
 export function resolveScope(user: AuthRequest['user'], requested?: string) {
   if (!user) throw AppError.unauthorized();
 
   if (user.role === 'super_admin') {
-    return requested ? { branch: requested } : {};
+    return requested ? { branch: new mongoose.Types.ObjectId(requested) } : {};
   }
 
   if (!user.branch) {
     throw AppError.forbidden('Your account is not linked to a branch', 'NO_BRANCH');
   }
 
-  return { branch: user.branch.toString() };
+  return { branch: new mongoose.Types.ObjectId(user.branch.toString()) };
 }
 
 /**
@@ -55,7 +61,7 @@ async function allocateCustomerCode(): Promise<string> {
   }
 
   throw new AppError(
-    'Could not allocate a customer code — please retry',
+    'Could not allocate a customer code â€” please retry',
     503,
     'CODE_ALLOCATION_FAILED'
   );
@@ -101,7 +107,7 @@ export const listCustomers = asyncHandler(async (req: AuthRequest, res: Response
     Customer.countDocuments(filter),
   ]);
 
-  // Device counts for the visible page only — one aggregate, not N queries.
+  // Device counts for the visible page only â€” one aggregate, not N queries.
   const ids = items.map((item) => item._id);
   const deviceCounts = ids.length
     ? await Device.aggregate<{ _id: unknown; count: number }>([
@@ -235,8 +241,8 @@ export const updateCustomer = asyncHandler(async (req: AuthRequest, res: Respons
 /**
  * DELETE /api/v1/customers/:id
  *
- * Soft delete. A customer with repair history is never removed — the invoices
- * and warranty records that reference them must stay resolvable — so the record
+ * Soft delete. A customer with repair history is never removed â€” the invoices
+ * and warranty records that reference them must stay resolvable â€” so the record
  * is deactivated and hidden from default listings instead.
  */
 export const deleteCustomer = asyncHandler(async (req: AuthRequest, res: Response) => {
@@ -273,3 +279,4 @@ export const deleteCustomer = asyncHandler(async (req: AuthRequest, res: Respons
     data: { id: customer._id.toString(), devicesDeactivated: devices.modifiedCount },
   });
 });
+
