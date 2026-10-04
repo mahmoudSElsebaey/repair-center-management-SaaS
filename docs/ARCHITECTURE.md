@@ -99,8 +99,9 @@ POST /auth/login ──► access token (15 min, JWT)
                  └─► refresh token (30 d, JWT) ──► SHA-256 hash stored on User
 ```
 
-- Access tokens carry `{ sub, role }` and are verified in `protect`, which **reloads the user on every request**. A deactivated account therefore loses access immediately instead of waiting for token expiry.
-- Refresh tokens are stored **hashed**. A database dump contains nothing usable.
+- Access tokens carry `{ sub, role, typ: 'access', jti }` and are verified in `protect`, which **reloads the user on every request**. A deactivated account therefore loses access immediately instead of waiting for token expiry.
+- Refresh tokens carry `{ sub, typ: 'refresh', jti }` and are stored **hashed**. A database dump contains nothing usable.
+- **Every issued token carries a random `jti`, and this is load-bearing.** `iat` has one-second resolution, so two JWTs signed for the same subject in the same second are byte-identical without it. That made rotation hand back the very token it was meant to replace, so the stored hash still matched and the "rotated-away" token kept working — stolen-token detection silently did nothing whenever login and refresh landed in the same second. The `typ` claim additionally guarantees an access token can never be accepted as a refresh token, even if the two secrets were mistakenly set to the same value.
 - `POST /auth/refresh` rotates both tokens. Presenting a refresh token whose hash no longer matches the stored value means the session was superseded or stolen, and the request is rejected with `REFRESH_REVOKED`.
 - `PATCH /auth/password` clears the stored refresh token, so changing a password ends sessions on every other device.
 - `POST /auth/logout` unsets the stored refresh token server-side.

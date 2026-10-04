@@ -6,6 +6,9 @@ import morgan from 'morgan';
 import mongoose from 'mongoose';
 import { config } from './config/index.js';
 import authRoutes from './routes/authRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
+import activityRoutes from './routes/activityRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { apiLimiter } from './middleware/rateLimit.js';
 
@@ -72,9 +75,12 @@ app.get(`${API_PREFIX}/health`, (_req: Request, res: Response) => {
 
 app.use(API_PREFIX, apiLimiter);
 app.use(`${API_PREFIX}/auth`, authRoutes);
+app.use(`${API_PREFIX}/reports`, reportRoutes);
+app.use(`${API_PREFIX}/activity`, activityRoutes);
+app.use(`${API_PREFIX}/notifications`, notificationRoutes);
 
-// Phase 02+ mounts: /customers /devices /repairs /technicians /inventory
-// /invoices /payments /appointments /reports /notifications /track
+// Later phases mount: /customers /devices /repairs /technicians /inventory
+// /invoices /payments /appointments /track
 
 app.use(notFoundHandler);
 app.use(errorHandler);

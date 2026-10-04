@@ -2,8 +2,11 @@ import mongoose from 'mongoose';
 import { config } from '../config/index.js';
 import { Branch } from '../models/Branch.js';
 import { User } from '../models/User.js';
+import { ActivityLog, ACTION_CATEGORY } from '../models/ActivityLog.js';
+import { AppNotification } from '../models/AppNotification.js';
 import { BRANCHES, STAFF } from './data/staff.js';
 import { CUSTOMERS } from './data/customers.js';
+import { ACTIVITY_SEED, NOTIFICATION_SEED } from './data/activity.js';
 import { SEED_PASSWORD } from './manifest.js';
 
 /**
@@ -14,6 +17,11 @@ import { SEED_PASSWORD } from './manifest.js';
  *
  *   npm run seed              seed everything
  *   npm run seed -- --fresh   wipe RepairFlow collections first
+ *
+ * Employees and branches are upserted, so a password changed locally survives.
+ * Demo activity and notifications are rebuilt on every run: they are sample
+ * storytelling, not real records, and regenerating them keeps the feed looking
+ * current rather than showing events from the day the seed was first written.
  */
 
 const isFresh = process.argv.includes('--fresh');
@@ -74,6 +82,83 @@ async function seedStaff(branches: Map<string, mongoose.Types.ObjectId>): Promis
   }
 }
 
+/** Builds a timestamp `daysAgo` days back at the given local time. */
+function at(daysAgo: number, hour: number, minute: number): Date {
+  const date = new Date();
+  date.setDate(date.getDate() - daysAgo);
+  date.setHours(hour, minute, 0, 0);
+  return date;
+}
+
+async function seedActivity(): Promise<void> {
+  heading('Audit trail');
+
+  // Rebuilt each run so the feed always looks current.
+  await ActivityLog.deleteMany({});
+
+  const users = await User.find({}).select('name email role branch');
+  const byEmail = new Map(users.map((user) => [user.email, user]));
+
+  const documents = ACTIVITY_SEED.map((entry) => {
+    const actor = byEmail.get(entry.actorEmail);
+    return {
+      action: entry.action,
+      // Derived from the same map the application uses, so the seed can never
+      // drift from the real event grouping.
+      category: ACTION_CATEGORY[entry.action],
+      messageKey: entry.messageKey,
+      messageParams: entry.messageParams,
+      actor: actor?._id,
+      actorName: actor?.name ?? entry.actorEmail,
+      actorRole: actor?.role,
+      branch: actor?.branch,
+      entityType: entry.entityType,
+      entityLabel: entry.entityLabel,
+      createdAt: at(entry.daysAgo, entry.hour, entry.minute),
+      updatedAt: at(entry.daysAgo, entry.hour, entry.minute),
+    };
+  });
+
+  await ActivityLog.insertMany(documents);
+  console.log(`  ✓ ${documents.length} entries across the last 14 days`);
+}
+
+async function seedNotifications(): Promise<void> {
+  heading('Notifications');
+
+  await AppNotification.deleteMany({});
+
+  const users = await User.find({}).select('name email');
+  const byEmail = new Map(users.map((user) => [user.email, user]));
+
+  const documents = NOTIFICATION_SEED.flatMap((entry) => {
+    const recipient = byEmail.get(entry.recipientEmail);
+    if (!recipient) return [];
+
+    const created = at(entry.daysAgo, entry.hour, 0);
+
+    return [
+      {
+        recipient: recipient._id,
+        type: entry.type,
+        severity: entry.severity,
+        titleKey: entry.titleKey,
+        bodyKey: entry.bodyKey,
+        params: entry.params,
+        link: entry.link,
+        readAt: entry.read ? new Date(created.getTime() + 3_600_000) : null,
+        createdAt: created,
+        updatedAt: created,
+      },
+    ];
+  });
+
+  await AppNotification.insertMany(documents);
+
+  const unread = documents.filter((doc) => doc.readAt === null).length;
+  console.log(`  ✓ ${documents.length} notifications (${unread} unread)`);
+}
+
 async function main(): Promise<void> {
   const started = Date.now();
 
@@ -86,10 +171,7 @@ async function main(): Promise<void> {
 
   if (isFresh) {
     heading('Resetting RepairFlow collections (--fresh)');
-    const collections = await mongoose.connection.db!.listCollections().toArray();
-    const ours = collections
-      .map((c) => c.name)
-      .filter((name) => !name.startsWith('system.') && ['users', 'branches'].includes(name));
+    const ours = ['users', 'branches', 'activitylogs', 'appnotifications'];
 
     for (const name of ours) {
       await mongoose.connection.db!.collection(name).deleteMany({});
@@ -99,6 +181,8 @@ async function main(): Promise<void> {
 
   const branches = await seedBranches();
   await seedStaff(branches);
+  await seedActivity();
+  await seedNotifications();
 
   heading('Customers');
   console.log(
@@ -108,9 +192,12 @@ async function main(): Promise<void> {
 
   const userCount = await User.countDocuments();
   const branchCount = await Branch.countDocuments();
+  const activityCount = await ActivityLog.countDocuments();
 
   heading('Done');
-  console.log(`  ${branchCount} branches · ${userCount} employees · ${Date.now() - started}ms\n`);
+  console.log(
+    `  ${branchCount} branches · ${userCount} employees · ${activityCount} activity entries · ${Date.now() - started}ms\n`
+  );
 
   console.log('\x1b[36m  Sign in with any address below:\x1b[0m');
   for (const person of STAFF) {

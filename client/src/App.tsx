@@ -23,6 +23,8 @@ const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 
 const DashboardPage = lazy(() => import('@/pages/app/DashboardPage'));
 const ProfilePage = lazy(() => import('@/pages/app/ProfilePage'));
+const NotificationsPage = lazy(() => import('@/pages/app/NotificationsPage'));
+const ActivityLogPage = lazy(() => import('@/pages/app/ActivityLogPage'));
 
 function RouteFallback() {
   return (
@@ -71,6 +73,18 @@ export default function App() {
             <Route element={<AppLayout />}>
               <Route index element={<DashboardPage />} />
               <Route path="profile" element={<ProfilePage />} />
+
+              {/* Every staff role: the API scopes notifications to the recipient. */}
+              <Route path="notifications" element={<NotificationsPage />} />
+
+              {/* Management roles only — matches the server-side guard. */}
+              <Route
+                element={
+                  <ProtectedRoute roles={['super_admin', 'admin', 'manager']} />
+                }
+              >
+                <Route path="activity" element={<ActivityLogPage />} />
+              </Route>
             </Route>
           </Route>
 

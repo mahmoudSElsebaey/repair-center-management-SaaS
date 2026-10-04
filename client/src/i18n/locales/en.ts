@@ -498,6 +498,123 @@ const en = {
     inventory_manager: 'Inventory Manager',
   },
 
+  activity: {
+    title: 'Activity log',
+    subtitle: 'Every meaningful action, attributed and timestamped.',
+    empty: 'No activity recorded yet',
+    emptyBody: 'Sign-ins, ticket movements and inventory changes will appear here.',
+    filterCategory: 'Category',
+    filterActor: 'Performed by',
+    categories: {
+      auth: 'Sign-in',
+      staff: 'Staff',
+      customer: 'Customers',
+      device: 'Devices',
+      repair: 'Repairs',
+      inventory: 'Inventory',
+      finance: 'Finance',
+      appointment: 'Appointments',
+    },
+    auth: {
+      login: '{{name}} signed in',
+      logout: '{{name}} signed out',
+      passwordChanged: '{{name}} changed their password',
+    },
+    user: {
+      created: '{{name}} was added as {{role}}',
+      updated: '{{name}} was updated ({{fields}})',
+      deactivated: '{{name}} was deactivated',
+      activated: '{{name}} was reactivated',
+    },
+    branch: {
+      created: 'Branch {{name}} was created',
+      updated: 'Branch {{name}} was updated',
+    },
+    customer: {
+      created: 'Customer {{name}} was registered',
+      updated: 'Customer {{name}} was updated',
+      deleted: 'Customer {{name}} was removed',
+    },
+    device: {
+      created: 'Device {{name}} was registered',
+      updated: 'Device {{name}} was updated',
+      deleted: 'Device {{name}} was removed',
+    },
+    repair: {
+      created: 'Repair ticket {{code}} was opened',
+      updated: 'Repair ticket {{code}} was updated',
+      statusChanged: 'Ticket {{code}} moved to {{status}}',
+      assigned: 'Ticket {{code}} was assigned to {{technician}}',
+      delivered: 'Ticket {{code}} was delivered to the customer',
+    },
+    inventory: {
+      created: 'Part {{name}} was added to inventory',
+      updated: 'Part {{name}} was updated',
+      consumed: '{{quantity}} × {{name}} consumed on ticket {{code}}',
+      lowStock: '{{name}} fell below its minimum level',
+    },
+    invoice: {
+      created: 'Invoice {{number}} was issued',
+    },
+    payment: {
+      recorded: 'Payment of {{amount}} was recorded on invoice {{number}}',
+    },
+    appointment: {
+      created: 'Appointment booked for {{customer}}',
+      updated: 'Appointment for {{customer}} was rescheduled',
+    },
+  },
+
+  notifications: {
+    title: 'Notifications',
+    subtitle: 'Assignments, approvals and stock alerts addressed to you.',
+    empty: 'You are all caught up',
+    emptyBody: 'New assignments and approvals will show up here.',
+    markAllRead: 'Mark all as read',
+    markRead: 'Mark as read',
+    allMarkedRead: 'All notifications marked as read',
+    unreadOnly: 'Unread only',
+    showAll: 'Show all',
+    unreadCount: '{{count}} unread',
+    viewAll: 'View all notifications',
+    severity: {
+      info: 'Information',
+      success: 'Completed',
+      warning: 'Needs attention',
+      critical: 'Urgent',
+    },
+    seed: {
+      welcome: {
+        title: 'Welcome to RepairFlow',
+        body: 'You are managing {{branch}}. Your workspace is ready.',
+      },
+      staffAdded: {
+        title: 'New technician added',
+        body: '{{name}} was added to your branch and is available for assignment.',
+      },
+      lowStock: {
+        title: 'Stock below minimum',
+        body: '{{count}} spare parts have fallen below their minimum level.',
+      },
+      phaseNotice: {
+        title: 'Dashboard updated',
+        body: 'Your operations dashboard now reads live data from the workshop.',
+      },
+      ownerDigest: {
+        title: 'Daily operations digest',
+        body: '{{branches}} branches and {{staff}} staff accounts are active across the organisation.',
+      },
+      technicianReady: {
+        title: 'Your bench is clear',
+        body: 'No repairs are assigned to you right now.',
+      },
+      frontDesk: {
+        title: 'Front desk ready',
+        body: 'Customer intake is open for the Cairo workshop.',
+      },
+    },
+  },
+
   dashboard: {
     title: 'Operations dashboard',
     subtitle: 'Live view of every bench, counter and balance.',
@@ -508,22 +625,40 @@ const en = {
     today: "Today's activity",
     shellNotice:
       'Your workspace is ready. Dashboard metrics, charts and activity arrive with the next phase.',
+    pendingValue: 'Not tracked yet',
+    unassigned: 'Unassigned',
+    scopeGlobal: 'Whole organisation',
+    scopeBranch: 'Your branch',
+    refreshed: 'Updated {{time}}',
     metrics: {
+      staff: 'Active staff',
+      branches: 'Branches',
+      activity: 'Actions logged',
       receivedToday: 'Received today',
       activeRepairs: 'Active repairs',
       awaitingApproval: 'Awaiting approval',
       awaitingParts: 'Waiting for parts',
       readyPickup: 'Ready for pickup',
       completed: 'Completed',
+      customers: 'Customers',
+      devices: 'Devices',
       revenue: 'Revenue',
       outstanding: 'Outstanding',
     },
     sections: {
-      repairsOverTime: 'Repairs over time',
+      activityOverTime: 'Activity over time',
+      activityOverTimeHint: 'Recorded actions across the last 14 days',
+      staffByRole: 'Team by role',
+      staffByRoleHint: 'Who is on the floor and what they do',
+      branchStrength: 'Headcount by branch',
+      branchStrengthHint: 'Where the team is deployed',
       statusDistribution: 'Repair status distribution',
       technicianWorkload: 'Technician workload',
       recentActivity: 'Recent activity',
       lowStock: 'Low stock parts',
+      upcoming: 'Coming with a later phase',
+      upcomingBody:
+        'This panel fills in automatically once repair tickets, customers and inventory exist. No placeholder figures are shown in the meantime.',
     },
     quickActions: {
       title: 'Quick actions',
@@ -536,6 +671,7 @@ const en = {
       activity: 'No activity recorded yet',
       activityBody: 'Ticket movements and inventory changes will appear here.',
       workload: 'No technicians assigned yet',
+      branches: 'No branches configured yet',
     },
   },
 

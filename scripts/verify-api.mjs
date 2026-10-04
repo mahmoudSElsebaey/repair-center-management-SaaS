@@ -115,6 +115,44 @@ async function waitForHealth(timeoutMs = 40_000) {
   return false;
 }
 
+/**
+ * Confirms that the server we spawned is the one answering.
+ *
+ * A port probe is not enough on Windows: a socket bound to `127.0.0.1:5000`
+ * coexists with one bound to `0.0.0.0:5000`, so "is the port free" reports a
+ * false negative and the suite would happily test a server left running from an
+ * earlier session — which is exactly the failure this guards against.
+ *
+ * The decisive question is whether *our child* is still alive. A process that
+ * cannot bind exits within a second, so a child that survives means we own the
+ * port.
+ */
+async function assertOwnServerIsServing(child, log) {
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    if (child.exitCode !== null) {
+      console.error(
+        `\n\x1b[31m  The API failed to start (exit code ${child.exitCode}).\x1b[0m\n`
+      );
+      console.error(log.join('').split('\n').slice(-20).join('\n'));
+      process.exit(2);
+    }
+    await sleep(250);
+  }
+
+  // Still alive after three seconds: it bound the port successfully.
+  const health = await call('GET', `${BASE}/health`);
+  const looksLikeRepairFlow = health.body?.message === 'RepairFlow API';
+
+  if (!looksLikeRepairFlow) {
+    console.error(
+      '\n\x1b[31m  Something else is answering on this port.\x1b[0m\n\n' +
+        `  Expected the RepairFlow API but received: ${JSON.stringify(health.body).slice(0, 120)}\n\n` +
+        `  Run the suite on another port:\n    node scripts/verify-api.mjs --port ${PORT + 1}\n`
+    );
+    process.exit(2);
+  }
+}
+
 async function seedVerificationDatabase() {
   console.log(`  seeding ${DB_NAME} …`);
 
@@ -254,24 +292,58 @@ async function runValidationChecks() {
 async function runRefreshChecks() {
   group('token refresh');
 
-  const rotated = await call('POST', `${BASE}/auth/refresh`, { body: { refreshToken } });
-  checkEqual('refresh → 200', rotated.status, 200);
-  check('new access token issued', Boolean(rotated.body?.data?.accessToken), 'present');
-  check('new refresh token issued', Boolean(rotated.body?.data?.refreshToken), 'present');
+  /**
+   * Rotation is exercised twice back-to-back on purpose.
+   *
+   * The bug this guards against only appeared when two signings landed inside
+   * the same wall-clock second, so a single pass could succeed by luck and hide
+   * it. Two immediate cycles make the same-second case the normal case.
+   */
+  for (let round = 1; round <= 2; round += 1) {
+    const originalRefresh = refreshToken;
+    const originalAccess = accessToken;
 
-  const newAccess = rotated.body?.data?.accessToken ?? '';
-  const newRefresh = rotated.body?.data?.refreshToken ?? '';
+    const rotated = await call('POST', `${BASE}/auth/refresh`, { body: { refreshToken } });
+    checkEqual(`round ${round}: refresh → 200`, rotated.status, 200);
+    check(`round ${round}: new access token issued`, Boolean(rotated.body?.data?.accessToken), 'present');
+    check(`round ${round}: new refresh token issued`, Boolean(rotated.body?.data?.refreshToken), 'present');
 
-  const replay = await call('GET', `${BASE}/auth/me`, { token: newAccess });
-  checkEqual('new access token works', replay.status, 200);
+    const newAccess = rotated.body?.data?.accessToken ?? '';
+    const newRefresh = rotated.body?.data?.refreshToken ?? '';
 
-  // The rotated-away token must be dead: that is what makes theft detectable.
-  const reuse = await call('POST', `${BASE}/auth/refresh`, { body: { refreshToken } });
-  checkEqual('rotated-away token rejected', reuse.status, 401);
-  checkEqual('revoked code', reuse.body?.code, 'REFRESH_REVOKED');
+    /**
+     * The rotated token must differ from the one it replaced.
+     *
+     * Regression guard for a real bug: `iat` has one-second resolution, so
+     * signing the same refresh payload twice in the same second produced a
+     * byte-identical token. Rotation then returned the same string, the stored
+     * hash matched, and the "revoked" token kept working — stolen-token
+     * detection silently did nothing whenever login and refresh landed in the
+     * same second. A random `jti` fixes it; this check keeps it fixed.
+     */
+    check(
+      `round ${round}: rotated refresh token differs`,
+      newRefresh !== originalRefresh && newRefresh.length > 0,
+      newRefresh === originalRefresh ? 'IDENTICAL TOKEN — revocation is a no-op' : 'distinct'
+    );
 
-  refreshToken = newRefresh;
-  accessToken = newAccess;
+    check(
+      `round ${round}: rotated access token differs`,
+      newAccess !== originalAccess && newAccess.length > 0,
+      newAccess === originalAccess ? 'identical' : 'distinct'
+    );
+
+    const replay = await call('GET', `${BASE}/auth/me`, { token: newAccess });
+    checkEqual(`round ${round}: new access token works`, replay.status, 200);
+
+    // The rotated-away token must be dead: that is what makes theft detectable.
+    const reuse = await call('POST', `${BASE}/auth/refresh`, { body: { refreshToken: originalRefresh } });
+    checkEqual(`round ${round}: rotated-away token rejected`, reuse.status, 401);
+    checkEqual(`round ${round}: revoked code`, reuse.body?.code, 'REFRESH_REVOKED');
+
+    refreshToken = newRefresh;
+    accessToken = newAccess;
+  }
 }
 
 async function runProfileChecks() {
@@ -475,6 +547,9 @@ async function main() {
       console.error(serverLog.join('').split('\n').slice(-25).join('\n'));
       return;
     }
+
+    // "Something answered" is not the same as "our server answered".
+    await assertOwnServerIsServing(server, serverLog);
 
     console.log('  API is up — running checks\n');
 

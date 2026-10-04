@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  Bell,
   ChevronDown,
   Menu,
   Search,
@@ -13,6 +12,7 @@ import {
 import { Logo } from '@/components/ui/Logo';
 import { LanguageToggle } from '@/components/layout/LanguageToggle';
 import { ThemeToggle } from '@/components/layout/ThemeToggle';
+import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import { findNavItem } from '@/config/navigation';
 import { authApi } from '@/features/auth/authApi';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -152,15 +152,7 @@ export function Topbar() {
           <LanguageToggle />
           <ThemeToggle />
 
-          <button
-            type="button"
-            disabled
-            aria-label={t('dashboardShell.notifications')}
-            title={t('common.comingSoon')}
-            className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-surface text-foreground-muted transition-colors duration-fast hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            <Bell className="h-4 w-4" aria-hidden="true" />
-          </button>
+          <NotificationBell />
 
           {/* Account menu */}
           <div className="relative" ref={menuRef}>

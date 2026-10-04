@@ -36,15 +36,19 @@ Rule: after each phase the application is installed, run, verified, typechecked 
 
 ---
 
-## Phase 02 — Dashboard and application shell
+## Phase 02 — Dashboard and application shell ✅
 
 **Ships**
 
-*Client* — metric tiles with real values and trend indicators, repairs-over-time and revenue charts (Recharts), status distribution, technician workload, recent activity feed, low-stock panel, notification bell with an unread count, mobile layout for every panel.
+*Client* — metric tiles with real values, activity-over-time chart, team-by-role distribution, headcount by branch, recent-activity timeline, notification bell with unread badge and dropdown, notifications page with unread filter, audit-trail page with category filters and pagination.
 
-*Server* — `/reports/dashboard` aggregate endpoint, `/activity`, `/notifications`, all branch-scoped by role.
+*Server* — `ActivityLog` and `AppNotification` models, `services/events.ts` for audit and notification side effects, `GET /reports/dashboard` (branch-scoped aggregates), `GET /activity`, and the notification endpoints. Authentication events now produce real audit entries.
 
-**End state:** dashboard figures come from MongoDB through the API — nothing hardcoded.
+**Verified by:** 68 API checks, 45 browser checks, 481-key bilingual parity audit, typecheck clean on both applications.
+
+**End state:** dashboard figures come from MongoDB through the API — no hardcoded numbers and no fabricated placeholders. Figures whose collections do not exist yet render as "Not tracked yet" and fill in automatically as Phases 03, 04 and 06 land.
+
+**Security note:** verification of this phase uncovered and fixed a high-severity authentication defect — refresh-token rotation was a no-op inside the same second because JWTs signed for the same subject in the same second are byte-identical, which silently disabled stolen-token detection. Every issued token now carries a unique `jti`. See [QA_CHECKLIST.md](./QA_CHECKLIST.md#phase-02--verification-record).
 
 ---
 

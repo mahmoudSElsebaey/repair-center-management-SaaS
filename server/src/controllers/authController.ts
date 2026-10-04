@@ -7,6 +7,7 @@ import { User } from '../models/User.js';
 // MissingSchemaError instead of degrading.
 import '../models/Branch.js';
 import { config } from '../config/index.js';
+import { recordActivity } from '../services/events.js';
 import { AppError } from '../utils/AppError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import type { AuthRequest } from '../middleware/auth.js';
@@ -21,16 +22,43 @@ import {
 
 const ACCESS_TTL_SECONDS = 15 * 60;
 
+/**
+ * Access tokens carry `typ: 'access'` and refresh tokens `typ: 'refresh'`.
+ *
+ * The two are signed with different secrets, so a token from one family already
+ * fails verification in the other's endpoint. The explicit type claim makes that
+ * guarantee independent of the secrets being distinct — a deployment mistake
+ * (setting both secrets to the same value) would otherwise turn an access token
+ * into a valid refresh token.
+ *
+ * The random `jti` is not decoration: `iat` has one-second resolution, so two
+ * tokens signed for the same user in the same second are byte-identical without
+ * it. That made token rotation a no-op for refresh tokens (see below) and left
+ * access tokens distinguishable only by their second. Every issued token is now
+ * unique by construction.
+ */
 function signAccessToken(userId: string, role: string): string {
-  return jwt.sign({ sub: userId, role }, config.jwt.accessSecret, {
-    expiresIn: config.jwt.accessExpiresIn,
-  } as jwt.SignOptions);
+  return jwt.sign(
+    { sub: userId, role, typ: 'access', jti: crypto.randomBytes(16).toString('hex') },
+    config.jwt.accessSecret,
+    { expiresIn: config.jwt.accessExpiresIn } as jwt.SignOptions
+  );
 }
 
+/**
+ * Refresh tokens are signed the same way, and uniqueness is load-bearing here.
+ *
+ * Without a unique `jti`, rotation handed back the very token it was meant to
+ * replace, `refreshToken` compared equal to itself, and the "rotated-away" token
+ * stayed valid — so stolen-token detection silently did nothing whenever login
+ * and refresh happened inside the same second.
+ */
 function signRefreshToken(userId: string): string {
-  return jwt.sign({ sub: userId }, config.jwt.refreshSecret, {
-    expiresIn: config.jwt.refreshExpiresIn,
-  } as jwt.SignOptions);
+  return jwt.sign(
+    { sub: userId, typ: 'refresh', jti: crypto.randomBytes(16).toString('hex') },
+    config.jwt.refreshSecret,
+    { expiresIn: config.jwt.refreshExpiresIn } as jwt.SignOptions
+  );
 }
 
 /**
@@ -76,6 +104,14 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   user.lastLogin = new Date();
   await user.save({ validateBeforeSave: false });
 
+  // Auditing is fire-and-forget: a failure to log must never block a sign-in.
+  void recordActivity({
+    action: 'auth.login',
+    messageKey: 'activity.auth.login',
+    messageParams: { name: user.name },
+    actor: { id: user._id, name: user.name, role: user.role, branch: user.branch },
+  });
+
   res.status(200).json({
     success: true,
     message: 'Signed in successfully',
@@ -96,11 +132,16 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 export const refresh = asyncHandler(async (req: Request, res: Response) => {
   const { refreshToken } = refreshSchema.parse(req.body);
 
-  let payload: { sub: string };
+  let payload: { sub: string; typ?: string };
   try {
-    payload = jwt.verify(refreshToken, config.jwt.refreshSecret) as { sub: string };
+    payload = jwt.verify(refreshToken, config.jwt.refreshSecret) as { sub: string; typ?: string };
   } catch {
     throw AppError.unauthorized('Your session has expired — please sign in again', 'REFRESH_INVALID');
+  }
+
+  // Reject any token that is not explicitly a refresh token.
+  if (payload.typ && payload.typ !== 'refresh') {
+    throw AppError.unauthorized('Your session is no longer valid', 'REFRESH_INVALID');
   }
 
   const user = await User.findById(payload.sub).select('+refreshToken');
@@ -132,6 +173,18 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
 export const logout = asyncHandler(async (req: AuthRequest, res: Response) => {
   if (req.user) {
     await User.updateOne({ _id: req.user._id }, { $unset: { refreshToken: 1 } });
+
+    void recordActivity({
+      action: 'auth.logout',
+      messageKey: 'activity.auth.logout',
+      messageParams: { name: req.user.name },
+      actor: {
+        id: req.user._id,
+        name: req.user.name,
+        role: req.user.role,
+        branch: req.user.branch,
+      },
+    });
   }
   res.status(200).json({ success: true, message: 'Signed out successfully' });
 });
@@ -158,6 +211,16 @@ export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response
 
   if (!user) throw AppError.notFound('Account not found', 'ACCOUNT_NOT_FOUND');
 
+  void recordActivity({
+    action: 'user.updated',
+    messageKey: 'activity.user.updated',
+    messageParams: { name: user.name, fields: Object.keys(updates).join(', ') },
+    actor: { id: user._id, name: user.name, role: user.role, branch: user.branch },
+    entityType: 'User',
+    entityId: user._id,
+    entityLabel: user.name,
+  });
+
   res.status(200).json({
     success: true,
     message: 'Profile updated',
@@ -181,6 +244,16 @@ export const changePassword = asyncHandler(async (req: AuthRequest, res: Respons
   // Changing a password ends every other session.
   user.refreshToken = undefined;
   await user.save();
+
+  void recordActivity({
+    action: 'auth.password_changed',
+    messageKey: 'activity.auth.passwordChanged',
+    messageParams: { name: user.name },
+    actor: { id: user._id, name: user.name, role: user.role, branch: user.branch },
+    entityType: 'User',
+    entityId: user._id,
+    entityLabel: user.name,
+  });
 
   res.status(200).json({
     success: true,

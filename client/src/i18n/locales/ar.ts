@@ -496,6 +496,123 @@ const ar = {
     inventory_manager: 'مسؤول مخزون',
   },
 
+  activity: {
+    title: 'سجل النشاط',
+    subtitle: 'كل إجراء مهم، منسوب لصاحبه وموثّق بالوقت.',
+    empty: 'لا يوجد نشاط مسجَّل بعد',
+    emptyBody: 'ستظهر هنا عمليات الدخول وحركات التذاكر وتغيّرات المخزون.',
+    filterCategory: 'التصنيف',
+    filterActor: 'نفّذه',
+    categories: {
+      auth: 'تسجيل الدخول',
+      staff: 'الموظفون',
+      customer: 'العملاء',
+      device: 'الأجهزة',
+      repair: 'الصيانة',
+      inventory: 'المخزون',
+      finance: 'المالية',
+      appointment: 'المواعيد',
+    },
+    auth: {
+      login: 'سجّل {{name}} الدخول',
+      logout: 'سجّل {{name}} الخروج',
+      passwordChanged: 'غيّر {{name}} كلمة المرور',
+    },
+    user: {
+      created: 'أُضيف {{name}} بصفة {{role}}',
+      updated: 'تم تحديث بيانات {{name}} ({{fields}})',
+      deactivated: 'تم تعطيل حساب {{name}}',
+      activated: 'تم إعادة تفعيل حساب {{name}}',
+    },
+    branch: {
+      created: 'تم إنشاء فرع {{name}}',
+      updated: 'تم تحديث بيانات فرع {{name}}',
+    },
+    customer: {
+      created: 'تم تسجيل العميل {{name}}',
+      updated: 'تم تحديث بيانات العميل {{name}}',
+      deleted: 'تم حذف العميل {{name}}',
+    },
+    device: {
+      created: 'تم تسجيل الجهاز {{name}}',
+      updated: 'تم تحديث بيانات الجهاز {{name}}',
+      deleted: 'تم حذف الجهاز {{name}}',
+    },
+    repair: {
+      created: 'تم فتح تذكرة الصيانة {{code}}',
+      updated: 'تم تحديث تذكرة الصيانة {{code}}',
+      statusChanged: 'انتقلت التذكرة {{code}} إلى {{status}}',
+      assigned: 'أُسنِدت التذكرة {{code}} إلى {{technician}}',
+      delivered: 'تم تسليم التذكرة {{code}} للعميل',
+    },
+    inventory: {
+      created: 'أُضيفت القطعة {{name}} إلى المخزون',
+      updated: 'تم تحديث بيانات القطعة {{name}}',
+      consumed: 'استُهلك {{quantity}} × {{name}} في التذكرة {{code}}',
+      lowStock: 'انخفض {{name}} عن الحد الأدنى',
+    },
+    invoice: {
+      created: 'صدرت الفاتورة {{number}}',
+    },
+    payment: {
+      recorded: 'سُجّلت دفعة بقيمة {{amount}} على الفاتورة {{number}}',
+    },
+    appointment: {
+      created: 'تم حجز موعد للعميل {{customer}}',
+      updated: 'تم تغيير موعد العميل {{customer}}',
+    },
+  },
+
+  notifications: {
+    title: 'الإشعارات',
+    subtitle: 'المهام والموافقات وتنبيهات المخزون الموجَّهة إليك.',
+    empty: 'لا يوجد جديد',
+    emptyBody: 'ستظهر هنا المهام الجديدة والموافقات.',
+    markAllRead: 'تعليم الكل كمقروء',
+    markRead: 'تعليم كمقروء',
+    allMarkedRead: 'تم تعليم كل الإشعارات كمقروءة',
+    unreadOnly: 'غير المقروء فقط',
+    showAll: 'عرض الكل',
+    unreadCount: '{{count}} غير مقروء',
+    viewAll: 'عرض كل الإشعارات',
+    severity: {
+      info: 'معلومة',
+      success: 'مكتمل',
+      warning: 'يحتاج انتباهاً',
+      critical: 'عاجل',
+    },
+    seed: {
+      welcome: {
+        title: 'أهلاً بك في ريبير فلو',
+        body: 'أنت تدير {{branch}}. مساحة عملك جاهزة.',
+      },
+      staffAdded: {
+        title: 'فني جديد',
+        body: 'أُضيف {{name}} إلى فرعك وهو متاح لإسناد المهام.',
+      },
+      lowStock: {
+        title: 'مخزون تحت الحد الأدنى',
+        body: 'انخفض {{count}} من قطع الغيار عن الحد الأدنى.',
+      },
+      phaseNotice: {
+        title: 'تم تحديث لوحة التشغيل',
+        body: 'لوحة العمليات تقرأ الآن بيانات حقيقية من الورشة.',
+      },
+      ownerDigest: {
+        title: 'ملخّص التشغيل اليومي',
+        body: '{{branches}} فروع و{{staff}} حساب موظف نشط في المؤسسة.',
+      },
+      technicianReady: {
+        title: 'طاولتك فارغة',
+        body: 'لا توجد عمليات صيانة مُسندة إليك حالياً.',
+      },
+      frontDesk: {
+        title: 'الاستقبال جاهز',
+        body: 'استقبال العملاء مفتوح في ورشة القاهرة.',
+      },
+    },
+  },
+
   dashboard: {
     title: 'لوحة التشغيل',
     subtitle: 'عرض مباشر لكل طاولة عمل ومنفذ بيع ورصيد.',
@@ -506,22 +623,40 @@ const ar = {
     today: 'نشاط اليوم',
     shellNotice:
       'مساحة عملك جاهزة. مؤشرات اللوحة والرسوم وسجل النشاط تصل في المرحلة التالية.',
+    pendingValue: 'غير مُتتبَّع بعد',
+    unassigned: 'غير مُسند',
+    scopeGlobal: 'المؤسسة بالكامل',
+    scopeBranch: 'فرعك',
+    refreshed: 'آخر تحديث {{time}}',
     metrics: {
+      staff: 'الموظفون النشطون',
+      branches: 'الفروع',
+      activity: 'إجراءات مسجَّلة',
       receivedToday: 'المستلم اليوم',
       activeRepairs: 'عمليات جارية',
       awaitingApproval: 'بانتظار الموافقة',
       awaitingParts: 'بانتظار قطع غيار',
       readyPickup: 'جاهزة للتسليم',
       completed: 'مكتملة',
+      customers: 'العملاء',
+      devices: 'الأجهزة',
       revenue: 'الإيرادات',
       outstanding: 'مبالغ متأخرة',
     },
     sections: {
-      repairsOverTime: 'الصيانة عبر الزمن',
+      activityOverTime: 'النشاط عبر الزمن',
+      activityOverTimeHint: 'الإجراءات المسجَّلة خلال آخر ١٤ يوماً',
+      staffByRole: 'الفريق حسب الدور',
+      staffByRoleHint: 'من على أرض الورشة وما دوره',
+      branchStrength: 'عدد الموظفين لكل فرع',
+      branchStrengthHint: 'أين يتوزّع الفريق',
       statusDistribution: 'توزيع حالات الصيانة',
       technicianWorkload: 'حِمل الفنيين',
       recentActivity: 'أحدث النشاط',
       lowStock: 'قطع منخفضة المخزون',
+      upcoming: 'تصل مع مرحلة لاحقة',
+      upcomingBody:
+        'تُملأ هذه اللوحة تلقائياً بمجرد وجود تذاكر الصيانة والعملاء والمخزون. ولا تُعرض أي أرقام تقديرية في الأثناء.',
     },
     quickActions: {
       title: 'إجراءات سريعة',
@@ -534,6 +669,7 @@ const ar = {
       activity: 'لا يوجد نشاط مسجَّل بعد',
       activityBody: 'ستظهر هنا حركات التذاكر وتغيّرات المخزون.',
       workload: 'لم يُسنَد أي فني بعد',
+      branches: 'لا توجد فروع مُهيّأة بعد',
     },
   },
 

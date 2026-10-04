@@ -408,6 +408,60 @@ async function waitForHttp(url, timeoutMs = 40_000) {
   return false;
 }
 
+/**
+ * Confirms the API answering on this port is the one this suite started.
+ *
+ * A child that cannot bind exits within a second, so a surviving process means
+ * we own the port. Without this, a server left running from an earlier session
+ * would be tested instead — silently, and against the wrong code.
+ */
+async function assertApiIsOurs(child, log, port) {
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    if (child.exitCode !== null) {
+      console.error(`\n\x1b[31m  The API failed to start (exit code ${child.exitCode}).\x1b[0m\n`);
+      console.error(log.join('').split('\n').slice(-20).join('\n'));
+      process.exit(2);
+    }
+    await sleep(250);
+  }
+
+  const health = await (await fetch(`${API_URL}/health`)).json().catch(() => null);
+
+  if (health?.message !== 'RepairFlow API') {
+    console.error(
+      `\n\x1b[31m  Something else is answering on port ${port}.\x1b[0m\n\n` +
+        `  Received: ${JSON.stringify(health).slice(0, 120)}\n` +
+        '  Stop it before running this suite.\n'
+    );
+    process.exit(2);
+  }
+}
+
+/** Same guard for the static preview server. */
+async function assertPreviewIsOurs(child, log, port) {
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    if (child.exitCode !== null) {
+      console.error(
+        `\n\x1b[31m  The preview server failed to start (exit code ${child.exitCode}).\x1b[0m\n`
+      );
+      console.error(log.join('').split('\n').slice(-20).join('\n'));
+      process.exit(2);
+    }
+    await sleep(250);
+  }
+
+  const html = await (await fetch(APP_URL)).text().catch(() => '');
+
+  if (!html.includes('id="root"')) {
+    console.error(
+      `\n\x1b[31m  Something else is answering on port ${port}.\x1b[0m\n\n` +
+        '  The response is not the RepairFlow app shell. Stop it before running\n' +
+        '  this suite.\n'
+    );
+    process.exit(2);
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 /* Checks                                                                      */
 /* -------------------------------------------------------------------------- */
@@ -881,6 +935,7 @@ async function main() {
       console.error(apiLog.join('').split('\n').slice(-20).join('\n'));
       throw new Error('API did not start');
     }
+    await assertApiIsOurs(api, apiLog, API_PORT);
 
     // ---- production bundle ---------------------------------------------
     console.log('  starting vite preview …');
@@ -896,6 +951,7 @@ async function main() {
       console.error(previewLog.join('').split('\n').slice(-20).join('\n'));
       throw new Error('preview server did not start');
     }
+    await assertPreviewIsOurs(preview, previewLog, APP_PORT);
 
     // ---- browser --------------------------------------------------------
     console.log('  launching headless Chrome …\n');

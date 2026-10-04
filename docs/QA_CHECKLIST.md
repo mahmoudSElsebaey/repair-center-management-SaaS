@@ -4,6 +4,36 @@ How to verify RepairFlow. The per-phase checklist is what is run after each phas
 
 ---
 
+## Phase 02 — Verification record
+
+**Result:** 68 API checks · 45 browser checks · 481-key parity audit · typecheck clean on both applications
+
+### What shipped
+
+*Server* — `ActivityLog`, `AppNotification` models; `services/events.ts` (`recordActivity`, `notify`, `notifyRoles`) as fire-and-forget side effects; `GET /reports/dashboard`, `GET /activity`, and the notification endpoints (`GET /notifications`, `GET /notifications/summary`, `PATCH /notifications/:id/read`, `PATCH /notifications/read-all`, `DELETE /notifications/:id`); shared pagination/sort/escape helpers; auth events now write real audit entries.
+
+*Client* — dashboard rebuilt on live data (stat tiles, activity-over-time area chart, team-by-role bars, headcount-by-branch radial, recent-activity timeline), notifications page with unread filter, audit-trail page with category filters and pagination, and a working topbar notification bell replacing the disabled placeholder. Recharts, already a dependency, is now used.
+
+### The dashboard is honest about what does not exist yet
+
+Repair, customer and inventory figures are `null` until their phases create those collections. The API reports a `sections` map, and the client renders "Not tracked yet" rather than a fabricated `0` — a repair centre reading `0` when the truth is "not tracked" would draw the wrong conclusion. The panels that depend on later phases name the phase that delivers them. As Phase 03 and 04 land, the same page picks the values up with no rewrite.
+
+### Security defect found and fixed
+
+| Severity | Defect | Cause | Fix |
+| -------- | ------ | ----- | --- |
+| **High — authentication** | Refresh-token rotation was a no-op within the same second: the "rotated-away" token remained valid, so stolen-token detection silently did nothing | `jwt.sign` sets `iat` at one-second resolution, so two tokens signed for the same subject in the same second are byte-identical. Rotation returned the same string, `user.refreshToken` compared equal to itself, and `REFRESH_REVOKED` never fired | Added a random `jti` to every issued token, plus an explicit `typ` claim (`access`/`refresh`) so an access token can never be accepted as a refresh token even if both secrets were set to the same value |
+
+**How it was found.** The API suite failed intermittently on `rotated-away token rejected`. Rather than treat it as flakiness, a focused probe replayed the login → refresh → reuse-old-token cycle six times and showed `reuse=200`, `sameToken=true` on every cycle. The suite had been passing only when login and refresh happened to straddle a second boundary.
+
+**Regression guard.** The suite now exercises rotation **twice back-to-back**, so the same-second case is the normal case, and asserts that both the refresh and access tokens differ from the ones they replaced. Two further checks failed immediately on the second round — the access token was also identical — which is how the second half of the defect surfaced.
+
+### Suite reliability fix
+
+The suite previously reported a confusing pair of failures in an unrelated area because a server left running from an earlier session held port 5000: the suite's own child died with `EADDRINUSE`, and its health check cheerfully talked to the **stale** server. A port probe proved unreliable here (Windows allows a `127.0.0.1` bind alongside a `0.0.0.0` listener), so both suites now verify that the process **they spawned** is still alive and that the responder identifies itself as RepairFlow. Exit code `2` when it does not.
+
+---
+
 ## Phase 01 — Verification record
 
 **Environment:** Windows · Node v22.14.0 · npm 11.19.0 · MongoDB 6.0.5 (local, port 27017) · Chrome (headless)
