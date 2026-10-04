@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getDashboard } from '../controllers/reportController.js';
+import { getDashboard, getAnalytics } from '../controllers/reportController.js';
 import { protect, restrictTo } from '../middleware/auth.js';
 
 const router = Router();
@@ -11,5 +11,6 @@ const router = Router();
 router.use(protect, restrictTo('super_admin', 'admin', 'manager'));
 
 router.get('/dashboard', getDashboard);
+router.get('/analytics', getAnalytics);
 
 export default router;
