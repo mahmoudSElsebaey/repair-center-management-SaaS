@@ -68,5 +68,12 @@ export type InventoryTransactionType = (typeof INVENTORY_TRANSACTION_TYPES)[numb
 export const PAYMENT_METHODS = ['cash', 'card', 'transfer', 'wallet'] as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 
+/** Quotation lifecycle. A ticket cannot enter `in_repair` without an approved quotation. */
+export const QUOTATION_STATUSES = ['draft', 'sent', 'approved', 'rejected'] as const;
+export type QuotationStatus = (typeof QUOTATION_STATUSES)[number];
+
+export const QUOTATION_LINE_TYPES = ['labor', 'part', 'other'] as const;
+export type QuotationLineType = (typeof QUOTATION_LINE_TYPES)[number];
+
 /** Roles allowed to reach administrative surfaces. */
 export const ADMIN_ROLES: UserRole[] = ['super_admin', 'admin', 'manager'];

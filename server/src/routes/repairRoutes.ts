@@ -8,6 +8,12 @@ import {
   listRepairs,
   updateRepair,
 } from '../controllers/repairController.js';
+import {
+  decideQuotation,
+  getQuotation,
+  sendQuotation,
+  upsertQuotation,
+} from '../controllers/quotationController.js';
 import { protect } from '../middleware/auth.js';
 
 const router = Router();
@@ -37,5 +43,11 @@ router
  * edit can never move a ticket through the workflow by accident.
  */
 router.patch('/:id/status', changeRepairStatus);
+
+/** Quotation is 1:1 with the ticket — nested under the repair resource. */
+router.get('/:id/quotation', getQuotation);
+router.put('/:id/quotation', upsertQuotation);
+router.post('/:id/quotation/send', sendQuotation);
+router.post('/:id/quotation/decide', decideQuotation);
 
 export default router;
