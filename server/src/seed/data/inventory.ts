@@ -14,7 +14,7 @@ export interface SeedInventoryItem {
   branchCode: string;
 }
 
-/** Demo spare parts for the seeded branches. */
+/** Demo spare parts for the seeded branches (CAI-01, ALX-02). */
 export const INVENTORY_ITEMS: SeedInventoryItem[] = [
   {
     name: 'OLED assembly — Galaxy S24 Ultra',
@@ -27,7 +27,7 @@ export const INVENTORY_ITEMS: SeedInventoryItem[] = [
     sellPrice: 4200,
     location: 'A-01',
     supplier: 'Cairo Parts Hub',
-    branchCode: 'NSR',
+    branchCode: 'CAI-01',
   },
   {
     name: 'Battery — iPhone 14 / 14 Pro',
@@ -40,7 +40,7 @@ export const INVENTORY_ITEMS: SeedInventoryItem[] = [
     sellPrice: 850,
     location: 'B-03',
     supplier: 'Delta Mobile Supply',
-    branchCode: 'NSR',
+    branchCode: 'CAI-01',
   },
   {
     name: 'Hinge kit — MacBook Air M2',
@@ -53,7 +53,7 @@ export const INVENTORY_ITEMS: SeedInventoryItem[] = [
     sellPrice: 3200,
     location: 'C-02',
     supplier: 'Cairo Parts Hub',
-    branchCode: 'NSR',
+    branchCode: 'CAI-01',
   },
   {
     name: 'Thermal paste — 4g syringe',
@@ -66,7 +66,7 @@ export const INVENTORY_ITEMS: SeedInventoryItem[] = [
     sellPrice: 90,
     location: 'D-01',
     supplier: 'Tech Tools EG',
-    branchCode: 'NSR',
+    branchCode: 'CAI-01',
   },
   {
     name: 'USB-C charging port — ThinkPad T14',
@@ -79,7 +79,7 @@ export const INVENTORY_ITEMS: SeedInventoryItem[] = [
     sellPrice: 480,
     location: 'A-04',
     supplier: 'Delta Mobile Supply',
-    branchCode: 'NSR',
+    branchCode: 'CAI-01',
   },
   {
     name: 'LCD assembly — iPhone 13',
@@ -92,7 +92,7 @@ export const INVENTORY_ITEMS: SeedInventoryItem[] = [
     sellPrice: 1900,
     location: 'A-02',
     supplier: 'Cairo Parts Hub',
-    branchCode: 'ALX',
+    branchCode: 'ALX-02',
   },
   {
     name: 'Charging flex — Galaxy A54',
@@ -105,7 +105,7 @@ export const INVENTORY_ITEMS: SeedInventoryItem[] = [
     sellPrice: 200,
     location: 'B-01',
     supplier: 'Delta Mobile Supply',
-    branchCode: 'ALX',
+    branchCode: 'ALX-02',
   },
   {
     name: 'Precision screwdriver set',
@@ -118,7 +118,7 @@ export const INVENTORY_ITEMS: SeedInventoryItem[] = [
     sellPrice: 0,
     location: 'T-01',
     supplier: 'Tech Tools EG',
-    branchCode: 'ALX',
+    branchCode: 'ALX-02',
   },
   {
     name: 'Back glass — iPhone 12',
@@ -131,7 +131,7 @@ export const INVENTORY_ITEMS: SeedInventoryItem[] = [
     sellPrice: 750,
     location: 'A-05',
     supplier: 'Cairo Parts Hub',
-    branchCode: 'ALX',
+    branchCode: 'ALX-02',
   },
   {
     name: 'Microphone module — Pixel 7',
@@ -144,6 +144,6 @@ export const INVENTORY_ITEMS: SeedInventoryItem[] = [
     sellPrice: 340,
     location: 'C-01',
     supplier: 'Delta Mobile Supply',
-    branchCode: 'NSR',
+    branchCode: 'CAI-01',
   },
 ];
