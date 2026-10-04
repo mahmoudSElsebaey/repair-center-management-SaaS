@@ -16,6 +16,7 @@ const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
 const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
+const TrackPage = lazy(() => import('@/pages/TrackPage'));
 
 const DashboardPage = lazy(() => import('@/pages/app/DashboardPage'));
 const ProfilePage = lazy(() => import('@/pages/app/ProfilePage'));
@@ -59,6 +60,8 @@ export default function App() {
         <Routes>
           <Route element={<MainLayout />}>
             <Route index element={<LandingPage />} />
+            <Route path="track" element={<TrackPage />} />
+            <Route path="track/:code" element={<TrackPage />} />
           </Route>
 
           <Route element={<PublicOnlyRoute />}>

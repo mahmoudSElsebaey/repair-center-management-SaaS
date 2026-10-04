@@ -70,9 +70,11 @@ Rule: after each phase the application is installed, run, verified, typechecked 
 
 ---
 
-## Phase 09 — Customer tracking and QR
+## Phase 09 — Customer tracking and QR ✅
 
-**Ships** public tracking page at `/track/:code`.
+**Ships** public tracking page at `/track` and `/track/:code`, rate-limited public API, QR card on repair detail, bilingual copy.
+
+**End state:** a customer (or staff) opens `/track/RF-YYYY-#####` without logging in and sees live status, device, branch and progress timeline. Staff copy/share a QR from the repair detail page.
 
 ---
 
@@ -114,7 +116,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 
 ## Current position
 
-**Phases 01–08 are complete.**
+**Phases 01–09 are complete.**
 
 | Phase | Status | Notes |
 | ----- | ------ | ----- |
@@ -126,6 +128,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 | 06 Inventory | ✅ Complete | Items, ledger movements, low-stock, Inventory page |
 | 07 Quotations · customer approval | ✅ Complete | Quotation 1:1 with ticket, lines, send, decide |
 | 08 Invoices · payments | ✅ Complete | Invoice from repair, payments, balance, void |
-| 09–14 | Not started | — |
+| 09 Customer tracking · QR | ✅ Complete | Public `/track/:code`, QR card, rate limit, privacy-limited payload |
+| 10–14 | Not started | — |
 
-**Next phase:** Phase 09 — Customer tracking and QR.
+**Next phase:** Phase 10 — Appointments.
