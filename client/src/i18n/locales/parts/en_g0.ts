@@ -137,6 +137,13 @@ export default {
     payment: {
       recorded: 'Payment of {{amount}} was recorded on invoice {{number}}',
     },
+    quotation: {
+      created: 'Quotation {{code}} drafted for ticket {{ticket}} ({{total}})',
+      updated: 'Quotation {{code}} updated for ticket {{ticket}} ({{total}})',
+      sent: 'Quotation {{code}} sent on ticket {{ticket}} ({{total}})',
+      approved: 'Quotation {{code}} approved on ticket {{ticket}}',
+      rejected: 'Quotation {{code}} rejected on ticket {{ticket}}',
+    },
     appointment: {
       created: 'Appointment booked for {{customer}}',
       updated: 'Appointment for {{customer}} was rescheduled',
