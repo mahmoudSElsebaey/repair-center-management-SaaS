@@ -8,7 +8,7 @@ Rule: after each phase the application is installed, run, verified, typechecked 
 
 ## Phase 01 — Foundation, brand and authentication ✅
 
-**Ships** foundation, brand, i18n, auth, console shell. See repository history for full checklist.
+**Ships** foundation, brand, i18n, auth, console shell.
 
 **End state:** a real user signs in through the frontend and reaches a protected operations console.
 
@@ -46,9 +46,11 @@ Rule: after each phase the application is installed, run, verified, typechecked 
 
 ---
 
-## Phase 06 — Inventory
+## Phase 06 — Inventory ✅
 
-**Ships** inventory items, stock movements, low-stock alerts.
+**Ships** inventory items, stock movements (purchase / usage / return / adjustment), low-stock alerts, seed data, Inventory page.
+
+**End state:** branch-scoped spare-parts catalogue with a ledger; stock never changes without a transaction row; low-stock notifies inventory managers.
 
 ---
 
@@ -108,7 +110,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 
 ## Current position
 
-**Phases 01–05 are complete.**
+**Phases 01–06 are complete.**
 
 | Phase | Status | Notes |
 | ----- | ------ | ----- |
@@ -117,6 +119,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 | 03 Customers · devices | ✅ Complete | Branch-scoped CRUD |
 | 04 Repair tickets | ✅ Complete | Full workflow: create, list, detail, status transitions, timeline |
 | 05 Technicians · staff | ✅ Complete | Staff CRUD, role assignment, technician workload |
-| 06–14 | Not started | — |
+| 06 Inventory | ✅ Complete | Items, ledger movements, low-stock, Inventory page |
+| 07–14 | Not started | — |
 
-**Next phase:** Phase 06 — Inventory.
+**Next phase:** Phase 07 — Quotations and customer approval.
