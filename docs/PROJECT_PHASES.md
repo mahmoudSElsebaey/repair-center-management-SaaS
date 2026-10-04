@@ -94,9 +94,11 @@ Rule: after each phase the application is installed, run, verified, typechecked 
 
 ---
 
-## Phase 12 — Notifications and activity logs
+## Phase 12 — Notifications and activity logs ✅
 
-**Ships** (partially delivered in Phase 02) expanded event coverage.
+**Ships** expanded event coverage on top of Phase 02 infrastructure: activity actions for invoice issue/void and full appointment status machine; branch-scoped role notifications; activity search + date filters; notification type filters; bilingual copy.
+
+**End state:** every major finance and appointment transition writes an audit row and notifies the right branch roles; managers filter the activity log by search and date; staff filter their inbox by type.
 
 ---
 
@@ -120,7 +122,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 
 ## Current position
 
-**Phases 01–11 are complete.**
+**Phases 01–12 are complete.**
 
 | Phase | Status | Notes |
 | ----- | ------ | ----- |
@@ -135,6 +137,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 | 09 Customer tracking · QR | ✅ Complete | Public `/track/:code`, QR card, rate limit, privacy-limited payload |
 | 10 Appointments | ✅ Complete | Calendar week view, conflict detection, status machine |
 | 11 Reports · analytics | ✅ Complete | `/reports/analytics`, date range, KPIs, Recharts, i18n EN/AR |
-| 12–14 | Not started | — |
+| 12 Notifications · activity | ✅ Complete | Expanded events, branch-scoped notify, activity search/dates, type filters |
+| 13–14 | Not started | — |
 
-**Next phase:** Phase 12 — Notifications and activity logs.
+**Next phase:** Phase 13 — Polish and advanced UX.

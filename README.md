@@ -4,7 +4,7 @@
 
 **Repair center operations software — from device intake to warranty.**
 
-Customers · Devices · Repair tickets · Technicians · Spare parts · Quotations · Approvals · Invoices · Payments · Live customer tracking · Appointments · Reports & analytics
+Customers · Devices · Repair tickets · Technicians · Spare parts · Quotations · Approvals · Invoices · Payments · Live customer tracking · Appointments · Reports
 
 [Architecture](docs/ARCHITECTURE.md) · [Deployment](docs/DEPLOY.md) · [Seed data](docs/SEED.md) · [QA checklist](docs/QA_CHECKLIST.md) · [Roadmap](docs/PROJECT_PHASES.md)
 
@@ -22,7 +22,7 @@ Every phase of the build is a working vertical slice: **UI → API → controlle
 
 ## Status
 
-Phase-based build, **Phases 01–11 complete**. The application authenticates against MongoDB, ships a bilingual marketing site, live dashboard, customers, devices, repair tickets, staff/technician management, inventory with stock movements, quotations with customer approval, invoices and payments, public QR tracking, appointment scheduling with conflict detection, and management reports with revenue and performance analytics.
+Phase-based build, **Phases 01–12 complete**. The application authenticates against MongoDB, ships a bilingual marketing site, live dashboard, customers, devices, repair tickets, staff/technician management, inventory with stock movements, quotations with customer approval, invoices and payments, public QR tracking, appointment scheduling with conflict detection, management reports with revenue and performance analytics, and expanded activity/notification coverage across finance and appointments.
 
 | Phase | Scope | Status |
 | ----- | ----- | ------ |
@@ -37,7 +37,7 @@ Phase-based build, **Phases 01–11 complete**. The application authenticates ag
 | 09 | Public QR tracking | ✅ Complete |
 | 10 | Appointments | ✅ Complete |
 | 11 | Reports and analytics | ✅ Complete |
-| 12 | Notifications and activity logs | Planned |
+| 12 | Notifications and activity logs | ✅ Complete |
 | 13 | Polish and advanced UX | Planned |
 | 14 | Production hardening | Planned |
 
