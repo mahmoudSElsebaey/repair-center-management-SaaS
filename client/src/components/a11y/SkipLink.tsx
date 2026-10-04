@@ -1,22 +1,24 @@
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
 /**
- * Keyboard escape hatch. Rendered first in the document so the very first Tab
- * press reveals it and lets a keyboard user jump past the navigation.
+ * Skip-to-main-content link for keyboard and screen-reader users.
+ * Visually hidden until focused. Place as the first focusable element in the document.
  */
-export function SkipLink({ label, href = '#main-content' }: { label: string; href?: string }) {
+export function SkipLink({ targetId = 'main-content' }: { targetId?: string }) {
+  const { t } = useTranslation();
+
   return (
     <a
-      href={href}
+      href={`#${targetId}`}
       className={cn(
-        'rf-sr-only focus:not-sr-only',
-        'focus:fixed focus:start-4 focus:top-4 focus:z-toast',
-        'focus:inline-flex focus:h-10 focus:items-center focus:rounded-lg',
-        'focus:bg-primary focus:px-4 focus:text-sm focus:font-medium focus:text-primary-foreground',
-        'focus:shadow-lg focus:outline-none'
+        'sr-only focus:not-sr-only',
+        'fixed start-4 top-4 z-[100] rounded-md bg-primary px-4 py-2.5',
+        'text-sm font-semibold text-primary-foreground shadow-lg',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
       )}
     >
-      {label}
+      {t('a11y.skipToContent')}
     </a>
   );
 }
