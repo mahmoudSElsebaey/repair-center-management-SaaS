@@ -62,9 +62,11 @@ Rule: after each phase the application is installed, run, verified, typechecked 
 
 ---
 
-## Phase 08 — Invoices and payments
+## Phase 08 — Invoices and payments ✅
 
-**Ships** invoice generation and payment recording.
+**Ships** invoice generation from repairs/quotations, payment recording, status machine, list + detail screens.
+
+**End state:** staff can issue an invoice from an approved repair, record partial or full payments, and see balance due until the invoice is paid or voided.
 
 ---
 
@@ -112,7 +114,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 
 ## Current position
 
-**Phases 01–07 are complete.**
+**Phases 01–08 are complete.**
 
 | Phase | Status | Notes |
 | ----- | ------ | ----- |
@@ -123,6 +125,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 | 05 Technicians · staff | ✅ Complete | Staff CRUD, role assignment, technician workload |
 | 06 Inventory | ✅ Complete | Items, ledger movements, low-stock, Inventory page |
 | 07 Quotations · customer approval | ✅ Complete | Quotation 1:1 with ticket, lines, send, decide |
-| 08–14 | Not started | — |
+| 08 Invoices · payments | ✅ Complete | Invoice from repair, payments, balance, void |
+| 09–14 | Not started | — |
 
-**Next phase:** Phase 08 — Invoices and payments.
+**Next phase:** Phase 09 — Customer tracking and QR.
