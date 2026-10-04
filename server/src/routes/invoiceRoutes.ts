@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authenticate } from '../middleware/auth.js';
+import { protect } from '../middleware/auth.js';
 import {
   createInvoice,
   getInvoice,
@@ -12,7 +12,7 @@ import {
 
 const router = Router();
 
-router.use(authenticate);
+router.use(protect);
 
 router.get('/', listInvoices);
 router.post('/', createInvoice);
