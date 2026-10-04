@@ -66,7 +66,7 @@ export const NAV_GROUPS: NavGroup[] = [
         path: '/app/repairs',
         icon: Wrench,
         phase: 4,
-        available: false,
+        available: true,
       },
       {
         key: 'customers',

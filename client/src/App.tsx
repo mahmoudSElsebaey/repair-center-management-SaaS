@@ -29,6 +29,8 @@ const CustomersPage = lazy(() => import('@/pages/app/CustomersPage'));
 const CustomerDetailPage = lazy(() => import('@/pages/app/CustomerDetailPage'));
 const DevicesPage = lazy(() => import('@/pages/app/DevicesPage'));
 const DeviceDetailPage = lazy(() => import('@/pages/app/DeviceDetailPage'));
+const RepairsPage = lazy(() => import('@/pages/app/RepairsPage'));
+const RepairDetailPage = lazy(() => import('@/pages/app/RepairDetailPage'));
 
 function RouteFallback() {
   return (
@@ -86,6 +88,10 @@ export default function App() {
               <Route path="customers/:id" element={<CustomerDetailPage />} />
               <Route path="devices" element={<DevicesPage />} />
               <Route path="devices/:id" element={<DeviceDetailPage />} />
+
+              {/* Repair tickets — core workflow; branch-scoped inside the API. */}
+              <Route path="repairs" element={<RepairsPage />} />
+              <Route path="repairs/:id" element={<RepairDetailPage />} />
 
               {/* Management roles only — matches the server-side guard. */}
               <Route
