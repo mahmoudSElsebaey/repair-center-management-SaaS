@@ -196,19 +196,28 @@ Reproducible checks, committed to the repository so anyone can re-run them — n
 
 | Script | Purpose |
 | ------ | ------- |
-| `npm run verify` | The whole gate: typecheck both sides → bilingual parity → API suite |
+| `npm run verify` | The whole gate: typecheck both sides → bilingual parity → API suite → browser suite |
 | `npm run verify:i18n` | Flatten both locale trees and fail on any missing key or mismatched interpolation placeholder (392 keys each) |
 | `npm run verify:api` | Build the server, then run the **58-check API suite** against an isolated `repairflow_verify` database |
+| `npm run verify:browser` | Build the client, serve the **production bundle**, and drive real headless Chrome through the **45-check browser suite** |
 
 `scripts/verify-api.mjs` seeds its own database, starts the compiled API, exercises health, login, authorization, credential safety, validation, token rotation, profile updates, the password lifecycle, logout, password reset and the error contract — then drops the database. It never touches the seeded demo tenant, and `--keep-db` leaves the database behind for inspection.
+
+`scripts/verify-browser.mjs` uses only the Node standard library and the Chrome already installed — no Playwright or Puppeteer. It verifies that the app genuinely renders, that sign-in from the actual form reaches the protected console, that the session survives a reload, that role-based navigation hides what it should, and that the 3D hero really is lazy. It writes to its own `repairflow_browser_verify` database and cleans up after itself.
 
 ```bash
 node scripts/verify-api.mjs                # default port 5000
 node scripts/verify-api.mjs --port 5055    # if 5000 is busy
 node scripts/verify-api.mjs --keep-db      # inspect afterwards
+
+node scripts/verify-browser.mjs            # builds the client, then verifies
+node scripts/verify-browser.mjs --headed   # watch the browser work
+node scripts/verify-browser.mjs --skip-build
 ```
 
-Two behaviours the suite deliberately pins, because they are easy to break by accident: a rotated-away refresh token must be rejected (`REFRESH_REVOKED`), and an already-issued access token legitimately survives logout until it expires. Both are explained in [ARCHITECTURE.md §3.7](./docs/ARCHITECTURE.md).
+Use `--skip-build` if your environment denies esbuild's temp-file delete to a grandchild process; build once in your own shell with `VITE_API_URL` set, then verify.
+
+Three behaviours the suites deliberately pin, because they are easy to break by accident: a rotated-away refresh token must be rejected (`REFRESH_REVOKED`); an already-issued access token legitimately survives logout until it expires; and the 3D chunk must never be module-preloaded into the shipped HTML. All are explained in [ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 Bilingual parity is enforced this way because nothing in the type system keeps `en.ts` and `ar.ts` in lockstep. Every phase that adds copy runs it.
 

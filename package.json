@@ -17,6 +17,7 @@
     "seed": "npm --prefix server run seed",
     "verify:i18n": "node --experimental-strip-types --no-warnings scripts/check-i18n-parity.ts",
     "verify:api": "npm --prefix server run build && node scripts/verify-api.mjs",
-    "verify": "npm run typecheck && npm run verify:i18n && npm run verify:api"
+    "verify:browser": "node scripts/verify-browser.mjs",
+    "verify": "npm run typecheck && npm run verify:i18n && npm run verify:api && npm run verify:browser"
   }
 }

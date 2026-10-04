@@ -6,9 +6,36 @@ How to verify RepairFlow. The per-phase checklist is what is run after each phas
 
 ## Phase 01 — Verification record
 
-**Environment:** Windows · Node v22.14.0 · npm 11.19.0 · MongoDB 6.0.5 (local, port 27017)
-**Result:** 79 checks passed · 0 failures — 58 API · 21 module-load/runtime · parity audit clean
-**Reproduce:** `npm run verify` (typecheck → bilingual parity → API suite)
+**Environment:** Windows · Node v22.14.0 · npm 11.19.0 · MongoDB 6.0.5 (local, port 27017) · Chrome (headless)
+**Result:** 124 checks passed · 0 failures — 58 API · 45 browser · 21 module-load/runtime · parity audit clean
+**Reproduce:** `npm run verify` (typecheck → bilingual parity → API suite → browser suite)
+
+### Browser suite (45 checks) — `npm run verify:browser`
+
+Committed as `scripts/verify-browser.mjs`. It seeds its own `repairflow_browser_verify` database, builds the client with the verification API URL baked in, serves the **production bundle** through `vite preview`, and drives real headless Chrome over the DevTools Protocol. No Playwright, no Puppeteer, no dependency to install — it uses the built-in WebSocket client and the Chrome already on the machine.
+
+| Group | Covers | Result |
+| ----- | ------ | ------ |
+| landing page | React mounts, 10 sections render, hero heading, CTA, `lang=ar`/`dir=rtl` default, dark theme default | ✅ 6/6 |
+| 3D hero safeguards | shipped HTML preloads neither the 3D nor Three.js chunk; mobile withholds the ~820 kB chunk and mounts no canvas while the CSS fallback renders; desktop mounts the canvas and fetches the chunk on demand | ✅ 6/6 |
+| theme and language | both toggles exist, theme flips `data-theme` and persists, language flips `dir` to LTR and persists | ✅ 6/6 |
+| protected routes | unauthenticated `/app` redirects to `/login` and shows the form | ✅ 2/2 |
+| sign-in from the form | form mounts, fields fill through the native setter path React observes, submit succeeds, redirect to `/app` | ✅ 3/3 |
+| console shell | sidebar present, personalised greeting and name from the API, role shown, dashboard/inventory/reports entries, later-phase entries locked | ✅ 8/8 |
+| profile screen | email, name pre-filled from the API, phone field, password section, language control, role | ✅ 6/6 |
+| session persistence | token in storage, console reachable after a reload | ✅ 2/2 |
+| access denial | technician signs in, admin-only staff entry correctly hidden | ✅ 3/3 |
+| runtime hygiene | no uncaught console errors, no failed network requests | ✅ 2/2 |
+
+This is the suite that exercises the flow the phase objective names: *a real user can log in through the frontend and reach a protected dashboard*. The check is not an assertion about code — it fills the actual form in a real browser and waits for the path to become `/app`.
+
+### Defect found and fixed by the browser suite
+
+| Severity | Defect | Cause | Fix |
+| -------- | ------ | ----- | --- |
+| **High — performance** | The ~820 kB Three.js bundle was downloaded by **every visitor, including phones**, before any runtime guard could decide whether the 3D scene was wanted | `vite.config.js` pinned Three.js / React Three Fiber into a named `manualChunks` group. Pinning a lazily-imported library into a named chunk makes Rollup treat it as a dependency of the importing chunk, so Vite emitted `<link rel="modulepreload">` for it in `index.html` | Removed the `three` group. Rollup now emits it as a true async chunk (`HeroScene-*.js`) that loads only on demand. Kept as a static assertion on the shipped HTML plus behavioural checks at both viewports |
+
+Without a real browser this would have shipped silently: it is invisible to typechecking, to the API suite, and to the production build.
 
 ### API suite (58 checks) — `npm run verify:api`
 

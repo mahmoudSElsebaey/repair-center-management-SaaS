@@ -316,7 +316,7 @@ List endpoints accept `page`, `limit`, `search`, `sort`, `order` plus feature fi
 ## 10. Performance
 
 - **Route-level code splitting.** Every page is `React.lazy`. The production build caps the entry chunk at ~144 kB (50 kB gzipped); the marketing page, charts, motion and 3D each load only when reached.
-- **Isolated heavy dependencies.** Three.js (~822 kB) sits in its own chunk behind a `lazy()` import, so it is never downloaded by the console.
+- **Isolated heavy dependencies.** Three.js is emitted as a plain async chunk (`HeroScene-*.js`, ~820 kB) rather than a named `manualChunks` group. This matters: pinning a lazily-imported library into a named chunk makes Rollup treat that chunk as a dependency of the importing chunk, so Vite emits `<link rel="modulepreload">` and **every visitor downloads it before any runtime guard runs**. Left automatic, it loads only when the scene is actually wanted. `scripts/verify-browser.mjs` asserts both the shipped HTML and the runtime behaviour, so this cannot regress silently.
 - **3D safeguards.** The scene loads only on desktop-sized viewports, only when motion is welcome, and only once the hero approaches the viewport. WebGL failure or a render error falls back to the CSS composition. The whole scene is three primitives plus one instanced mesh — 48 nodes in a single draw call, no textures, no post-processing.
 - **Reduced device pressure.** `dpr` is capped at 1.75, and the canvas is `pointer-events: none` so it can never intercept scrolling.
 - **Connection reuse.** The Vercel entry caches one Mongoose connection promise across warm invocations; a burst of concurrent requests triggers exactly one `connect()`.
