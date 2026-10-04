@@ -137,6 +137,13 @@ export default {
     payment: {
       recorded: 'سُجّلت دفعة بقيمة {{amount}} على الفاتورة {{number}}',
     },
+    quotation: {
+      created: 'مسودة عرض السعر {{code}} للتذكرة {{ticket}} ({{total}})',
+      updated: 'تحديث عرض السعر {{code}} للتذكرة {{ticket}} ({{total}})',
+      sent: 'أُرسل عرض السعر {{code}} على التذكرة {{ticket}} ({{total}})',
+      approved: 'وُوفق على عرض السعر {{code}} للتذكرة {{ticket}}',
+      rejected: 'رُفض عرض السعر {{code}} للتذكرة {{ticket}}',
+    },
     appointment: {
       created: 'تم حجز موعد للعميل {{customer}}',
       updated: 'تم تغيير موعد العميل {{customer}}',
