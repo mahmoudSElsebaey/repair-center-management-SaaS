@@ -12,6 +12,7 @@ import p_quotations from './parts/ar_quotations.ts';
 import p_invoices from './parts/ar_invoices.ts';
 import p_track from './parts/ar_track.ts';
 import p_appointments from './parts/ar_appointments.ts';
+import p_reports from './parts/ar_reports.ts';
 
 const ar = {
   ...p_core,
@@ -24,6 +25,7 @@ const ar = {
   ...p_invoices,
   ...p_track,
   ...p_appointments,
+  ...p_reports,
 } as const;
 
 export default ar;
