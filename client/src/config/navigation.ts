@@ -79,7 +79,7 @@ export const NAV_GROUPS: NavGroup[] = [
         icon: CalendarDays,
         roles: ['super_admin', 'admin', 'manager', 'receptionist'],
         phase: 10,
-        available: false,
+        available: true,
       },
     ],
   },
