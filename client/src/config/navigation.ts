@@ -118,7 +118,7 @@ export const NAV_GROUPS: NavGroup[] = [
         icon: FileText,
         roles: ['super_admin', 'admin', 'manager', 'receptionist'],
         phase: 8,
-        available: false,
+        available: true,
       },
       {
         key: 'payments',
@@ -127,7 +127,7 @@ export const NAV_GROUPS: NavGroup[] = [
         icon: CreditCard,
         roles: ['super_admin', 'admin', 'manager', 'receptionist'],
         phase: 8,
-        available: false,
+        available: true,
       },
       {
         key: 'reports',
