@@ -78,9 +78,11 @@ Rule: after each phase the application is installed, run, verified, typechecked 
 
 ---
 
-## Phase 10 — Appointments
+## Phase 10 — Appointments ✅
 
-**Ships** appointment calendar and conflict detection.
+**Ships** appointment model, weekly calendar UI, technician conflict detection, status transitions (confirm / complete / cancel / no-show), bilingual copy.
+
+**End state:** reception or managers schedule a customer visit, optionally assign a technician, and the API rejects overlapping active bookings for that technician.
 
 ---
 
@@ -116,7 +118,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 
 ## Current position
 
-**Phases 01–09 are complete.**
+**Phases 01–10 are complete.**
 
 | Phase | Status | Notes |
 | ----- | ------ | ----- |
@@ -129,6 +131,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 | 07 Quotations · customer approval | ✅ Complete | Quotation 1:1 with ticket, lines, send, decide |
 | 08 Invoices · payments | ✅ Complete | Invoice from repair, payments, balance, void |
 | 09 Customer tracking · QR | ✅ Complete | Public `/track/:code`, QR card, rate limit, privacy-limited payload |
-| 10–14 | Not started | — |
+| 10 Appointments | ✅ Complete | Calendar week view, conflict detection, status machine |
+| 11–14 | Not started | — |
 
-**Next phase:** Phase 10 — Appointments.
+**Next phase:** Phase 11 — Reports and analytics.
