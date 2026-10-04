@@ -111,12 +111,27 @@ export async function notify(input: NotifyInput): Promise<void> {
  */
 export async function notifyRoles(
   roles: UserRole[],
-  input: Omit<NotifyInput, 'recipients'> & { exclude?: Array<Types.ObjectId | string> }
+  input: Omit<NotifyInput, 'recipients'> & {
+    exclude?: Array<Types.ObjectId | string>;
+    /** When set, only users in this branch (plus super_admins) are notified. */
+    branch?: Types.ObjectId | string | null;
+  }
 ): Promise<void> {
   try {
     const excluded = new Set((input.exclude ?? []).map(String));
 
-    const users = await User.find({ role: { $in: roles }, isActive: true }).select('_id');
+    const filter: Record<string, unknown> = { role: { $in: roles }, isActive: true };
+    if (input.branch) {
+      // Super admins are org-wide and still receive branch-scoped operational alerts.
+      filter.$or = [
+        { branch: input.branch },
+        { role: 'super_admin' },
+        { branch: { $exists: false } },
+        { branch: null },
+      ];
+    }
+
+    const users = await User.find(filter).select('_id');
     const recipients = users
       .map((user) => user._id)
       .filter((id) => !excluded.has(id.toString()));
