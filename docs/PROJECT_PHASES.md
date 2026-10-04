@@ -102,15 +102,19 @@ Rule: after each phase the application is installed, run, verified, typechecked 
 
 ---
 
-## Phase 13 — Polish and advanced UX
+## Phase 13 — Polish and advanced UX ✅
 
-**Ships** accessibility, responsive refinement, performance.
+**Ships** accessibility foundation, responsive refinement, performance improvements, shared polish primitives.
+
+**End state:** keyboard and screen-reader users can navigate the console; mobile users get drawer focus management and card-friendly tables; initial JS payload is smaller via lazy routes; search does not spam the API; motion respects system preference.
 
 ---
 
-## Phase 14 — Production hardening
+## Phase 14 — Production hardening ✅
 
 **Ships** security review, production config, final deployment validation.
+
+**End state:** production env is validated at boot; security headers and rate limits are on; errors never leak internals; health/ready probes work for orchestrators; indexes are ensured; deploy can be signed off against a written checklist.
 
 ---
 
@@ -122,7 +126,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 
 ## Current position
 
-**Phases 01–12 are complete.**
+**All planned phases 01–14 are complete.**
 
 | Phase | Status | Notes |
 | ----- | ------ | ----- |
@@ -138,6 +142,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 | 10 Appointments | ✅ Complete | Calendar week view, conflict detection, status machine |
 | 11 Reports · analytics | ✅ Complete | `/reports/analytics`, date range, KPIs, Recharts, i18n EN/AR |
 | 12 Notifications · activity | ✅ Complete | Expanded events, branch-scoped notify, activity search/dates, type filters |
-| 13–14 | Not started | — |
+| 13 Polish · advanced UX | ✅ Complete | a11y, responsive tables, lazy routes, debounce, reduced-motion |
+| **14 Production hardening** | **✅ Complete** | env validation, Helmet/CORS/rate limits, health/ready, indexes, security + deploy checklists |
 
-**Next phase:** Phase 13 — Polish and advanced UX.
+**Roadmap status:** Phase plan finished. Further work is iterative product improvements, not gated phases.
