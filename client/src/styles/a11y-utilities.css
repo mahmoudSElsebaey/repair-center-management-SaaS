@@ -1,0 +1,65 @@
+/**
+ * Phase 13 — Accessibility & motion utilities.
+ * Import once from the global stylesheet (e.g. index.css / globals.css).
+ */
+
+/* Screen-reader only — already common in Tailwind via `sr-only`; keep as fallback */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:focus,
+.sr-only-focusable:active,
+.focus\:not-sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Honour system reduced-motion preference globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .motion-reduce\:animate-none {
+    animation: none !important;
+  }
+}
+
+/* Minimum touch targets for icon-only controls on coarse pointers */
+@media (pointer: coarse) {
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* High-contrast focus for keyboard users (complements Tailwind ring utilities) */
+:focus-visible {
+  outline: 2px solid hsl(var(--ring, 220 90% 56%));
+  outline-offset: 2px;
+}
+
+/* Skip-link positioning already handled in component; ensure stacking */
+.skip-link:focus {
+  z-index: 9999;
+}
