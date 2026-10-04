@@ -8,6 +8,7 @@ import p_g0 from './parts/en_g0.ts';
 import p_g1 from './parts/en_g1.ts';
 import p_g2 from './parts/en_g2.ts';
 import p_g3 from './parts/en_g3.ts';
+import p_quotations from './parts/en_quotations.ts';
 
 const en = {
   ...p_core,
@@ -16,6 +17,7 @@ const en = {
   ...p_g1,
   ...p_g2,
   ...p_g3,
+  ...p_quotations,
 } as const;
 
 export default en;

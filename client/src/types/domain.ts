@@ -1,4 +1,8 @@
-/** Roles are mirrored exactly from the API (`server/src/types/domain.ts`). */
+/**
+ * Client-side domain vocabulary — mirrored from server/src/types/domain.ts.
+ * Any change here must land in the same commit as the server file.
+ */
+
 export const USER_ROLES = [
   'super_admin',
   'admin',
@@ -7,13 +11,7 @@ export const USER_ROLES = [
   'receptionist',
   'inventory_manager',
 ] as const;
-
 export type UserRole = (typeof USER_ROLES)[number];
-
-export const ADMIN_ROLES: UserRole[] = ['super_admin', 'admin', 'manager'];
-
-/** Roles allowed to reach the operations console at all. */
-export const STAFF_ROLES: UserRole[] = [...USER_ROLES];
 
 export const DEVICE_TYPES = [
   'smartphone',
@@ -39,16 +37,6 @@ export const REPAIR_STATUSES = [
   'cancelled',
 ] as const;
 export type RepairStatus = (typeof REPAIR_STATUSES)[number];
-
-export const REPAIR_HAPPY_PATH: RepairStatus[] = [
-  'received',
-  'diagnosing',
-  'waiting_customer',
-  'approved',
-  'in_repair',
-  'ready',
-  'delivered',
-];
 
 export const REPAIR_PRIORITIES = ['low', 'normal', 'high', 'urgent'] as const;
 export type RepairPriority = (typeof REPAIR_PRIORITIES)[number];
@@ -77,3 +65,9 @@ export type InventoryCategory = (typeof INVENTORY_CATEGORIES)[number];
 
 export type Theme = 'light' | 'dark';
 export type Locale = 'ar' | 'en';
+
+export const QUOTATION_STATUSES = ['draft', 'sent', 'approved', 'rejected'] as const;
+export type QuotationStatus = (typeof QUOTATION_STATUSES)[number];
+
+export const QUOTATION_LINE_TYPES = ['labor', 'part', 'other'] as const;
+export type QuotationLineType = (typeof QUOTATION_LINE_TYPES)[number];
