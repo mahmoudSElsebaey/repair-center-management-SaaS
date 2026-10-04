@@ -22,7 +22,7 @@ Every phase of the build is a working vertical slice: **UI → API → controlle
 
 ## Status
 
-Phase-based build, **Phases 01–06 complete**. The application authenticates against MongoDB, ships a bilingual marketing site, live dashboard, customers, devices, repair tickets, staff/technician management, and inventory with stock movements.
+Phase-based build, **Phases 01–07 complete**. The application authenticates against MongoDB, ships a bilingual marketing site, live dashboard, customers, devices, repair tickets, staff/technician management, inventory with stock movements, and quotations with customer approval.
 
 | Phase | Scope | Status |
 | ----- | ----- | ------ |
@@ -32,7 +32,7 @@ Phase-based build, **Phases 01–06 complete**. The application authenticates ag
 | 04 | Repair tickets and the status workflow | ✅ Complete |
 | 05 | Technicians, staff and permissions | ✅ Complete |
 | 06 | Inventory and spare parts | ✅ Complete |
-| 07 | Quotations and customer approval | Planned |
+| 07 | Quotations and customer approval | ✅ Complete |
 | 08 | Invoices and payments | Planned |
 | 09 | Public QR tracking | Planned |
 | 10 | Appointments | Planned |

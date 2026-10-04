@@ -54,9 +54,11 @@ Rule: after each phase the application is installed, run, verified, typechecked 
 
 ---
 
-## Phase 07 — Quotations and customer approval
+## Phase 07 — Quotations and customer approval ✅
 
-**Ships** quotation builder and approval state machine.
+**Ships** quotation builder (line items), send-for-approval, customer decision, ticket status linkage.
+
+**End state:** a quotation with labour/parts lines can be drafted on a ticket, sent to the customer, and approved or rejected — moving the ticket through `waiting_customer` → `approved` or `cancelled`.
 
 ---
 
@@ -110,7 +112,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 
 ## Current position
 
-**Phases 01–06 are complete.**
+**Phases 01–07 are complete.**
 
 | Phase | Status | Notes |
 | ----- | ------ | ----- |
@@ -120,6 +122,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 | 04 Repair tickets | ✅ Complete | Full workflow: create, list, detail, status transitions, timeline |
 | 05 Technicians · staff | ✅ Complete | Staff CRUD, role assignment, technician workload |
 | 06 Inventory | ✅ Complete | Items, ledger movements, low-stock, Inventory page |
-| 07–14 | Not started | — |
+| 07 Quotations · customer approval | ✅ Complete | Quotation 1:1 with ticket, lines, send, decide |
+| 08–14 | Not started | — |
 
-**Next phase:** Phase 07 — Quotations and customer approval.
+**Next phase:** Phase 08 — Invoices and payments.
