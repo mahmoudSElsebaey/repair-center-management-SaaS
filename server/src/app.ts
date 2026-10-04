@@ -9,6 +9,8 @@ import authRoutes from './routes/authRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import activityRoutes from './routes/activityRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import customerRoutes from './routes/customerRoutes.js';
+import deviceRoutes from './routes/deviceRoutes.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { apiLimiter } from './middleware/rateLimit.js';
 
@@ -78,9 +80,11 @@ app.use(`${API_PREFIX}/auth`, authRoutes);
 app.use(`${API_PREFIX}/reports`, reportRoutes);
 app.use(`${API_PREFIX}/activity`, activityRoutes);
 app.use(`${API_PREFIX}/notifications`, notificationRoutes);
+app.use(`${API_PREFIX}/customers`, customerRoutes);
+app.use(`${API_PREFIX}/devices`, deviceRoutes);
 
-// Later phases mount: /customers /devices /repairs /technicians /inventory
-// /invoices /payments /appointments /track
+// Later phases mount: /repairs /technicians /inventory /invoices /payments
+// /appointments /track
 
 app.use(notFoundHandler);
 app.use(errorHandler);

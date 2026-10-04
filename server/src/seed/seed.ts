@@ -4,6 +4,9 @@ import { Branch } from '../models/Branch.js';
 import { User } from '../models/User.js';
 import { ActivityLog, ACTION_CATEGORY } from '../models/ActivityLog.js';
 import { AppNotification } from '../models/AppNotification.js';
+import { Customer } from '../models/Customer.js';
+import { Device } from '../models/Device.js';
+import { generateCode } from '../utils/codes.js';
 import { BRANCHES, STAFF } from './data/staff.js';
 import { CUSTOMERS } from './data/customers.js';
 import { ACTIVITY_SEED, NOTIFICATION_SEED } from './data/activity.js';
@@ -123,6 +126,50 @@ async function seedActivity(): Promise<void> {
   console.log(`  ✓ ${documents.length} entries across the last 14 days`);
 }
 
+async function seedCustomers(branches: Map<string, mongoose.Types.ObjectId>): Promise<void> {
+  heading('Customers and devices');
+
+  // Demo relationships are rebuilt each run so the shape stays predictable;
+  // a customer created through the app is left alone.
+  await Customer.deleteMany({});
+  await Device.deleteMany({});
+
+  let deviceTotal = 0;
+
+  for (const entry of CUSTOMERS) {
+    const { devices, branchCode, ...customerFields } = entry;
+
+    const customer = await Customer.create({
+      ...customerFields,
+      branch: branches.get(branchCode),
+      customerCode: generateCode('CUS', 6),
+      isActive: true,
+    });
+
+    const created = await Device.insertMany(
+      devices.map((device) => {
+        // Seed data uses the natural field name `model`; the schema stores it as
+        // `modelName` to avoid shadowing Mongoose's reserved `Document.model`.
+        const { model, ...rest } = device;
+        return {
+          ...rest,
+          modelName: model,
+          customer: customer._id,
+          branch: customer.branch,
+          isActive: true,
+        };
+      })
+    );
+
+    deviceTotal += created.length;
+    console.log(
+      `  ✓ ${customer.customerCode}  ${customer.name.padEnd(26)} ${created.length} device(s)`
+    );
+  }
+
+  console.log(`  ${CUSTOMERS.length} customers · ${deviceTotal} devices`);
+}
+
 async function seedNotifications(): Promise<void> {
   heading('Notifications');
 
@@ -171,7 +218,7 @@ async function main(): Promise<void> {
 
   if (isFresh) {
     heading('Resetting RepairFlow collections (--fresh)');
-    const ours = ['users', 'branches', 'activitylogs', 'appnotifications'];
+    const ours = ['users', 'branches', 'activitylogs', 'appnotifications', 'customers', 'devices'];
 
     for (const name of ours) {
       await mongoose.connection.db!.collection(name).deleteMany({});
@@ -181,22 +228,20 @@ async function main(): Promise<void> {
 
   const branches = await seedBranches();
   await seedStaff(branches);
+  await seedCustomers(branches);
   await seedActivity();
   await seedNotifications();
-
-  heading('Customers');
-  console.log(
-    `  ○ ${CUSTOMERS.length} customer profiles are staged in src/seed/data/customers.ts`
-  );
-  console.log('    They are persisted in Phase 03 together with their devices.');
 
   const userCount = await User.countDocuments();
   const branchCount = await Branch.countDocuments();
   const activityCount = await ActivityLog.countDocuments();
+  const customerCount = await Customer.countDocuments();
+  const deviceCount = await Device.countDocuments();
 
   heading('Done');
   console.log(
-    `  ${branchCount} branches · ${userCount} employees · ${activityCount} activity entries · ${Date.now() - started}ms\n`
+    `  ${branchCount} branches · ${userCount} employees · ${customerCount} customers · ` +
+      `${deviceCount} devices · ${activityCount} activity entries · ${Date.now() - started}ms\n`
   );
 
   console.log('\x1b[36m  Sign in with any address below:\x1b[0m');

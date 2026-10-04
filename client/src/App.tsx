@@ -25,6 +25,10 @@ const DashboardPage = lazy(() => import('@/pages/app/DashboardPage'));
 const ProfilePage = lazy(() => import('@/pages/app/ProfilePage'));
 const NotificationsPage = lazy(() => import('@/pages/app/NotificationsPage'));
 const ActivityLogPage = lazy(() => import('@/pages/app/ActivityLogPage'));
+const CustomersPage = lazy(() => import('@/pages/app/CustomersPage'));
+const CustomerDetailPage = lazy(() => import('@/pages/app/CustomerDetailPage'));
+const DevicesPage = lazy(() => import('@/pages/app/DevicesPage'));
+const DeviceDetailPage = lazy(() => import('@/pages/app/DeviceDetailPage'));
 
 function RouteFallback() {
   return (
@@ -76,6 +80,12 @@ export default function App() {
 
               {/* Every staff role: the API scopes notifications to the recipient. */}
               <Route path="notifications" element={<NotificationsPage />} />
+
+              {/* Customers and devices: branch-scoped inside the API. */}
+              <Route path="customers" element={<CustomersPage />} />
+              <Route path="customers/:id" element={<CustomerDetailPage />} />
+              <Route path="devices" element={<DevicesPage />} />
+              <Route path="devices/:id" element={<DeviceDetailPage />} />
 
               {/* Management roles only — matches the server-side guard. */}
               <Route

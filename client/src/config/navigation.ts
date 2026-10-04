@@ -74,7 +74,7 @@ export const NAV_GROUPS: NavGroup[] = [
         path: '/app/customers',
         icon: Users,
         phase: 3,
-        available: false,
+        available: true,
       },
       {
         key: 'devices',
@@ -82,7 +82,7 @@ export const NAV_GROUPS: NavGroup[] = [
         path: '/app/devices',
         icon: Smartphone,
         phase: 3,
-        available: false,
+        available: true,
       },
       {
         key: 'appointments',

@@ -468,6 +468,8 @@ async function assertPreviewIsOurs(child, log, port) {
 
 let consoleErrors = [];
 let failedRequests = [];
+/** 403 responses. Expected for role-guarded calls; a spike would be suspicious. */
+const forbiddenRequests = [];
 /** URLs Chrome actually fetched — used to prove lazy chunks are/aren't loaded. */
 const requestedUrls = [];
 
@@ -824,6 +826,29 @@ async function runChecks(session) {
       check('technician signs in successfully', true, 'reached /app');
       check('technician does not see the admin-only staff entry', !hasAdminNav,
         hasAdminNav ? 'admin nav visible — permission leak' : 'correctly hidden');
+
+      /**
+       * The dashboard is management-only. A technician landing on it must get the
+       * access-denied panel, which proves the guard is enforced end to end rather
+       * than merely hidden in the navigation.
+       */
+      await sleep(2500);
+      const dashState = await evaluate(
+        session,
+        `(() => {
+          const text = document.body.innerText;
+          return {
+            denied: /do not have access|لا تملك صلاحية الوصول/i.test(text),
+            unauthorized: /Access denied|تم رفض الوصول/i.test(text),
+          };
+        })()`
+      );
+
+      check('technician sees access-denied on the dashboard',
+        dashState.denied || dashState.unauthorized,
+        dashState.denied || dashState.unauthorized
+          ? 'guard enforced'
+          : 'dashboard was not denied — permission leak');
     } catch (error) {
       check('technician signs in successfully', false, error.message);
     }
@@ -832,17 +857,46 @@ async function runChecks(session) {
   /* ---------------------------------------------------------------- console hygiene */
   group('runtime hygiene');
 
-  const fatal = consoleErrors.filter(
-    (e) => !/favicon|Download the React DevTools|ResizeObserver loop/i.test(e)
+  /**
+   * Browsers log a console error for any 4xx response, including ones the
+   * application deliberately handles. The meaningful question is not "did any
+   * request fail" but "did anything reach the console that the code does not
+   * expect". Role-guarded calls are classified explicitly.
+   */
+  const expectedForbidden = forbiddenRequests.filter((url) =>
+    /\/reports\/|\/activity/.test(url)
   );
-  check('no uncaught console errors', fatal.length === 0,
-    fatal.length === 0 ? 'clean' : fatal.slice(0, 3).join(' | '));
 
-  const fatalRequests = failedRequests.filter(
-    (r) => !/favicon|\.map$/.test(r)
+  const fatal = consoleErrors.filter(
+    (entry) =>
+      !/favicon|Download the React DevTools|ResizeObserver loop/i.test(entry) &&
+      // Chrome phrases these as "the server responded with a status of 403
+      // (Forbidden)" or simply "Forbidden" depending on the channel.
+      !(/(^|\D)403(\D|$)|Forbidden/i.test(entry) && expectedForbidden.length > 0)
   );
+
+  check('no unhandled console errors', fatal.length === 0,
+    fatal.length === 0
+      ? `clean${expectedForbidden.length ? ` (${expectedForbidden.length} expected 403 handled)` : ''}`
+      : fatal.slice(0, 3).join(' | '));
+
+  // If a role-guarded panel was opened, a 403 must have been recorded —
+  // otherwise the classification above is untested and could mask a real error.
+  check('role-guarded panels produced a handled 403',
+    expectedForbidden.length > 0,
+    expectedForbidden.length > 0
+      ? `${expectedForbidden.length} guarded call(s) denied as designed`
+      : 'no guarded call observed — technician reached no restricted panel');
+
+  const fatalRequests = failedRequests.filter((entry) => !/favicon|\.map$/.test(entry));
   check('no failed network requests', fatalRequests.length === 0,
     fatalRequests.length === 0 ? 'clean' : fatalRequests.slice(0, 3).join(' | '));
+
+  check('no unexpected 403 responses',
+    forbiddenRequests.every((url) => /\/reports\/|\/activity/.test(url)),
+    forbiddenRequests.length === 0
+      ? 'none'
+      : `${forbiddenRequests.length} total, all on role-guarded endpoints`);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1011,10 +1065,33 @@ async function main() {
 
     session.on('Network.responseReceived', (params) => {
       const status = params?.response?.status ?? 0;
-      if (status >= 500) failedRequests.push(`${status} ${params.response.url}`);
+      if (status >= 500) {
+        failedRequests.push(`${status} ${params.response.url}`);
+        return;
+      }
+
+      /**
+       * 403 is recorded but reported separately, because a permission denial the
+       * application handles deliberately (a technician opening a management-only
+       * panel) is not the same as a broken request. What matters is that no
+       * unhandled error reaches the console.
+       */
+      if (status === 403) {
+        forbiddenRequests.push(params.response.url);
+      }
     });
 
     await runChecks(session);
+
+    // Diagnostic: what did the page actually ask for, and what came back?
+    if (process.env.RF_DEBUG_NETWORK === '1') {
+      const apiCalls = requestedUrls.filter((url) => url.includes('/api/v1/'));
+      console.error('\n  [debug] API calls made by the page:');
+      apiCalls.forEach((url) => console.error(`    ${url.replace(/^https?:\/\/[^/]+/, '')}`));
+      console.error(`  [debug] 403 responses: ${forbiddenRequests.length}`);
+      forbiddenRequests.forEach((url) => console.error(`    ${url.replace(/^https?:\/\/[^/]+/, '')}`));
+      console.error('');
+    }
 
     exitCode = report();
   } finally {
