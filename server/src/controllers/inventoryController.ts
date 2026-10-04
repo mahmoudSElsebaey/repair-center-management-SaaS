@@ -83,7 +83,9 @@ export const listInventory = asyncHandler(async (req: AuthRequest, res: Response
   else if (!query.isActive) filter.isActive = true;
 
   if (query.lowStock === 'true') {
-    filter.$expr = { $and: [{ $gt: ['$quantityOnHand', 0] }, { $lte: ['$quantityOnHand', '$minQuantity'] }] };
+    filter.$expr = {
+      $and: [{ $gt: ['$quantityOnHand', 0] }, { $lte: ['$quantityOnHand', '$minQuantity'] }],
+    };
   }
 
   if (query.search) {
@@ -164,7 +166,6 @@ export const createInventoryItem = asyncHandler(async (req: AuthRequest, res: Re
     isActive: true,
   });
 
-  // Opening balance is itself a ledger row so the shelf never starts without history.
   if (initialQty > 0) {
     await InventoryTransaction.create({
       item: item._id,
@@ -203,8 +204,6 @@ export const updateInventoryItem = asyncHandler(async (req: AuthRequest, res: Re
   const updates = updateInventoryItemSchema.parse(req.body);
   const scope = resolveScope(req.user);
 
-  // quantityOnHand is deliberately omitted from the update schema — stock
-  // changes only through the transaction endpoint.
   const item = await InventoryItem.findOneAndUpdate(
     { _id: id, ...scope },
     { $set: updates },
@@ -307,15 +306,12 @@ export const recordTransaction = asyncHandler(async (req: AuthRequest, res: Resp
     performedByName: user.name,
   });
 
-  const action =
-    input.type === 'usage' ? 'inventory.consumed' : 'inventory.updated';
+  const action = input.type === 'usage' ? 'inventory.consumed' : 'inventory.updated';
 
   void recordActivity({
     action,
     messageKey:
-      input.type === 'usage'
-        ? 'activity.inventory.consumed'
-        : 'activity.inventory.updated',
+      input.type === 'usage' ? 'activity.inventory.consumed' : 'activity.inventory.updated',
     messageParams: {
       name: item.name,
       sku: item.sku,
@@ -329,15 +325,14 @@ export const recordTransaction = asyncHandler(async (req: AuthRequest, res: Resp
     entityLabel: item.name,
   });
 
-  // Notify inventory managers when stock drops to or below the minimum.
   if (nextQty > 0 && nextQty <= item.minQuantity) {
     void notifyRoles(['inventory_manager', 'manager', 'admin'], {
-      type: 'system',
+      type: 'low_stock',
       severity: 'warning',
       titleKey: 'notifications.lowStock.title',
       bodyKey: 'notifications.lowStock.body',
       params: { name: item.name, sku: item.sku, quantity: nextQty, min: item.minQuantity },
-      link: `/app/inventory`,
+      link: '/app/inventory',
       entityType: 'InventoryItem',
       entityId: item._id,
     });
