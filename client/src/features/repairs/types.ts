@@ -1,6 +1,8 @@
 import type { RepairPriority, RepairStatus } from '@/types/domain';
 import type { DeviceCondition } from '@/features/customers/types';
 
+export type { RepairPriority, RepairStatus };
+
 /**
  * Repair-ticket vocabulary, mirrored from the server.
  *
