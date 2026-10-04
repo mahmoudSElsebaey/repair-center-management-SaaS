@@ -80,3 +80,21 @@ export const ADMIN_ROLES: UserRole[] = ['super_admin', 'admin', 'manager'];
 
 export const INVOICE_STATUSES = ['draft', 'issued', 'partially_paid', 'paid', 'void'] as const;
 export type InvoiceStatus = (typeof INVOICE_STATUSES)[number];
+
+export const APPOINTMENT_STATUSES = [
+  'scheduled',
+  'confirmed',
+  'completed',
+  'cancelled',
+  'no_show',
+] as const;
+export type AppointmentStatus = (typeof APPOINTMENT_STATUSES)[number];
+
+export const APPOINTMENT_TYPES = [
+  'walk_in',
+  'drop_off',
+  'pickup',
+  'consultation',
+  'other',
+] as const;
+export type AppointmentType = (typeof APPOINTMENT_TYPES)[number];
