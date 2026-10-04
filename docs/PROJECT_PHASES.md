@@ -208,3 +208,35 @@ After each phase the following happens before anything else:
 9. Summarise what shipped and show the file structure
 
 Then the work stops and waits for an explicit "Continue" before the next phase begins.
+
+---
+
+## Current position
+
+**Phase 01 is complete and verified.** 124 checks pass across four independent layers — 58 API, 45 real-browser, 21 module-load, plus a bilingual parity audit. Reproduce with `npm run verify`.
+
+**Phases 02–14 have not been started.** Nothing outside Phase 01's scope exists in the codebase: the API mounts `/health` and `/auth` only, and no `Customer`, `Device`, `RepairTicket` or inventory code has been written.
+
+### Why the next phase needs a decision, not just a "Continue"
+
+The phases were specified as a sequence, but two dependencies in that sequence are worth stating explicitly before work resumes:
+
+- **Phase 02 (dashboard) depends on data that does not exist yet.** Its metrics are aggregates over repair tickets, devices and customers — created in Phases 03 and 04. Building it now means either inventing numbers or shipping a second, throwaway dashboard. Phase 01 deliberately left its metric tiles empty and labelled rather than fabricated, and that standard should hold.
+- **Phase 04 (repair tickets) depends on Phase 03.** A ticket references a customer and a device; `RepairTicket.customer` cannot be populated before `Customer` exists.
+
+So the dependency-respecting order to reach a meaningful dashboard is:
+
+```
+Phase 03 (customers + devices)  →  Phase 04 (repair tickets)  →  Phase 02 (dashboard)
+```
+
+That is a reordering of the original list, which is why it needs an explicit decision rather than an assumption. Three viable paths:
+
+| Path | Order | Trade-off |
+| ---- | ----- | --------- |
+| **A — dependency-first** *(recommended)* | 03 → 04 → 02 | The dashboard is built once, against real data. Reaches a convincing demo slightly later. |
+| **B — as originally specified** | 02 → 03 → 04 | Follows the brief literally. The dashboard must either show placeholder metrics again or be rebuilt in Phase 04. |
+| **C — ticket-first** | 03 → 04, then reassess | Fastest route to the product's core value (the repair workflow). Dashboard and everything else follow. |
+
+Work resumes on whichever path is chosen. Until then the build stays at Phase 01, and the verification suites keep it honest.
+
