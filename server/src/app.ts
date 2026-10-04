@@ -14,6 +14,7 @@ import deviceRoutes from './routes/deviceRoutes.js';
 import repairRoutes from './routes/repairRoutes.js';
 import staffRoutes from './routes/staffRoutes.js';
 import inventoryRoutes from './routes/inventoryRoutes.js';
+import invoiceRoutes from './routes/invoiceRoutes.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { apiLimiter } from './middleware/rateLimit.js';
 
@@ -88,8 +89,9 @@ app.use(`${API_PREFIX}/devices`, deviceRoutes);
 app.use(`${API_PREFIX}/repairs`, repairRoutes);
 app.use(`${API_PREFIX}/staff`, staffRoutes);
 app.use(`${API_PREFIX}/inventory`, inventoryRoutes);
+app.use(`${API_PREFIX}/invoices`, invoiceRoutes);
 
-// Later phases mount: /invoices /payments /appointments /track
+// Later phases mount: /appointments /track
 
 app.use(notFoundHandler);
 app.use(errorHandler);
