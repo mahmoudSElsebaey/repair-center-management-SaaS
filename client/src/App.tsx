@@ -31,6 +31,8 @@ const DevicesPage = lazy(() => import('@/pages/app/DevicesPage'));
 const DeviceDetailPage = lazy(() => import('@/pages/app/DeviceDetailPage'));
 const RepairsPage = lazy(() => import('@/pages/app/RepairsPage'));
 const RepairDetailPage = lazy(() => import('@/pages/app/RepairDetailPage'));
+const StaffPage = lazy(() => import('@/pages/app/StaffPage'));
+const TechniciansPage = lazy(() => import('@/pages/app/TechniciansPage'));
 
 function RouteFallback() {
   return (
@@ -93,13 +95,22 @@ export default function App() {
               <Route path="repairs" element={<RepairsPage />} />
               <Route path="repairs/:id" element={<RepairDetailPage />} />
 
-              {/* Management roles only — matches the server-side guard. */}
+              {/* Staff & technicians — management roles; API enforces the same. */}
               <Route
                 element={
                   <ProtectedRoute roles={['super_admin', 'admin', 'manager']} />
                 }
               >
+                <Route path="technicians" element={<TechniciansPage />} />
                 <Route path="activity" element={<ActivityLogPage />} />
+              </Route>
+
+              <Route
+                element={
+                  <ProtectedRoute roles={['super_admin', 'admin']} />
+                }
+              >
+                <Route path="staff" element={<StaffPage />} />
               </Route>
             </Route>
           </Route>

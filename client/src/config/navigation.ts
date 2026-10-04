@@ -115,7 +115,7 @@ export const NAV_GROUPS: NavGroup[] = [
         icon: HardHat,
         roles: ['super_admin', 'admin', 'manager'],
         phase: 5,
-        available: false,
+        available: true,
       },
     ],
   },
@@ -180,7 +180,7 @@ export const NAV_GROUPS: NavGroup[] = [
         icon: Users,
         roles: ['super_admin', 'admin'],
         phase: 5,
-        available: false,
+        available: true,
       },
       {
         key: 'settings',
