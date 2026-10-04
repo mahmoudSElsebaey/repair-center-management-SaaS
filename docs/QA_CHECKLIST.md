@@ -29,6 +29,20 @@ Committed as `scripts/verify-browser.mjs`. It seeds its own `repairflow_browser_
 
 This is the suite that exercises the flow the phase objective names: *a real user can log in through the frontend and reach a protected dashboard*. The check is not an assertion about code — it fills the actual form in a real browser and waits for the path to become `/app`.
 
+### Build freshness guard
+
+Both suites refuse to run against a stale build. `scripts/lib/build-freshness.mjs` compares the newest source timestamp against the oldest emitted artifact and exits with code `2` when the source is newer:
+
+```
+  Stale build detected — refusing to verify.
+    • server: source is newer than the build by 2855s — rebuild before verifying,
+      otherwise this suite tests the previous revision
+```
+
+This matters more than it looks. Both suites execute compiled output — `server/dist` and `client/dist` — so without the guard a forgotten rebuild produces a **green result describing code that no longer exists**. It is the most dangerous kind of passing check, and the failure mode would appear exactly during the phases where verification matters most.
+
+The guard fires for `verify-api` and for `verify-browser --skip-build`. The default `verify-browser` builds the client itself, so it is fresh by construction; `verify-api` is wrapped by `npm run verify:api`, which builds the server first.
+
 ### Defect found and fixed by the browser suite
 
 | Severity | Defect | Cause | Fix |

@@ -217,6 +217,8 @@ node scripts/verify-browser.mjs --skip-build
 
 Use `--skip-build` if your environment denies esbuild's temp-file delete to a grandchild process; build once in your own shell with `VITE_API_URL` set, then verify.
 
+Both suites run against **compiled output**, so both refuse to run when the build is older than the source (`scripts/lib/build-freshness.mjs`, exit code 2). This prevents the worst kind of green check — one that describes a revision that no longer exists.
+
 Three behaviours the suites deliberately pin, because they are easy to break by accident: a rotated-away refresh token must be rejected (`REFRESH_REVOKED`); an already-issued access token legitimately survives logout until it expires; and the 3D chunk must never be module-preloaded into the shipped HTML. All are explained in [ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 Bilingual parity is enforced this way because nothing in the type system keeps `en.ts` and `ar.ts` in lockstep. Every phase that adds copy runs it.

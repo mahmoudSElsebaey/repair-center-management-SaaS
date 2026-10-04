@@ -22,6 +22,7 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { assertFreshBuild } from './lib/build-freshness.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(HERE, '..');
@@ -433,6 +434,16 @@ async function main() {
   console.log('╰───────────────────────────────────────────────╯\x1b[0m');
   console.log(`  database : ${MONGO_URI}`);
   console.log(`  base url : ${BASE}\n`);
+
+  // Refuse to verify a stale build: a green result must never describe old code.
+  assertFreshBuild([
+    {
+      name: 'server',
+      sourceDir: path.join(SERVER_DIR, 'src'),
+      outputDir: path.join(SERVER_DIR, 'dist'),
+      extensions: ['.ts'],
+    },
+  ]);
 
   // ---- seed an isolated database -----------------------------------------
   await seedVerificationDatabase();

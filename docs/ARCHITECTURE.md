@@ -400,3 +400,15 @@ npm run seed:dist  # tsc && node dist/seed/seed.js
 
 `tsc` does not spawn helper processes, so this path works even where the standard development tooling cannot. It trades hot reload for reliability.
 
+### 13.4 Stale temp files break the build later
+
+The failure in §13.2 leaves a ~1.5 MB `esbuild-<hash>` file behind each time. Once a few accumulate, **subsequent builds fail consistently** rather than intermittently. Clearing them restores the build:
+
+```powershell
+Get-ChildItem 'F:\CV\.rf-cache\esbuild' -Filter 'esbuild-*' | Remove-Item -Force
+```
+
+The committed verification suites do this automatically before building. If a build suddenly starts failing after previously succeeding, clear the temp directory first — that is almost always the cause.
+
+Both verification suites also refuse to run against a stale build (see `scripts/lib/build-freshness.mjs`), because they execute compiled output and would otherwise report a pass for code that no longer exists.
+

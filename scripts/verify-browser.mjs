@@ -37,6 +37,7 @@ import { existsSync, mkdirSync, rmSync } from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { assertFreshBuild } from './lib/build-freshness.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(HERE, '..');
@@ -818,6 +819,16 @@ async function main() {
   let exitCode = 1;
 
   try {
+    // ---- refuse to verify a stale server build --------------------------
+    assertFreshBuild([
+      {
+        name: 'server',
+        sourceDir: path.join(SERVER_DIR, 'src'),
+        outputDir: path.join(SERVER_DIR, 'dist'),
+        extensions: ['.ts'],
+      },
+    ]);
+
     // ---- data -----------------------------------------------------------
     await seedDatabase();
 
@@ -832,6 +843,19 @@ async function main() {
         );
         process.exit(2);
       }
+
+      // With --skip-build the client bundle is taken as given, so it must be
+      // checked for staleness — otherwise the browser suite would happily
+      // verify a revision that no longer exists in the source.
+      assertFreshBuild([
+        {
+          name: 'client',
+          sourceDir: path.join(CLIENT_DIR, 'src'),
+          outputDir: path.join(CLIENT_DIR, 'dist', 'assets'),
+          extensions: ['.ts', '.tsx', '.css'],
+        },
+      ]);
+
       console.log('  using the existing client/dist build (--skip-build)');
     } else {
       await buildClient();
