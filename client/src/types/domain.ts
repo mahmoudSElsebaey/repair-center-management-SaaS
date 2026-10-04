@@ -66,8 +66,14 @@ export type InventoryCategory = (typeof INVENTORY_CATEGORIES)[number];
 export type Theme = 'light' | 'dark';
 export type Locale = 'ar' | 'en';
 
+export const PAYMENT_METHODS = ['cash', 'card', 'transfer', 'wallet'] as const;
+export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+
 export const QUOTATION_STATUSES = ['draft', 'sent', 'approved', 'rejected'] as const;
 export type QuotationStatus = (typeof QUOTATION_STATUSES)[number];
 
 export const QUOTATION_LINE_TYPES = ['labor', 'part', 'other'] as const;
 export type QuotationLineType = (typeof QUOTATION_LINE_TYPES)[number];
+
+export const INVOICE_STATUSES = ['draft', 'issued', 'partially_paid', 'paid', 'void'] as const;
+export type InvoiceStatus = (typeof INVOICE_STATUSES)[number];
