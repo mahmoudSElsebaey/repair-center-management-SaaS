@@ -27,10 +27,6 @@ export const DEVICE_TYPES = [
 ] as const;
 export type DeviceType = (typeof DEVICE_TYPES)[number];
 
-/**
- * The repair workflow. Phase 04 turns this into a validated state machine;
- * declaring the order here lets the UI render an honest timeline today.
- */
 export const REPAIR_STATUSES = [
   'received',
   'diagnosing',
@@ -44,7 +40,6 @@ export const REPAIR_STATUSES = [
 ] as const;
 export type RepairStatus = (typeof REPAIR_STATUSES)[number];
 
-/** Happy path shown to customers; branches and cancellations are exceptions. */
 export const REPAIR_HAPPY_PATH: RepairStatus[] = [
   'received',
   'diagnosing',
@@ -57,6 +52,28 @@ export const REPAIR_HAPPY_PATH: RepairStatus[] = [
 
 export const REPAIR_PRIORITIES = ['low', 'normal', 'high', 'urgent'] as const;
 export type RepairPriority = (typeof REPAIR_PRIORITIES)[number];
+
+export const INVENTORY_TRANSACTION_TYPES = [
+  'purchase',
+  'usage',
+  'return',
+  'adjustment',
+  'transfer',
+] as const;
+export type InventoryTransactionType = (typeof INVENTORY_TRANSACTION_TYPES)[number];
+
+export const INVENTORY_CATEGORIES = [
+  'screen',
+  'battery',
+  'cable',
+  'connector',
+  'board',
+  'tool',
+  'adhesive',
+  'case',
+  'other',
+] as const;
+export type InventoryCategory = (typeof INVENTORY_CATEGORIES)[number];
 
 export type Theme = 'light' | 'dark';
 export type Locale = 'ar' | 'en';
