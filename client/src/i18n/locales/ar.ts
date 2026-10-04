@@ -10,6 +10,7 @@ import p_g2 from './parts/ar_g2.ts';
 import p_g3 from './parts/ar_g3.ts';
 import p_quotations from './parts/ar_quotations.ts';
 import p_invoices from './parts/ar_invoices.ts';
+import p_track from './parts/ar_track.ts';
 
 const ar = {
   ...p_core,
@@ -20,6 +21,7 @@ const ar = {
   ...p_g3,
   ...p_quotations,
   ...p_invoices,
+  ...p_track,
 } as const;
 
 export default ar;

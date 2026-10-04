@@ -10,6 +10,7 @@ import p_g2 from './parts/en_g2.ts';
 import p_g3 from './parts/en_g3.ts';
 import p_quotations from './parts/en_quotations.ts';
 import p_invoices from './parts/en_invoices.ts';
+import p_track from './parts/en_track.ts';
 
 const en = {
   ...p_core,
@@ -20,6 +21,7 @@ const en = {
   ...p_g3,
   ...p_quotations,
   ...p_invoices,
+  ...p_track,
 } as const;
 
 export default en;
