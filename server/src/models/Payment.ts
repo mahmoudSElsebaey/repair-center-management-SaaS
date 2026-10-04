@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
-export const PAYMENT_METHODS = ['cash', 'card', 'bank_transfer', 'other'] as const;
+export const PAYMENT_METHODS = ['cash', 'card', 'transfer', 'wallet'] as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 
 export interface PaymentJSON {
