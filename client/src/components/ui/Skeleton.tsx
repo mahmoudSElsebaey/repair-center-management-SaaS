@@ -1,70 +1,55 @@
 import { cn } from '@/lib/utils';
 
-export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'text' | 'title' | 'block' | 'circle';
-}
+type SkeletonProps = {
+  className?: string;
+  /** Optional accessible label announced while content loads */
+  label?: string;
+};
 
-const VARIANTS = {
-  text: 'h-3.5 rounded',
-  title: 'h-6 rounded-md',
-  block: 'h-24 rounded-lg',
-  circle: 'rounded-full',
-} as const;
-
-/** Shimmer placeholder. Respects reduced motion via the token layer. */
-export function Skeleton({ className, variant = 'text', ...props }: SkeletonProps) {
-  return <div className={cn('rf-skeleton', VARIANTS[variant], className)} aria-hidden="true" {...props} />;
-}
-
-/** Composed skeleton for a page of content, so loading never looks broken. */
-export function PageSkeleton({ rows = 4 }: { rows?: number }) {
+/**
+ * Neutral loading placeholder. Prefer consistent skeleton shapes over spinners
+ * for list and dashboard surfaces so layout does not jump.
+ */
+export function Skeleton({ className, label }: SkeletonProps) {
   return (
-    <div className="space-y-6" role="status" aria-live="polite">
-      <span className="rf-sr-only">Loading</span>
+    <div
+      className={cn(
+        'animate-pulse rounded-md bg-muted/70 dark:bg-muted/40',
+        'motion-reduce:animate-none motion-reduce:opacity-70',
+        className
+      )}
+      role={label ? 'status' : undefined}
+      aria-label={label}
+      aria-hidden={label ? undefined : true}
+    />
+  );
+}
 
-      <div className="space-y-2">
-        <Skeleton variant="title" className="w-64" />
-        <Skeleton className="w-96 max-w-full" />
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <Skeleton key={index} variant="block" className="h-24" />
-        ))}
-      </div>
-
-      <div className="rf-panel p-5">
-        <Skeleton variant="title" className="mb-4 w-40" />
-        <div className="space-y-3">
-          {Array.from({ length: rows }).map((_, index) => (
-            <Skeleton key={index} className={index % 2 === 0 ? 'w-full' : 'w-5/6'} />
-          ))}
-        </div>
-      </div>
+export function SkeletonText({ lines = 3, className }: { lines?: number; className?: string }) {
+  return (
+    <div className={cn('space-y-2', className)} aria-hidden>
+      {Array.from({ length: lines }).map((_, i) => (
+        <Skeleton
+          key={i}
+          className={cn('h-3', i === lines - 1 ? 'w-2/3' : 'w-full')}
+        />
+      ))}
     </div>
   );
 }
 
-/** Table-shaped skeleton, sized to the real table's column count. */
-export function TableSkeleton({ rows = 6, columns = 5 }: { rows?: number; columns?: number }) {
+export function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className="rf-panel overflow-hidden" role="status" aria-live="polite">
-      <span className="rf-sr-only">Loading</span>
-      <div className="flex items-center gap-4 border-b border-border bg-surface-sunken px-5 py-3.5">
-        {Array.from({ length: columns }).map((_, index) => (
-          <Skeleton key={index} className="flex-1" />
-        ))}
-      </div>
-      {Array.from({ length: rows }).map((_, rowIndex) => (
-        <div
-          key={rowIndex}
-          className="flex items-center gap-4 border-b border-border-soft px-5 py-4 last:border-b-0"
-        >
-          {Array.from({ length: columns }).map((_, columnIndex) => (
-            <Skeleton key={columnIndex} className="flex-1" />
-          ))}
-        </div>
-      ))}
+    <div
+      className={cn(
+        'rounded-xl border border-border bg-card p-4 shadow-sm',
+        className
+      )}
+      aria-hidden
+    >
+      <Skeleton className="mb-3 h-4 w-1/3" />
+      <SkeletonText lines={2} />
+      <Skeleton className="mt-4 h-8 w-24" />
     </div>
   );
 }
