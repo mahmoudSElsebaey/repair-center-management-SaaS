@@ -32,19 +32,17 @@ Rule: after each phase the application is installed, run, verified, typechecked 
 
 ## Phase 04 — Repair tickets ✅
 
-**Ships**
-
-*Client* — ticket list with status filters, create dialog, ticket detail with interactive timeline, status transitions driven by server-computed available actions, diagnosis and cost editing.
-
-*Server* — `RepairTicket` model, CRUD, status transition table (`repairWorkflow`), technician assignment, ticket code generation (`RF-YYYY-NNNNN`), status history with actor and timestamp.
+**Ships** ticket list, create dialog, detail with timeline, status transitions, diagnosis and cost editing; server workflow table and ticket codes.
 
 **End state:** a complete repair workflow runs from the frontend to MongoDB and back.
 
 ---
 
-## Phase 05 — Technicians, staff and permissions
+## Phase 05 — Technicians, staff and permissions ✅
 
-**Ships** staff CRUD, role assignment, workload views.
+**Ships** staff CRUD, role assignment, technician workload views.
+
+**End state:** administrators manage staff accounts; managers see technician workload from real ticket data.
 
 ---
 
@@ -110,7 +108,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 
 ## Current position
 
-**Phases 01–04 are complete.**
+**Phases 01–05 are complete.**
 
 | Phase | Status | Notes |
 | ----- | ------ | ----- |
@@ -118,6 +116,7 @@ After each phase: install, run, verify, typecheck, build, then stop for review u
 | 02 Dashboard · activity · notifications | ✅ Complete | Real MongoDB aggregates |
 | 03 Customers · devices | ✅ Complete | Branch-scoped CRUD |
 | 04 Repair tickets | ✅ Complete | Full workflow: create, list, detail, status transitions, timeline |
-| 05–14 | Not started | — |
+| 05 Technicians · staff | ✅ Complete | Staff CRUD, role assignment, technician workload |
+| 06–14 | Not started | — |
 
-**Next phase:** Phase 05 — Technicians, staff and permissions.
+**Next phase:** Phase 06 — Inventory.
