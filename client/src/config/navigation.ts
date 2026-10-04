@@ -136,7 +136,7 @@ export const NAV_GROUPS: NavGroup[] = [
         icon: BarChart3,
         roles: ['super_admin', 'admin', 'manager'],
         phase: 11,
-        available: false,
+        available: true,
       },
     ],
   },
