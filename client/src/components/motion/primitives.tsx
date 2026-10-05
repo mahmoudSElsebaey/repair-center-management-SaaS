@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 /**
  * Motion primitives.
  *
- * Every animation in RepairFlow goes through this file so that
+ * Every animation in Fixer goes through this file so that
  * `prefers-reduced-motion` is honoured in exactly one place: when it is set,
  * transforms are dropped and content simply appears.
  */
