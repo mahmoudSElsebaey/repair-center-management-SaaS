@@ -42,9 +42,13 @@ async function seedBranches(): Promise<Map<string, mongoose.Types.ObjectId>> {
 async function seedStaff(branches: Map<string, mongoose.Types.ObjectId>): Promise<void> {
   heading(`Employees — shared password: ${SEED_PASSWORD}`);
   for (const person of STAFF) {
-    const existing = await User.findOne({ email: person.email }).select('+password');
+    const legacyEmail = person.email.replace('@fixer.app', '@repairflow.app');
+    const existing = await User.findOne({
+      $or: [{ email: person.email }, { email: legacyEmail }],
+    }).select('+password');
     if (existing) {
       existing.name = person.name;
+      existing.email = person.email;
       existing.phone = person.phone;
       existing.role = person.role;
       existing.locale = person.locale;
