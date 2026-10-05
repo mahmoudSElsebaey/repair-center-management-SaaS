@@ -1,6 +1,6 @@
 <div align="center">
 
-# RepairFlow
+# Fixer
 
 **Repair center operations software — from device intake to warranty.**
 
@@ -14,7 +14,7 @@ Customers · Devices · Repair tickets · Technicians · Spare parts · Quotatio
 
 ## What this is
 
-RepairFlow is a full-stack MERN platform for businesses that repair things — phones, laptops, appliances, air conditioners, general technical service. It models the real operational workflow from intake through warranty.
+Fixer is a full-stack MERN platform for businesses that repair things — phones, laptops, appliances, air conditioners, general technical service. It models the real operational workflow from intake through warranty.
 
 Every phase of the build is a working vertical slice: **UI → API → controller → model → database → response → UI state**.
 
