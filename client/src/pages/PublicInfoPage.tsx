@@ -106,7 +106,7 @@ export default function PublicInfoPage() {
 
         {page === 'contact' && (
           <div className="mx-auto mt-8 grid max-w-5xl gap-4 sm:grid-cols-3">
-            <ContactItem icon={<Mail className="h-4 w-4" />} label="hello@repairflow.app" href="mailto:hello@repairflow.app" />
+            <ContactItem icon={<Mail className="h-4 w-4" />} label="hello@fixer.app" href="mailto:hello@fixer.app" />
             <ContactItem icon={<Phone className="h-4 w-4" />} label="+20 2 2670 4412" />
             <ContactItem icon={<MapPin className="h-4 w-4" />} label={t('publicPages.contact.location')} />
           </div>
