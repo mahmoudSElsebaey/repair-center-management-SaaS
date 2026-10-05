@@ -116,6 +116,16 @@ export default {
       unlockCode: 'رمز فتح الجهاز',
       unlockCodeHint: 'رمز PIN أو نمط أو كلمة مرور اختيارية لازمة لاختبار الجهاز.',
     },
+    types: {
+      smartphone: 'هاتف ذكي',
+      laptop: 'لابتوب',
+      tablet: 'تابلت',
+      desktop: 'كمبيوتر مكتبي',
+      tv: 'تلفزيون',
+      appliance: 'جهاز منزلي',
+      ac: 'تكييف',
+      other: 'أخرى',
+    },
     categories: {
       phone: 'هاتف',
       tablet: 'تابلت',
