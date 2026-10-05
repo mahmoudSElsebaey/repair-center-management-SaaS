@@ -1,8 +1,8 @@
 {
-  "name": "repairflow-client",
+  "name": "fixer-client",
   "version": "0.1.0",
   "private": true,
-  "description": "RepairFlow — repair center operations console",
+  "description": "Fixer — repair center operations console",
   "type": "module",
   "engines": {
     "node": ">=18"
