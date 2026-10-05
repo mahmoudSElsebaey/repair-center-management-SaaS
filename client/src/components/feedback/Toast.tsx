@@ -1,10 +1,12 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlertTriangle, CheckCircle2, Info, X, XCircle } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { dismissToast, pushToast, type Toast } from '@/store/uiSlice';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
+
+const TOAST_DURATION = 3000;
 
 const TONE_STYLES: Record<Toast['tone'], { container: string; icon: React.ReactNode }> = {
   success: {
@@ -25,18 +27,26 @@ const TONE_STYLES: Record<Toast['tone'], { container: string; icon: React.ReactN
   },
 };
 
-/**
- * Global feedback surface.
- *
- * Toasts are announced politely to assistive technology, auto-dismiss after a
- * tone-appropriate delay, and can always be dismissed manually.
- */
 export function ToastViewport({ closeLabel = 'Dismiss notification' }: { closeLabel?: string }) {
   const toasts = useAppSelector((state) => state.ui.toasts);
   const dispatch = useAppDispatch();
   const prefersReduced = useReducedMotion();
 
   const dismiss = useCallback((id: string) => dispatch(dismissToast(id)), [dispatch]);
+
+  useEffect(() => {
+    if (toasts.length === 0) return;
+
+    const timers = toasts.map((toast) =>
+      window.setTimeout(() => {
+        dispatch(dismissToast(toast.id));
+      }, TOAST_DURATION)
+    );
+
+    return () => {
+      timers.forEach((timer) => window.clearTimeout(timer));
+    };
+  }, [dispatch, toasts]);
 
   return (
     <div
@@ -84,14 +94,6 @@ export function ToastViewport({ closeLabel = 'Dismiss notification' }: { closeLa
   );
 }
 
-/**
- * Ergonomic hook for raising feedback from anywhere.
- *
- * ```tsx
- * const notify = useToast();
- * notify.success('Saved', 'The ticket was updated.');
- * ```
- */
 export function useToast() {
   const dispatch = useAppDispatch();
 
