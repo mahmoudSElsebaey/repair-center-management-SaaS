@@ -69,7 +69,7 @@ app.get(`${API_PREFIX}/health`, (_req: Request, res: Response) => {
 
   res.status(mongoState === 'connected' ? 200 : 503).json({
     success: mongoState === 'connected',
-    message: 'RepairFlow API',
+    message: 'Fixer API',
     data: {
       version: config.apiVersion,
       environment: config.nodeEnv,
