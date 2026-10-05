@@ -213,6 +213,7 @@ export default {
       terms: 'Terms',
       rights: 'All rights reserved.',
       builtWith: 'Built with React, Express and MongoDB.',
+      builtBy: 'Built by Mahmoud Elsebaey.',
     },
   },
 } as const;
