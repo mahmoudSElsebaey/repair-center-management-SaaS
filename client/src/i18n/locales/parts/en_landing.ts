@@ -25,6 +25,29 @@ export default {
         approval: 'Customer approval before work starts',
       },
     },
+    showcase: {
+      overline: 'See Fixer in action',
+      title: 'A clearer view of the operation',
+      subtitle: 'Purpose-built screens for the counter, technicians, inventory and management.',
+      panels: {
+        tickets: { title: 'Every ticket, visible at a glance', body: 'Follow the repair from intake to delivery with status, technician, cost and customer approval in one place.' },
+        inventory: { title: 'Inventory without the guesswork', body: 'Know what is available, what is running low and what moved — before a repair gets blocked.' },
+        analytics: { title: 'Management that sees the whole picture', body: 'Turn daily workshop activity into clear numbers for repairs, revenue, staff and stock.' },
+      },
+      services: {
+        overline: 'Services',
+        title: 'Everything your repair centre needs',
+        subtitle: 'A complete operational layer, designed to feel fast, clear and easy to use.',
+        items: {
+          repair: { title: 'Repair management', body: 'Create tickets, assign technicians, track stages and keep the full repair history.' },
+          inventory: { title: 'Smart inventory', body: 'Manage parts, SKUs, suppliers, minimum levels and every stock movement.' },
+          customers: { title: 'Customer management', body: 'Keep customer devices, contact details, history and warranty information together.' },
+          finance: { title: 'Invoices & payments', body: 'Move approved quotes into invoices and keep payments tied to the right repair.' },
+          tracking: { title: 'Customer tracking', body: 'Give customers a simple QR-powered timeline so they always know what is happening.' },
+          analytics: { title: 'Reports & analytics', body: 'Understand performance across repairs, technicians, branches, revenue and inventory.' },
+        },
+      },
+    },
     how: {
       overline: 'How it works',
       title: 'One connected operation, six stages',
