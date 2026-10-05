@@ -15,7 +15,7 @@ export default {
       badge: 'مبني لمراكز الصيانة، وليس لوحة إدارة عامة',
       title: 'كل صيانة، كل قطعة، كل جنيه —',
       titleAccent: 'في تدفق واحد',
-      subtitle: 'ريبير فلو يدير المكتب والمنضدة والحسابات.',
+      subtitle: 'Fixer يدير المكتب والمنضدة والحسابات.',
       ctaPrimary: 'ابدأ إدارة الصيانة',
       ctaSecondary: 'شاهد سير العمل',
       trustNote: 'لا حاجة لبطاقة ائتمان لمساحة العرض التجريبي',
@@ -54,7 +54,7 @@ export default {
         cancelled: 'ملغاة',
       },
       sample: {
-        code: 'RF-2026-00421',
+        code: 'FX-2026-00421',
         device: 'Samsung Galaxy S24 Ultra',
         issue: 'شاشة مكسورة',
         technician: 'يوسف رجب',
@@ -195,7 +195,7 @@ export default {
     },
     cta: {
       title: 'انقل ورشتك إلى نظام واحد',
-      subtitle: 'سجّل الدخول إلى لوحة تشغيل ريبير فلو.',
+      subtitle: 'سجّل الدخول إلى لوحة تشغيل Fixer.',
       primary: 'افتح لوحة التشغيل',
       secondary: 'اقرأ البنية المعمارية',
     },
