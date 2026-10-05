@@ -1,37 +1,23 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { store } from '@/store';
+import App from '@/App';
+// Vendor styles first so the Fixer token layer always wins.
+import '@/styles/vendor.css';
+import '@/styles/index.css';
+import '@/i18n';
 
-// Vendor styles first so the RepairFlow token layer always wins.
-import 'swiper/css';
-import 'swiper/css/pagination';
+const root = document.getElementById('root');
 
-import './styles/tokens.css';
-import './styles/index.css';
-import './styles/vendor.css';
-
-// Side-effect import: initialises i18next and applies <html lang/dir>.
-import './i18n';
-
-import App from './App';
-import { store } from './store';
-import { ErrorBoundary } from './components/feedback/ErrorBoundary';
-
-const container = document.getElementById('root');
-
-if (!container) {
-  throw new Error('Root container #root is missing from index.html');
+if (!root) {
+  throw new Error('Root element #root not found');
 }
 
-createRoot(container).render(
+createRoot(root).render(
   <StrictMode>
-    <ErrorBoundary>
-      <Provider store={store}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </Provider>
-    </ErrorBoundary>
+    <Provider store={store}>
+      <App />
+    </Provider>
   </StrictMode>
 );

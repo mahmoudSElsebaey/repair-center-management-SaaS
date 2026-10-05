@@ -1,38 +1,37 @@
 /**
- * Shared accessibility helpers and constants for RepairFlow Phase 13.
+ * Shared accessibility helpers and constants for Fixer Phase 13.
  */
 
-/** Minimum touch target size (px) recommended by WCAG 2.5.5 / mobile HIG */
-export const MIN_TOUCH_TARGET = 44;
-
-/**
- * Builds a stable, unique id for labelled form controls.
- * Prefer React's useId() when available; this is a fallback for static ids.
- */
-export function fieldId(prefix: string, name: string): string {
-  return `${prefix}-${name}`.replace(/[^a-zA-Z0-9_-]/g, '-');
+/** Prefer reduced motion — matches CSS media query. */
+export function prefersReducedMotion(): boolean {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-/**
- * Returns keyboard-friendly props for custom interactive elements that are not
- * native buttons/links (role="button", Enter/Space activation).
- */
-export function buttonRoleProps(onActivate: () => void) {
-  return {
-    role: 'button' as const,
-    tabIndex: 0,
-    onKeyDown: (event: React.KeyboardEvent) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        onActivate();
+/** Trap focus inside a container (modal / drawer). Returns cleanup. */
+export function trapFocus(container: HTMLElement): () => void {
+  const focusable = container.querySelectorAll<HTMLElement>(
+    'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+  );
+  if (focusable.length === 0) return () => undefined;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  function onKeyDown(e: KeyboardEvent) {
+    if (e.key !== 'Tab') return;
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
       }
-    },
-  };
-}
+    } else if (document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
 
-/**
- * Focus-visible ring utility classes — use on interactive surfaces that need
- * a visible keyboard focus indicator without mouse focus rings.
- */
-export const FOCUS_RING =
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background';
+  container.addEventListener('keydown', onKeyDown);
+  first.focus();
+  return () => container.removeEventListener('keydown', onKeyDown);
+}

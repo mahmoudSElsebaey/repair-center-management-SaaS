@@ -53,7 +53,7 @@ export class ErrorBoundary extends Component<Props, State> {
           </div>
 
           <h1 className="text-lg font-semibold text-foreground">
-            RepairFlow hit an unexpected error
+            Fixer hit an unexpected error
           </h1>
 
           <p className="mt-2 text-sm text-foreground-muted">
