@@ -171,7 +171,7 @@ export function Sidebar() {
             title={t('dashboardShell.visitWebsite')}
             className="rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
           >
-            <Logo variant={collapsed ? 'mark' : 'full'} size="sm" />
+            <Logo variant={collapsed ? 'mark' : 'full'} size="md" />
           </Link>
 
           {!collapsed && (
