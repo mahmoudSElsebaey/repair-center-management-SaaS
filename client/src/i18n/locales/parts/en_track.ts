@@ -27,7 +27,7 @@ export default {
     history: 'Status history',
     privacyNote:
       'This page shows limited public information only. Costs, diagnosis notes and contact details stay private.',
-    backHome: 'Back to RepairFlow',
+    backHome: 'Back to Fixer',
     qr: {
       title: 'Customer tracking',
       badge: 'QR',
