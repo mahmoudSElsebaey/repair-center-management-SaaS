@@ -54,6 +54,8 @@ export default {
     emptyBody: 'Register a device against a customer to open a repair ticket.', brand: 'Brand', model: 'Model',
     serial: 'Serial / IMEI', owner: 'Owner', category: 'Category', color: 'Colour', condition: 'Condition',
     created: 'Device registered', updated: 'Device updated', archivedToast: 'Device archived',
+    archiveConfirmTitle: 'Archive this device?',
+    archiveConfirmBody: 'The device is hidden from active lists. Repair history and related records are kept.',
     detailTitle: 'Device details', issueSection: 'Reported issue', conditionSection: 'Device condition & identifiers',
     ownerSection: 'Owner', registeredOn: 'Registered on', accessoriesNone: 'No accessories recorded.',
     notesSection: 'Notes', noNotes: 'No notes recorded.', images: 'Device images', noImages: 'No images uploaded.',
