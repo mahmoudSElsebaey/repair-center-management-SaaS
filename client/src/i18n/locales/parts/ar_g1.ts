@@ -89,6 +89,14 @@ export default {
     registerPaymentNotice: 'تسجيل الدفع يتم من خلال مسار الفواتير والمدفوعات.',
     timeline: {
       progress: 'المرحلة {{current}} من {{total}}',
+      completed: 'مكتملة',
+      current: 'الحالية',
+      upcoming: 'قادمة',
+      cancelled: 'تم إلغاء تذكرة الصيانة هذه.',
+    },
+    history: {
+      moved: 'انتقلت من {{from}} إلى {{to}}',
+      opened: 'فُتحت التذكرة بحالة {{status}}',
     },
     priority: {
       low: 'منخفضة',
