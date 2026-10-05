@@ -47,11 +47,11 @@ export default {
           analytics: { title: 'Reports & analytics', body: 'Understand performance across repairs, technicians, branches, revenue and inventory.' },
         },
       },
-    },
       breaks: {
         inventory: { title: 'Inventory that keeps the bench moving', body: 'Every part has a place, a level and a history — so technicians can focus on the repair, not the search.' },
         pricing: { title: 'One system from the front desk to management', body: 'Fixer connects tickets, customers, parts, payments and analytics into one operating picture.' },
       },
+    },
     how: {
       overline: 'How it works',
       title: 'One connected operation, six stages',
