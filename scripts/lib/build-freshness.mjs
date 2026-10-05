@@ -1,5 +1,5 @@
 /**
- * RepairFlow — build freshness guard.
+ * Fixer — build freshness guard.
  *
  * The verification suites run against compiled output: `server/dist` for the API
  * suite and `client/dist` for the browser suite. If either is older than the
