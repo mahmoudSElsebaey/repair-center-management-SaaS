@@ -11,6 +11,7 @@ export default {
     greetingEvening: 'مساء الخير',
     scopeGlobal: 'كل الفروع',
     scopeBranch: 'هذا الفرع',
+    unassigned: 'غير معيَّن',
     metrics: {
       receivedToday: 'مستلَم اليوم',
       activeRepairs: 'إصلاحات نشطة',
@@ -24,6 +25,7 @@ export default {
       outstanding: 'مستحقات',
       staff: 'الموظفون',
       branches: 'الفروع',
+      activity: 'النشاط',
     },
     sections: {
       activityOverTime: 'النشاط عبر الزمن',
