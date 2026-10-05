@@ -16,7 +16,7 @@ function trimTrailingSlash(value: string): string {
  * proxied, so relative URLs avoid CORS entirely.
  *
  * In production `VITE_API_URL` must point at the deployed API, e.g.
- * `https://fixer-api.vercel.app/api/v1`.
+ * `https://your-api.example.com/api/v1`.
  */
 const configuredApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.trim();
 
