@@ -59,7 +59,7 @@ if (isProduction && !process.env.MONGODB_URI) {
   fail('MONGODB_URI is required in production.');
 }
 
-const mongodbUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/repairflow';
+const mongodbUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/fixer';
 
 if (isProduction && /localhost|127\.0\.0\.1/.test(mongodbUri)) {
   fail('MONGODB_URI points at localhost — set a MongoDB Atlas connection string in production.');
@@ -69,7 +69,7 @@ const cloudinary = {
   cloudName: (process.env.CLOUDINARY_CLOUD_NAME || '').trim(),
   apiKey: (process.env.CLOUDINARY_API_KEY || '').trim(),
   apiSecret: (process.env.CLOUDINARY_API_SECRET || '').trim(),
-  folder: (process.env.CLOUDINARY_FOLDER || 'repairflow').trim(),
+  folder: (process.env.CLOUDINARY_FOLDER || 'fixer').trim(),
 };
 
 /** Uploads degrade gracefully in development, but are mandatory in production. */
