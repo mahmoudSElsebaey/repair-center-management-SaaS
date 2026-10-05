@@ -2,10 +2,10 @@
 export default {
   auth: {
     login: {
-      title: 'Sign in to RepairFlow',
+      title: 'Sign in to Fixer',
       subtitle: 'Enter your work account to open the operations console.',
       email: 'Work email',
-      emailPlaceholder: 'name@repairflow.app',
+      emailPlaceholder: 'name@fixer.app',
       password: 'Password',
       passwordPlaceholder: 'Your password',
       remember: 'Keep me signed in',
@@ -44,7 +44,7 @@ export default {
     },
     accessDenied: {
       title: 'Access denied',
-      body: 'Your role does not include this area of RepairFlow. Ask an administrator if you need it.',
+      body: 'Your role does not include this area of Fixer. Ask an administrator if you need it.',
       backToDashboard: 'Back to dashboard',
     },
     logout: 'Sign out',
