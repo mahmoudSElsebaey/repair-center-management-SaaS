@@ -89,6 +89,14 @@ export default {
     registerPaymentNotice: 'Payment recording is handled from the invoice/payment workflow.',
     timeline: {
       progress: 'Stage {{current}} of {{total}}',
+      completed: 'Completed',
+      current: 'Current',
+      upcoming: 'Upcoming',
+      cancelled: 'This repair ticket was cancelled.',
+    },
+    history: {
+      moved: 'Moved from {{from}} to {{to}}',
+      opened: 'Ticket opened as {{status}}',
     },
     priority: {
       low: 'Low',
