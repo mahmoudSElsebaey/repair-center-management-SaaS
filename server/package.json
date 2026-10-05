@@ -1,8 +1,8 @@
 {
-  "name": "repairflow-server",
+  "name": "fixer-server",
   "version": "0.1.0",
   "private": true,
-  "description": "RepairFlow API — repair center management platform",
+  "description": "Fixer API — repair center management platform",
   "type": "module",
   "engines": {
     "node": ">=18"
