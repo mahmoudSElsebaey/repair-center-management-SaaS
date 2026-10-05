@@ -53,6 +53,17 @@ export const REPAIR_STATUSES = [
 ] as const;
 export type RepairStatus = (typeof REPAIR_STATUSES)[number];
 
+/** Happy-path stages used by the repair progress timeline. */
+export const REPAIR_HAPPY_PATH = [
+  'received',
+  'diagnosing',
+  'waiting_customer',
+  'approved',
+  'in_repair',
+  'ready',
+  'delivered',
+] as const satisfies readonly RepairStatus[];
+
 export const REPAIR_PRIORITIES = ['low', 'normal', 'high', 'urgent'] as const;
 export type RepairPriority = (typeof REPAIR_PRIORITIES)[number];
 
