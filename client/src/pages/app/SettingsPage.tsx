@@ -3,18 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { Globe, Moon, Sun, UserRound, ExternalLink } from 'lucide-react';
 
 import { Card, CardHeader } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { PageTransition } from '@/components/motion/primitives';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setLocale, setTheme } from '@/store/uiSlice';
 import { changeLanguage } from '@/i18n';
-import type { Locale } from '@/types/domain';
+import type { Locale, Theme } from '@/types/domain';
 import { cn } from '@/lib/utils';
 
 /**
- * Operations settings — language, theme, and shortcuts.
- * Account fields live on the profile page; branch/org settings are role-gated elsewhere.
+ * Operations settings — language, theme, and account shortcuts.
  */
 export default function SettingsPage() {
   const { t } = useTranslation();
@@ -30,7 +28,7 @@ export default function SettingsPage() {
     await changeLanguage(next);
   };
 
-  const switchTheme = (next: 'light' | 'dark' | 'system') => {
+  const switchTheme = (next: Theme) => {
     dispatch(setTheme(next));
   };
 
@@ -43,10 +41,7 @@ export default function SettingsPage() {
         </div>
 
         <Card>
-          <CardHeader
-            title={t('settings.appearance')}
-            description={t('settings.appearanceBody')}
-          />
+          <CardHeader title={t('settings.appearance')} description={t('settings.appearanceBody')} />
           <div className="flex flex-wrap gap-2">
             {(
               [
@@ -60,7 +55,7 @@ export default function SettingsPage() {
                 onClick={() => switchTheme(id)}
                 className={cn(
                   'inline-flex h-10 items-center gap-2 rounded-lg border px-4 text-sm font-medium transition-colors',
-                  theme === id || (theme === 'system' && id === 'light')
+                  theme === id
                     ? 'border-primary/40 bg-primary-soft text-primary'
                     : 'border-border bg-surface text-foreground-muted hover:bg-surface-hover'
                 )}
@@ -115,18 +110,20 @@ export default function SettingsPage() {
               {user?.role ? t(`roles.${user.role}`) : '—'}
             </p>
             <div className="flex flex-wrap gap-2 pt-2">
-              <Button asChild variant="outline" size="sm">
-                <Link to="/app/profile" className="inline-flex items-center gap-2">
-                  <UserRound className="h-4 w-4" />
-                  {t('auth.profile.title')}
-                </Link>
-              </Button>
-              <Button asChild variant="ghost" size="sm">
-                <Link to="/" className="inline-flex items-center gap-2">
-                  <ExternalLink className="h-4 w-4" />
-                  {t('dashboardShell.visitWebsite')}
-                </Link>
-              </Button>
+              <Link
+                to="/app/profile"
+                className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-surface px-3 text-sm text-foreground-muted hover:bg-surface-hover hover:text-foreground"
+              >
+                <UserRound className="h-4 w-4" />
+                {t('auth.profile.title')}
+              </Link>
+              <Link
+                to="/"
+                className="inline-flex h-9 items-center gap-2 rounded-lg px-3 text-sm text-foreground-muted hover:bg-surface-hover hover:text-foreground"
+              >
+                <ExternalLink className="h-4 w-4" />
+                {t('dashboardShell.visitWebsite')}
+              </Link>
             </div>
           </div>
         </Card>

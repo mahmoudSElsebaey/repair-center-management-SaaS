@@ -177,7 +177,7 @@ export const NAV_GROUPS: NavGroup[] = [
         icon: Settings,
         roles: ['super_admin', 'admin', 'manager'],
         phase: 13,
-        available: false,
+        available: true,
       },
     ],
   },
@@ -205,6 +205,13 @@ export function findNavItem(pathname: string): NavItem | undefined {
 
 export function rolesForPath(pathname: string): UserRole[] | undefined {
   return findNavItem(pathname)?.roles;
+}
+
+/** Flat available nav items for global search. */
+export function searchableNavItems(userRole: UserRole | undefined): NavItem[] {
+  return NAV_GROUPS.flatMap((g) => g.items).filter(
+    (item) => item.available && hasRole(userRole, item.roles)
+  );
 }
 
 export { USER_ROLES };
