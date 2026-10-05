@@ -55,7 +55,6 @@ export const publicLimiter = rateLimit({
   },
 });
 
-
 export const passwordResetLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: isProd ? 5 : 20,
@@ -69,3 +68,6 @@ export const passwordResetLimiter = rateLimit({
     },
   },
 });
+
+// Dedicated name for the public tracking route.
+export const publicTrackLimiter = publicLimiter;
