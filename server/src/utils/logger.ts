@@ -25,7 +25,7 @@ function shouldLog(level: Level): boolean {
 function baseFields() {
   return {
     time: new Date().toISOString(),
-    service: 'repairflow-api',
+    service: 'fixer-api',
     env: env.NODE_ENV,
   };
 }
