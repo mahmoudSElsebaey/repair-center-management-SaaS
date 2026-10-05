@@ -1,8 +1,8 @@
 {
-  "name": "repairflow",
+  "name": "fixer",
   "version": "0.1.0",
   "private": true,
-  "description": "RepairFlow — repair centre operations platform (client + server)",
+  "description": "Fixer — repair centre operations platform (client + server)",
   "engines": {
     "node": ">=20"
   },
