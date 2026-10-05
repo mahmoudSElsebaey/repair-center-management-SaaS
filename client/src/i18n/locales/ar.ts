@@ -16,6 +16,7 @@ import p_reports from './parts/ar_reports';
 import p_settings from './parts/ar_settings';
 import p_a11y from './parts/ar_a11y';
 import p_notifications_extra from './parts/ar_notifications_extra';
+import p_public from './parts/ar_public';
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -53,6 +54,7 @@ const parts = [
   p_settings,
   p_a11y,
   p_notifications_extra,
+  p_public,
 ] as Record<string, unknown>[];
 
 const ar = parts.reduce<Record<string, unknown>>((acc, part) => deepMerge(acc, part), {});
