@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { MainLayout } from '@/layouts/MainLayout';
@@ -47,6 +47,16 @@ function RouteFallback() {
   );
 }
 
+function ScrollToTop() {
+  const { pathname, search } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [pathname, search]);
+
+  return null;
+}
+
 export default function App() {
   const locale = useAppSelector((state) => state.ui.locale);
   const { i18n } = useTranslation();
@@ -60,6 +70,7 @@ export default function App() {
 
   return (
     <SessionBootstrap>
+      <ScrollToTop />
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route element={<MainLayout />}>
