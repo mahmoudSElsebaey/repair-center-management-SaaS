@@ -65,7 +65,7 @@ async function main() {
   await ensureIndexes();
 
   app.listen(env.PORT, () => {
-    logger.info({ port: env.PORT, env: env.NODE_ENV }, 'RepairFlow API listening');
+    logger.info({ port: env.PORT, env: env.NODE_ENV }, 'Fixer API listening');
   });
 }
 
