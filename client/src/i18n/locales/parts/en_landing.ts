@@ -15,7 +15,7 @@ export default {
       badge: 'Built for repair centres, not generic admin panels',
       title: 'Every repair, every part, every pound —',
       titleAccent: 'in one flow',
-      subtitle: 'RepairFlow runs the counter, the bench and the books.',
+      subtitle: 'Fixer runs the counter, the bench and the books.',
       ctaPrimary: 'Start managing repairs',
       ctaSecondary: 'See the workflow',
       trustNote: 'No credit card required for the demo workspace',
@@ -54,7 +54,7 @@ export default {
         cancelled: 'Cancelled',
       },
       sample: {
-        code: 'RF-2026-00421',
+        code: 'FX-2026-00421',
         device: 'Samsung Galaxy S24 Ultra',
         issue: 'Cracked display assembly',
         technician: 'Youssef Ragab',
@@ -195,7 +195,7 @@ export default {
     },
     cta: {
       title: 'Bring your workshop onto one system',
-      subtitle: 'Sign in to the RepairFlow operations console.',
+      subtitle: 'Sign in to the Fixer operations console.',
       primary: 'Open the operations console',
       secondary: 'Read the architecture',
     },
