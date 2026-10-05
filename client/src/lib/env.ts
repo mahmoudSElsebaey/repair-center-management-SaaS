@@ -16,7 +16,7 @@ function trimTrailingSlash(value: string): string {
  * proxied, so relative URLs avoid CORS entirely.
  *
  * In production `VITE_API_URL` must point at the deployed API, e.g.
- * `https://repairflow-api.vercel.app/api/v1`.
+ * `https://fixer-api.vercel.app/api/v1`.
  */
 const configuredApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.trim();
 
@@ -24,7 +24,7 @@ export const env = {
   isProduction: import.meta.env.PROD,
   isDevelopment: import.meta.env.DEV,
   apiBaseUrl: trimTrailingSlash(configuredApiUrl || '/api/v1'),
-  appName: (import.meta.env.VITE_APP_NAME as string | undefined) || 'RepairFlow',
+  appName: (import.meta.env.VITE_APP_NAME as string | undefined) || 'Fixer',
   defaultLocale: ((import.meta.env.VITE_DEFAULT_LOCALE as Locale | undefined) || 'ar') as Locale,
   defaultTheme: ((import.meta.env.VITE_DEFAULT_THEME as Theme | undefined) || 'dark') as Theme,
   /** Public base used to build QR tracking links. */
