@@ -2,10 +2,10 @@
 export default {
   auth: {
     login: {
-      title: 'تسجيل الدخول إلى ريبير فلو',
+      title: 'تسجيل الدخول إلى Fixer',
       subtitle: 'أدخل بيانات حساب العمل لفتح لوحة التشغيل.',
       email: 'البريد الإلكتروني للعمل',
-      emailPlaceholder: 'name@repairflow.app',
+      emailPlaceholder: 'name@fixer.app',
       password: 'كلمة المرور',
       passwordPlaceholder: 'كلمة مرورك',
       remember: 'أبقني مسجَّلاً',
@@ -44,7 +44,7 @@ export default {
     },
     accessDenied: {
       title: 'تم رفض الوصول',
-      body: 'دورك الوظيفي لا يشمل هذا القسم في ريبير فلو. تواصل مع المسؤول إن كنت تحتاجه.',
+      body: 'دورك الوظيفي لا يشمل هذا القسم في Fixer. تواصل مع المسؤول إن كنت تحتاجه.',
       backToDashboard: 'العودة للوحة التشغيل',
     },
     logout: 'تسجيل الخروج',
