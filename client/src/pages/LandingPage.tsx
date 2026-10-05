@@ -30,7 +30,7 @@ export default function LandingPage() {
   return (
     <PageTransition>
       <HeroSection />
-      <VisualShowcaseSection />
+      <div className="pt-20"><VisualShowcaseSection /></div>
       <ServicesShowcaseSection />
       <HowItWorksSection />
       <WorkflowSection />
