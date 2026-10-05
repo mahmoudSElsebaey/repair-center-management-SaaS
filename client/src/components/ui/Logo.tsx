@@ -1,13 +1,6 @@
 import { cn } from '@/lib/utils';
 
-/**
- * The RepairFlow wordmark and app mark.
- *
- * The glyph is drawn inline so it inherits `currentColor` and stays crisp at
- * every size, and the wordmark uses the brand gradient token rather than a
- * bitmap asset.
- */
-export function LogoMark({ className, title }: { className?: string; title?: string }) {
+function FixerMark({ className, title }: { className?: string; title?: string }) {
   return (
     <svg
       viewBox="0 0 48 48"
@@ -17,45 +10,25 @@ export function LogoMark({ className, title }: { className?: string; title?: str
       aria-hidden={title ? undefined : true}
       className={cn('h-9 w-9', className)}
     >
-      <defs>
-        <linearGradient id="rf-logo-gradient" x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="var(--primary)" />
-          <stop offset="1" stopColor="var(--secondary)" />
-        </linearGradient>
-      </defs>
-
-      {/* Machined container with one cut corner — reads as a service badge */}
+      <g fill="#304352">
+        <path d="M8.2 18.1 4.8 15l4.1-4.1 3.1 3.4a17.5 17.5 0 0 1 5.1-2.1l.2-4.5h5.8l.2 4.5a17.5 17.5 0 0 1 5.1 2.1l3.1-3.4 4.1 4.1-3.4 3.1a17.5 17.5 0 0 1 2.1 5.1l4.5.2v5.8l-4.5.2a17.5 17.5 0 0 1-2.1 5.1l3.4 3.1-4.1 4.1-3.1-3.4a17.5 17.5 0 0 1-5.1 2.1l-.2 4.5h-5.8l-.2-4.5a17.5 17.5 0 0 1-5.1-2.1l-3.1 3.4-4.1-4.1 3.4-3.1a17.5 17.5 0 0 1-2.1-5.1l-4.5-.2v-5.8l4.5-.2a17.5 17.5 0 0 1 2.1-5.1Z"/>
+      </g>
+      <circle cx="22" cy="26" r="11" fill="var(--background)" />
+      <path d="m14 17 20 22M34 17 14 39" stroke="#10B5AE" strokeWidth="5.2" strokeLinecap="square" />
       <path
-        d="M9 3h24l12 12v24a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6V9a6 6 0 0 1 6-6Z"
-        fill="url(#rf-logo-gradient)"
-        fillOpacity="0.16"
-        stroke="url(#rf-logo-gradient)"
-        strokeWidth="2"
-      />
-
-      {/* Flow path */}
-      <path
-        d="M14 31c0-8 6.5-13 14-13h3"
-        stroke="url(#rf-logo-gradient)"
-        strokeWidth="3.2"
-        strokeLinecap="round"
-      />
-
-      {/* Integrated wrench head */}
-      <path
-        d="M31.5 12.2a5.6 5.6 0 0 0-6.9 6.9l-9.4 9.4a2.6 2.6 0 1 0 3.7 3.7l9.4-9.4a5.6 5.6 0 0 0 6.9-6.9l-3.3 3.3-3.2-.9-.9-3.2 3.7-2.9Z"
-        fill="url(#rf-logo-gradient)"
+        d="M31.3 9.2a7.4 7.4 0 0 0-8.8 9.1l-8.1 8.1a3 3 0 1 0 4.2 4.2l8.1-8.1a7.4 7.4 0 0 0 9.1-8.8l-4.1 3.3-3.6-1-1-3.6 4.2-3.2Z"
+        fill="#10B5AE"
       />
     </svg>
   );
 }
 
 export interface LogoProps {
-  /** `full` shows mark + wordmark; `mark` shows the glyph only. */
+  /** `full` shows the Fixer wordmark; `mark` shows the symbol only. */
   variant?: 'full' | 'mark';
   size?: 'sm' | 'md' | 'lg';
   className?: string;
-  /** Rendered next to the wordmark, e.g. "Operations Console". */
+  /** Rendered below the wordmark, e.g. the product tagline. */
   suffix?: string;
 }
 
@@ -74,18 +47,21 @@ const TEXT_SIZES = {
 export function Logo({ variant = 'full', size = 'md', className, suffix }: LogoProps) {
   return (
     <span className={cn('inline-flex items-center gap-2.5', className)}>
-      <LogoMark className={MARK_SIZES[size]} title={variant === 'mark' ? 'RepairFlow' : undefined} />
+      <FixerMark className={MARK_SIZES[size]} title={variant === 'mark' ? 'Fixer' : undefined} />
 
       {variant === 'full' && (
         <span className="flex min-w-0 flex-col leading-none">
           <span
             className={cn(
-              'font-extrabold tracking-tight text-foreground',
+              'inline-flex items-center font-extrabold tracking-tight text-foreground',
               TEXT_SIZES[size],
               'rf-brand-text'
             )}
+            aria-label="Fixer"
           >
-            RepairFlow
+            <span>Fi</span>
+            <FixerMark className="mx-0.5 h-[1.05em] w-[1.05em]" />
+            <span>er</span>
           </span>
           {suffix && (
             <span className="mt-1 truncate text-2xs font-medium uppercase tracking-widest text-foreground-subtle">
