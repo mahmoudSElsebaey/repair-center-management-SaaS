@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
@@ -7,6 +7,8 @@ import { Logo } from '@/components/ui/Logo';
 export function SiteFooter() {
   const { t } = useTranslation();
   const year = new Date().getFullYear();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const productLinks = [
     { key: 'landing.showcase.services.overline', href: '/#services' },
@@ -65,7 +67,7 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          <FooterColumn title={t('landing.footer.product')} links={productLinks} />
+          <FooterColumn title={t('landing.footer.product')} links={productLinks} sectionLinks />
           <FooterColumn title={t('landing.footer.company')} links={companyLinks} />
           <FooterColumn title={t('landing.footer.resources')} links={resourceLinks} />
           <FooterColumn title={t('landing.footer.legal')} links={legalLinks} />
@@ -92,11 +94,15 @@ export function SiteFooter() {
 function FooterColumn({
   title,
   links,
+  sectionLinks = false,
 }: {
   title: string;
   links: { key: string; href: string }[];
+  sectionLinks?: boolean;
 }) {
   const { t } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -106,7 +112,24 @@ function FooterColumn({
           <li key={link.key}>
             <Link
               to={link.href}
-              onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'auto' })}
+              onClick={(event) => {
+                if (!sectionLinks) {
+                  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+                  return;
+                }
+                const id = link.href.split('#')[1];
+                if (!id) return;
+                event.preventDefault();
+                const scrollToSection = () => {
+                  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                };
+                if (location.pathname === '/') {
+                  scrollToSection();
+                } else {
+                  navigate('/#' + id);
+                  window.setTimeout(scrollToSection, 80);
+                }
+              }}
               className="text-sm text-foreground-muted transition-colors duration-fast hover:text-foreground"
             >
               {t(link.key)}
