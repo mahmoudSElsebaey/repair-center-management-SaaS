@@ -15,21 +15,25 @@ export function SiteFooter() {
     { key: 'landing.nav.pricing', href: '/#pricing' },
   ];
 
+  const companyLinks = [
+    { key: 'landing.footer.about', href: '/about' },
+    { key: 'landing.footer.contact', href: '/contact' },
+  ];
+
   const resourceLinks = [
-    { key: 'landing.footer.docs', href: '/#features' },
-    { key: 'landing.footer.status', href: '/#analytics' },
-    { key: 'landing.footer.contact', href: '/#cta' },
+    { key: 'landing.footer.docs', href: '/docs' },
+    { key: 'landing.footer.status', href: '/status' },
   ];
 
   const legalLinks = [
-    { key: 'landing.footer.privacy', href: '/#features' },
-    { key: 'landing.footer.terms', href: '/#features' },
+    { key: 'landing.footer.privacy', href: '/privacy' },
+    { key: 'landing.footer.terms', href: '/terms' },
   ];
 
   return (
     <footer className="relative mt-24 border-t border-border bg-surface/40">
       <div className="rf-container py-14">
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
           <div>
             <Logo size="md" suffix={t('brand.tagline')} />
 
@@ -61,6 +65,7 @@ export function SiteFooter() {
           </div>
 
           <FooterColumn title={t('landing.footer.product')} links={productLinks} />
+          <FooterColumn title={t('landing.footer.company')} links={companyLinks} />
           <FooterColumn title={t('landing.footer.resources')} links={resourceLinks} />
           <FooterColumn title={t('landing.footer.legal')} links={legalLinks} />
         </div>
