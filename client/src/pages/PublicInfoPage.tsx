@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -134,7 +134,7 @@ function ContactItem({
   label,
   href,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   href?: string;
 }) {
