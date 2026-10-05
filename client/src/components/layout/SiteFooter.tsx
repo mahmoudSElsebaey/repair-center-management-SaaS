@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Github, Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 
 /** Public site footer. Keeps the landing page honest about what is shipped. */
@@ -35,7 +35,7 @@ export function SiteFooter() {
       <div className="rf-container py-14">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
           <div>
-            <Logo size="md" suffix={t('brand.tagline')} />
+            <Logo size="xl" suffix={t('brand.tagline')} />
 
             <p className="mt-5 max-w-sm text-sm text-foreground-muted">
               {t('landing.footer.tagline')}
@@ -78,16 +78,9 @@ export function SiteFooter() {
           </p>
 
           <div className="flex items-center gap-4">
-            <p className="text-xs text-foreground-subtle">{t('landing.footer.builtWith')}</p>
-            <a
-              href="https://github.com/mahmoudSElsebaey"
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="GitHub"
-              className="text-foreground-subtle transition-colors duration-fast hover:text-foreground"
-            >
-              <Github className="h-4 w-4" aria-hidden="true" />
-            </a>
+            <p className="text-xs text-foreground-subtle">
+              {t('landing.footer.builtWith')} · {t('landing.footer.builtBy')}
+            </p>
           </div>
         </div>
       </div>
@@ -112,6 +105,7 @@ function FooterColumn({
           <li key={link.key}>
             <Link
               to={link.href}
+              onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'auto' })}
               className="text-sm text-foreground-muted transition-colors duration-fast hover:text-foreground"
             >
               {t(link.key)}
