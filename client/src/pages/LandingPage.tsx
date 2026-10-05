@@ -14,6 +14,7 @@ import {
   TestimonialsSection,
 } from '@/components/landing/SocialProofSections';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+import { ServicesShowcaseSection, VisualShowcaseSection } from '@/components/landing/VisualShowcaseSections';
 
 /**
  * Public marketing page.
@@ -29,6 +30,8 @@ export default function LandingPage() {
   return (
     <PageTransition>
       <HeroSection />
+      <VisualShowcaseSection />
+      <ServicesShowcaseSection />
       <HowItWorksSection />
       <WorkflowSection />
       <FeaturesSection />
