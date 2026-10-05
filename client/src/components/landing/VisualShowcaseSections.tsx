@@ -29,15 +29,6 @@ export function VisualShowcaseSection() {
   return (
     <section className="border-y border-border bg-surface/20 py-16 sm:py-20">
       <div className="rf-container">
-        <Reveal>
-          <SectionHeading
-            align="start"
-            overline={t('landing.showcase.overline')}
-            title={t('landing.showcase.title')}
-            subtitle={t('landing.showcase.subtitle')}
-          />
-        </Reveal>
-
         <div className="mt-10 overflow-hidden rounded-3xl border border-border bg-background/70 shadow-xl backdrop-blur-sm">
           <Swiper
             modules={[Autoplay, EffectFade]}
@@ -70,13 +61,13 @@ export function VisualShowcaseSection() {
                         initial={{ opacity: 0, y: 28, x: -18 }}
                         animate={{ opacity: 1, y: 0, x: 0 }}
                         transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
-                        className="max-w-xl"
+                        className="max-w-xl drop-shadow-[0_3px_10px_rgba(0,0,0,0.38)] dark:drop-shadow-[0_4px_14px_rgba(0,0,0,0.72)]"
                       >
                         <p className="rf-overline">{String(index + 1).padStart(2, '0')}</p>
                         <h3 className="mt-3 text-3xl font-bold text-foreground text-balance sm:text-5xl">
                           {t('landing.showcase.panels.' + panel.key + '.title')}
                         </h3>
-                        <p className="mt-5 text-base leading-relaxed text-foreground-muted sm:text-lg">
+                        <p className="mt-5 text-base leading-relaxed text-foreground-muted drop-shadow-[0_2px_7px_rgba(0,0,0,0.28)] dark:drop-shadow-[0_3px_10px_rgba(0,0,0,0.62)] sm:text-lg">
                           {t('landing.showcase.panels.' + panel.key + '.body')}
                         </p>
                       </motion.div>
