@@ -315,12 +315,12 @@ async function seedNotifications(): Promise<void> {
 async function main(): Promise<void> {
   const started = Date.now();
   console.log('\x1b[36m┌──────────────────────────────────────────────┐');
-  console.log('│  RepairFlow — development seed               │');
+  console.log('│  Fixer — development seed               │');
   console.log('└──────────────────────────────────────────────┘\x1b[0m');
   await mongoose.connect(config.mongodbUri, { serverSelectionTimeoutMS: 10_000 });
   console.log(`\n  connected → ${mongoose.connection.name}`);
   if (isFresh) {
-    heading('Resetting RepairFlow collections (--fresh)');
+    heading('Resetting Fixer collections (--fresh)');
     const ours = [
       'users',
       'branches',
