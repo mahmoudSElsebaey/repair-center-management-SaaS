@@ -27,7 +27,7 @@ export default {
     history: 'سجل الحالات',
     privacyNote:
       'تعرض هذه الصفحة معلومات عامة محدودة فقط. التكاليف وملاحظات التشخيص وبيانات الاتصال تبقى خاصة.',
-    backHome: 'العودة إلى RepairFlow',
+    backHome: 'العودة إلى Fixer',
     qr: {
       title: 'تتبع العميل',
       badge: 'QR',
