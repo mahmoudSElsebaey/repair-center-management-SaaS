@@ -24,7 +24,7 @@ async function start(): Promise<void> {
 
     server = app.listen(config.port, () => {
       console.log(
-        `[api] RepairFlow v${config.apiVersion} listening on http://localhost:${config.port}/api/v1  (${config.nodeEnv})`
+        `[api] Fixer v${config.apiVersion} listening on http://localhost:${config.port}/api/v1  (${config.nodeEnv})`
       );
     });
   } catch (error) {
