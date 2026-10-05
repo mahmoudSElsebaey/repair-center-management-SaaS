@@ -5,7 +5,6 @@ import { Check, Copy, ExternalLink, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { env } from '@/lib/env';
-import { cn } from '@/lib/utils';
 
 function buildTrackUrl(code: string): string {
   const base = env.publicTrackingBase.replace(/\/+$/, '');

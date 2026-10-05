@@ -5,7 +5,14 @@ import { cn } from '@/lib/utils';
  * Skip-to-main-content link for keyboard and screen-reader users.
  * Visually hidden until focused. Place as the first focusable element in the document.
  */
-export function SkipLink({ targetId = 'main-content' }: { targetId?: string }) {
+export function SkipLink({
+  targetId = 'main-content',
+  label,
+}: {
+  targetId?: string;
+  /** Optional override; defaults to i18n a11y.skipToContent */
+  label?: string;
+}) {
   const { t } = useTranslation();
 
   return (
@@ -18,7 +25,7 @@ export function SkipLink({ targetId = 'main-content' }: { targetId?: string }) {
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
       )}
     >
-      {t('a11y.skipToContent')}
+      {label ?? t('a11y.skipToContent')}
     </a>
   );
 }

@@ -5,7 +5,6 @@ import {
   Building2,
   CalendarClock,
   CheckCircle2,
-  MapPin,
   Phone,
   QrCode,
   Search,

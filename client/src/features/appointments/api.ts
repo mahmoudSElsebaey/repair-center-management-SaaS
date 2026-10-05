@@ -11,20 +11,22 @@ import type {
   UpdateAppointmentPayload,
 } from './types';
 
+type QueryParams = Record<string, string | number | boolean | null | undefined>;
+
 export const appointmentsApi = {
   list: async (
     query: AppointmentQuery = {}
   ): Promise<{ items: Appointment[]; meta?: PaginationMeta }> => {
     const { data, meta } = await requestWithMeta<Appointment[]>({
       method: 'GET',
-      url: `/appointments${toQueryString(query as Record<string, string | number | undefined>)}`,
+      url: `/appointments${toQueryString(query as QueryParams)}`,
     });
     return { items: data ?? [], meta };
   },
 
   calendar: (query: CalendarQuery) =>
     api.get<Appointment[]>(
-      `/appointments/calendar${toQueryString(query as Record<string, string | number | undefined>)}`
+      `/appointments/calendar${toQueryString(query as QueryParams)}`
     ),
 
   get: (id: string) => api.get<AppointmentDetail>(`/appointments/${id}`),
@@ -51,6 +53,6 @@ export const appointmentsApi = {
     excludeId?: string;
   }) =>
     api.get<ConflictResult>(
-      `/appointments/conflicts${toQueryString(params as Record<string, string | number | undefined>)}`
+      `/appointments/conflicts${toQueryString(params as QueryParams)}`
     ),
 };

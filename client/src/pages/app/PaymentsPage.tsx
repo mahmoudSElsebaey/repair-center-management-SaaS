@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { CreditCard } from 'lucide-react';
 
 import { Badge } from '@/components/ui/Badge';
 import { DataTable, TableToolbar, type Column } from '@/components/tables/DataTable';

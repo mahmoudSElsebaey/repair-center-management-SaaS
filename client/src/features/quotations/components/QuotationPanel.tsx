@@ -10,7 +10,7 @@ import type { Quotation } from '@/features/quotations/types';
 import type { QuotationLineType } from '@/types/domain';
 import { QUOTATION_LINE_TYPES } from '@/types/domain';
 import { activeLocale } from '@/lib/i18nText';
-import { cn, formatCurrency, getErrorMessage } from '@/lib/utils';
+import { formatCurrency, getErrorMessage } from '@/lib/utils';
 
 interface LineDraft {
   type: QuotationLineType;

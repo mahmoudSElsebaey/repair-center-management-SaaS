@@ -8,11 +8,13 @@ export interface AnalyticsQuery {
   branch?: string;
 }
 
+type QueryParams = Record<string, string | number | boolean | null | undefined>;
+
 export const reportsApi = {
   /**
    * Revenue, payments, repairs and technician performance over a date range.
    * Branch-scoped by the API (super_admin may pass branch).
    */
   analytics: (query: AnalyticsQuery = {}) =>
-    api.get<AnalyticsData>(`/reports/analytics${toQueryString(query)}`),
+    api.get<AnalyticsData>(`/reports/analytics${toQueryString(query as QueryParams)}`),
 };
