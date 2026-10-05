@@ -2,19 +2,19 @@
 <html lang="ar" dir="rtl" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/brand/repairflow-mark.svg" />
+    <link rel="icon" type="image/svg+xml" href="/brand/fixer-mark.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#070A12" />
 
-    <title>RepairFlow — نظام إدارة مراكز الصيانة</title>
+    <title>Fixer — نظام إدارة مراكز الصيانة</title>
     <meta
       name="description"
-      content="RepairFlow is the operations platform for repair businesses: customers, devices, repair tickets, technicians, spare parts, invoices and payments in one system."
+      content="Fixer is the operations platform for repair businesses: customers, devices, repair tickets, technicians, spare parts, invoices and payments in one system."
     />
     <meta name="robots" content="index, follow" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="RepairFlow" />
-    <meta property="og:title" content="RepairFlow — Repair Center Operations Platform" />
+    <meta property="og:site_name" content="Fixer" />
+    <meta property="og:title" content="Fixer — Repair Center Operations Platform" />
     <meta
       property="og:description"
       content="Run the whole repair operation from intake to warranty: tickets, technicians, parts, approvals, invoices and customer tracking."
@@ -32,11 +32,11 @@
       // Apply the stored theme before first paint to avoid a flash of the wrong theme.
       (function () {
         try {
-          var theme = localStorage.getItem('repairflow:theme');
+          var theme = localStorage.getItem('fixer:theme');
           if (theme === 'light' || theme === 'dark') {
             document.documentElement.setAttribute('data-theme', theme);
           }
-          var lang = localStorage.getItem('repairflow:lang');
+          var lang = localStorage.getItem('fixer:lang');
           if (lang === 'ar' || lang === 'en') {
             document.documentElement.lang = lang;
             document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
