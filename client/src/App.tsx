@@ -17,6 +17,7 @@ const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'))
 const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 const TrackPage = lazy(() => import('@/pages/TrackPage'));
+const PublicInfoPage = lazy(() => import('@/pages/PublicInfoPage'));
 
 const DashboardPage = lazy(() => import('@/pages/app/DashboardPage'));
 const ProfilePage = lazy(() => import('@/pages/app/ProfilePage'));
@@ -65,6 +66,12 @@ export default function App() {
             <Route index element={<LandingPage />} />
             <Route path="track" element={<TrackPage />} />
             <Route path="track/:code" element={<TrackPage />} />
+            <Route path="about" element={<PublicInfoPage />} />
+            <Route path="contact" element={<PublicInfoPage />} />
+            <Route path="docs" element={<PublicInfoPage />} />
+            <Route path="status" element={<PublicInfoPage />} />
+            <Route path="privacy" element={<PublicInfoPage />} />
+            <Route path="terms" element={<PublicInfoPage />} />
           </Route>
 
           <Route element={<PublicOnlyRoute />}>
