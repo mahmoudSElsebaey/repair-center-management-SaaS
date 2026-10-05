@@ -78,7 +78,7 @@ cd ../server && npm run seed
 # terminal 2: cd client && npm run dev
 ```
 
-Open **http://localhost:5173**. Demo password: **`RepairFlow@2026`**
+Open **http://localhost:5173**. Demo password: **`Fixer@2026`**
 
 ### Production smoke
 
@@ -90,16 +90,16 @@ API_BASE=https://your-api/api/v1 bash artifacts/phase14/scripts/prod-smoke.sh
 
 ## Demo accounts
 
-Shared password: **`RepairFlow@2026`**
+Shared password: **`Fixer@2026`**
 
 | Role | Email |
 | ---- | ----- |
-| Super Admin | `mahmoud.elsebaey@repairflow.app` |
-| Admin | `nourhan.abdelaziz@repairflow.app` |
-| Branch Manager | `karim.mansour@repairflow.app` |
-| Technician | `youssef.ragab@repairflow.app` |
-| Receptionist | `ahmed.sherif@repairflow.app` |
-| Inventory Manager | `doaa.kamel@repairflow.app` |
+| Super Admin | `mahmoud.elsebaey@fixer.app` |
+| Admin | `nourhan.abdelaziz@fixer.app` |
+| Branch Manager | `karim.mansour@fixer.app` |
+| Technician | `youssef.ragab@fixer.app` |
+| Receptionist | `ahmed.sherif@fixer.app` |
+| Inventory Manager | `doaa.kamel@fixer.app` |
 
 ---
 
