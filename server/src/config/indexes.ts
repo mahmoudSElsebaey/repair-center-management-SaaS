@@ -21,7 +21,7 @@ type IndexSpec = {
   };
 };
 
-/** Production-critical indexes for RepairFlow domain models. */
+/** Production-critical indexes for Fixer domain models. */
 export const CRITICAL_INDEXES: IndexSpec[] = [
   // Auth / users
   { collection: 'users', keys: { email: 1 }, options: { unique: true, name: 'users_email_unique' } },
