@@ -1,4 +1,5 @@
 // Auto-generated — ar.g2
+// Note: full `dashboard` keys live in ar_g3.ts only (avoid shallow-merge gaps).
 export default {
   customers: {
     title: 'العملاء',
@@ -120,7 +121,7 @@ export default {
     subtitle: 'المهام والموافقات وتنبيهات المخزون الموجّهة إليك.',
     empty: 'لا يوجد جديد',
     emptyBody: 'ستظهر هنا المهام الجديدة والموافقات.',
-    markAllRead: 'تعليميز الكل كمقروء',
+    markAllRead: 'تعييز الكل كمقروء',
     markRead: 'تمييز كمقروء',
     allMarkedRead: 'تم تمييز كل الإشعارات كمقروءة',
     unreadOnly: 'غير المقروء فقط',
@@ -180,52 +181,6 @@ export default {
     repairReady: {
       title: 'الصيانة جاهزة للاستلام',
       body: '{{code}} — {{device}} اجتازت المنضدة.',
-    },
-  },
-  dashboard: {
-    title: 'نظرة عامة على التشغيل',
-    subtitle: 'أرقام حية من الورشة — ليست أرقاماً وهمية.',
-    lastUpdated: 'آخر تحديث {{time}}',
-    refresh: 'تحديث',
-    metrics: {
-      receivedToday: 'مستلمة اليوم',
-      activeRepairs: 'صيانات نشطة',
-      awaitingApproval: 'بانتظار الموافقة',
-      awaitingParts: 'بانتظار القطع',
-      readyPickup: 'جاهزة للاستلام',
-      completed: 'مكتملة',
-      customers: 'العملاء',
-      devices: 'الأجهزة',
-      revenue: 'الإيراد',
-      outstanding: 'مستحق',
-    },
-    sections: {
-      activityOverTime: 'النشاط عبر الوقت',
-      activityOverTimeHint: 'إجراءات مسجّلة خلال آخر 14 يوماً',
-      staffByRole: 'الفريق حسب الدور',
-      staffByRoleHint: 'من يعمل وماذا يفعل',
-      branchStrength: 'عدد الموظفين حسب الفرع',
-      branchStrengthHint: 'أين ينتشر الفريق',
-      statusDistribution: 'توزيع حالات الصيانة',
-      technicianWorkload: 'عبء عمل الفنيين',
-      recentActivity: 'النشاط الأخير',
-      lowStock: 'قطع منخفضة المخزون',
-      upcoming: 'يأتي مع مرحلة لاحقة',
-      upcomingBody:
-        'يمتلئ هذا اللوح تلقائياً عند وجود تذاكر وعملاء ومخزون. لا تُعرض أرقام وهمية.',
-    },
-    quickActions: {
-      title: 'إجراءات سريعة',
-      newRepair: 'تذكرة صيانة جديدة',
-      newCustomer: 'تسجيل عميل',
-      newDevice: 'إضافة جهاز',
-      recordPayment: 'تسجيل دفعة',
-    },
-    empty: {
-      activity: 'لا يوجد نشاط مسجَّل بعد',
-      activityBody: 'ستظهر هنا حركات التذاكر وتغيّرات المخزون.',
-      workload: 'لا يوجد فنيون مُسنَدون بعد',
-      branches: 'لا توجد فروع مُعدّة بعد',
     },
   },
 } as const;
