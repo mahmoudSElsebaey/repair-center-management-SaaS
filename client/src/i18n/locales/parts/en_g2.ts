@@ -97,7 +97,7 @@ export default {
     unreadOnly: 'Unread only', showAll: 'Show all', unreadCount: '{{count}} unread', viewAll: 'View all notifications',
     severity: { info: 'Information', success: 'Completed', warning: 'Needs attention', critical: 'Urgent' },
     seed: {
-      welcome: { title: 'Welcome to RepairFlow', body: 'You are managing {{branch}}. Your workspace is ready.' },
+      welcome: { title: 'Welcome to Fixer', body: 'You are managing {{branch}}. Your workspace is ready.' },
       staffAdded: { title: 'New technician added', body: '{{name}} was added to your branch and is available for assignment.' },
       lowStock: { title: 'Stock below minimum', body: '{{count}} spare parts have fallen below their minimum level.' },
       phaseNotice: { title: 'Dashboard updated', body: 'Your operations dashboard now reads live data from the workshop.' },
