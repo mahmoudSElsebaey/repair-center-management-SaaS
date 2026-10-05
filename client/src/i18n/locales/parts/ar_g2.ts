@@ -78,7 +78,7 @@ export default {
     showAll: 'عرض الكل', unreadCount: '{{count}} غير مقروء', viewAll: 'عرض كل الإشعارات',
     severity: { info: 'معلومة', success: 'مكتمل', warning: 'يحتاج انتباه', critical: 'عاجل' },
     seed: {
-      welcome: { title: 'مرحباً بك في ريبير فلو', body: 'أنت تدير {{branch}}. مساحة عملك جاهزة.' },
+      welcome: { title: 'مرحباً بك في Fixer', body: 'أنت تدير {{branch}}. مساحة عملك جاهزة.' },
       staffAdded: { title: 'أُضيف فني جديد', body: 'أُضيف {{name}} إلى فرعك وهو متاح للتعيين.' },
       lowStock: { title: 'مخزون دون الحد الأدنى', body: '{{count}} قطعة/قطع انخفضت عن الحد الأدنى.' },
       phaseNotice: { title: 'تحديث لوحة التحكم', body: 'لوحة التشغيل تقرأ الآن بيانات حية من الورشة.' },
