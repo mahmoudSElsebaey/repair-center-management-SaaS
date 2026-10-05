@@ -49,10 +49,10 @@ export function SiteFooter() {
               <li className="flex items-center gap-2.5">
                 <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
                 <a
-                  href="mailto:hello@repairflow.app"
+                  href="mailto:hello@fixer.app"
                   className="transition-colors duration-fast hover:text-foreground"
                 >
-                  hello@repairflow.app
+                  hello@fixer.app
                 </a>
               </li>
               <li className="flex items-center gap-2.5">
