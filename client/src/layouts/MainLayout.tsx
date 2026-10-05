@@ -20,6 +20,7 @@ const SECTIONS = [
   { id: 'features', key: 'landing.nav.features' },
   { id: 'inventory', key: 'landing.nav.inventory' },
   { id: 'analytics', key: 'landing.nav.analytics' },
+  { id: 'services', key: 'landing.showcase.services.overline' },
   { id: 'pricing', key: 'landing.nav.pricing' },
 ] as const;
 
