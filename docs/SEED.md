@@ -1,6 +1,6 @@
-# RepairFlow — Seed Data
+# Fixer — Seed Data
 
-RepairFlow ships a realistic development tenant so every screen can be exercised without hand-typing records. The data models an Egyptian repair chain with a flagship workshop in Cairo and a satellite service point in Alexandria.
+Fixer ships a realistic development tenant so every screen can be exercised without hand-typing records. The data models an Egyptian repair chain with a flagship workshop in Cairo and a satellite service point in Alexandria.
 
 ---
 
@@ -10,7 +10,7 @@ RepairFlow ships a realistic development tenant so every screen can be exercised
 cd server
 
 npm run seed              # idempotent — converges the demo tenant
-npm run seed -- --fresh   # clears RepairFlow collections first, then seeds
+npm run seed -- --fresh   # clears Fixer collections first, then seeds
 ```
 
 If `tsx` cannot launch its helper process in your environment (see [ARCHITECTURE.md §13](./ARCHITECTURE.md)), use the spawn-free variant, which compiles first and then runs the emitted JavaScript:
@@ -52,13 +52,13 @@ If you override it, set the matching `VITE_DEMO_PASSWORD` in `client/.env` so th
 
 | Role | Name | Email | Branch |
 | ---- | ---- | ----- | ------ |
-| `super_admin` | Mahmoud Said El-Sebaey | `mahmoud.elsebaey@repairflow.app` | *all branches* |
-| `admin` | Nourhan Abdelaziz | `nourhan.abdelaziz@repairflow.app` | CAI-01 |
-| `manager` | Karim Fathy Mansour | `karim.mansour@repairflow.app` | CAI-01 |
-| `technician` | Youssef Hany Ragab | `youssef.ragab@repairflow.app` | CAI-01 |
-| `technician` | Salma Ibrahim Zaki | `salma.zaki@repairflow.app` | ALX-02 |
-| `receptionist` | Ahmed Gamal Sherif | `ahmed.sherif@repairflow.app` | CAI-01 |
-| `inventory_manager` | Doaa Mostafa Kamel | `doaa.kamel@repairflow.app` | CAI-01 |
+| `super_admin` | Mahmoud Said El-Sebaey | `mahmoud.elsebaey@fixer.app` | *all branches* |
+| `admin` | Nourhan Abdelaziz | `nourhan.abdelaziz@fixer.app` | CAI-01 |
+| `manager` | Karim Fathy Mansour | `karim.mansour@fixer.app` | CAI-01 |
+| `technician` | Youssef Hany Ragab | `youssef.ragab@fixer.app` | CAI-01 |
+| `technician` | Salma Ibrahim Zaki | `salma.zaki@fixer.app` | ALX-02 |
+| `receptionist` | Ahmed Gamal Sherif | `ahmed.sherif@fixer.app` | CAI-01 |
+| `inventory_manager` | Doaa Mostafa Kamel | `doaa.kamel@fixer.app` | CAI-01 |
 
 Sign in as several of them. The sidebar is generated from the navigation model filtered by role, so a technician and a super admin genuinely see different products.
 
@@ -114,7 +114,7 @@ The seed exists to make development honest, so it follows three rules:
 ## Resetting
 
 ```bash
-# Remove only RepairFlow data and reseed
+# Remove only Fixer data and reseed
 cd server && npm run seed -- --fresh
 
 # Or remove the database entirely, then reseed
