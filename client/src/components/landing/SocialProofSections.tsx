@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
 import { A11y, Autoplay, Keyboard, Pagination } from 'swiper/modules';
 import { Check, Quote, ShieldCheck } from 'lucide-react';
 import { Section, SectionHeading } from '@/components/layout/Section';
