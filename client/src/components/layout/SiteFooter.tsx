@@ -74,7 +74,7 @@ export function SiteFooter() {
 
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <p className="text-xs text-foreground-subtle">
-            © {year} RepairFlow. {t('landing.footer.rights')}
+            © {year} Fixer. {t('landing.footer.rights')}
           </p>
 
           <div className="flex items-center gap-4">
