@@ -23,12 +23,11 @@ const SERVICES = [
 function ImmersivePanel({
   panel,
   index,
-  t,
 }: {
   panel: (typeof SHOWCASE_PANELS)[number];
   index: number;
-  t: (key: string) => string;
 }) {
+  const { t } = useTranslation();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
   const imageY = useTransform(scrollYProgress, [0, 1], ['-7%', '7%']);
@@ -76,7 +75,7 @@ export function VisualShowcaseSection() {
         </Reveal>
       </div>
       {SHOWCASE_PANELS.map((panel, index) => (
-        <ImmersivePanel key={panel.key} panel={panel} index={index} t={t} />
+        <ImmersivePanel key={panel.key} panel={panel} index={index} />
       ))}
     </div>
   );
