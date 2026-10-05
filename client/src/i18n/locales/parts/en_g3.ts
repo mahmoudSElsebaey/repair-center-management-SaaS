@@ -1,10 +1,16 @@
-// Auto-generated — en.g3
+// Auto-generated — en.g3 (completed dashboard keys used by DashboardPage)
 export default {
   dashboard: {
     title: 'Operations overview',
     subtitle: 'Live figures from the workshop — not placeholders.',
     lastUpdated: 'Updated {{time}}',
     refresh: 'Refresh',
+    welcomeBack: 'Welcome back, {{name}}',
+    greetingMorning: 'Good morning',
+    greetingAfternoon: 'Good afternoon',
+    greetingEvening: 'Good evening',
+    scopeGlobal: 'All branches',
+    scopeBranch: 'This branch',
     metrics: {
       receivedToday: 'Received today',
       activeRepairs: 'Active repairs',
@@ -16,6 +22,8 @@ export default {
       devices: 'Devices',
       revenue: 'Revenue',
       outstanding: 'Outstanding',
+      staff: 'Staff',
+      branches: 'Branches',
     },
     sections: {
       activityOverTime: 'Activity over time',
@@ -62,6 +70,8 @@ export default {
     apiConnected: 'Connected',
     apiChecking: 'Checking…',
     apiDown: 'Unreachable',
+    visitWebsite: 'Public website',
+    visitWebsiteHint: 'Open the marketing site and public tracking pages',
   },
   notFound: {
     title: 'Page not found',

@@ -1,7 +1,7 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronsLeft, Lock } from 'lucide-react';
+import { ChevronsLeft, ExternalLink, Lock } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { LogoutButton } from '@/components/layout/LogoutButton';
 import { visibleNavGroups } from '@/config/navigation';
@@ -13,10 +13,8 @@ import { cn, initials } from '@/lib/utils';
 /**
  * Operations sidebar.
  *
- * Renders from the navigation model filtered by role, so a receptionist and an
- * administrator genuinely see different products. Entries belonging to a later
- * phase are shown as locked rather than hidden, which keeps the roadmap legible
- * without pretending the screen exists.
+ * Renders from the navigation model filtered by role. Logo links to the public
+ * marketing site so staff can return home without signing out.
  */
 export function Sidebar() {
   const { t } = useTranslation();
@@ -86,7 +84,6 @@ export function Sidebar() {
                   >
                     {({ isActive }) => (
                       <>
-                        {/* Active rail — flips to the correct edge in RTL automatically. */}
                         {isActive && (
                           <span
                             className="absolute inset-y-1.5 start-0 w-0.5 rounded-full bg-primary"
@@ -132,6 +129,22 @@ export function Sidebar() {
         </div>
       )}
 
+      {/* Public site — available without signing out */}
+      <Link
+        to="/"
+        title={t('dashboardShell.visitWebsiteHint')}
+        className={cn(
+          'mb-2 flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium',
+          'text-foreground-muted transition-colors duration-fast',
+          'hover:bg-surface-hover hover:text-foreground',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60',
+          isCollapsed && 'justify-center px-2'
+        )}
+      >
+        <ExternalLink className="h-4 w-4 shrink-0" aria-hidden="true" />
+        {!isCollapsed && <span className="flex-1 truncate">{t('dashboardShell.visitWebsite')}</span>}
+      </Link>
+
       <LogoutButton className={cn(isCollapsed && 'justify-center px-0')} />
     </div>
   );
@@ -152,12 +165,14 @@ export function Sidebar() {
             collapsed ? 'justify-center px-2' : 'justify-between'
           )}
         >
-          <NavLink
-            to="/app"
+          {/* Logo → public marketing home (not /app) */}
+          <Link
+            to="/"
+            title={t('dashboardShell.visitWebsite')}
             className="rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
           >
             <Logo variant={collapsed ? 'mark' : 'full'} size="sm" />
-          </NavLink>
+          </Link>
 
           {!collapsed && (
             <button
@@ -203,7 +218,6 @@ export function Sidebar() {
               aria-hidden="true"
             />
 
-            {/* The drawer enters from the inline-start edge: right in RTL, left in LTR. */}
             <motion.aside
               key={isRtl ? 'rtl' : 'ltr'}
               initial={prefersReduced ? { opacity: 0 } : { x: isRtl ? '100%' : '-100%' }}
@@ -216,7 +230,9 @@ export function Sidebar() {
               )}
             >
               <div className="flex h-topbar shrink-0 items-center border-b border-border px-4">
-                <Logo size="sm" />
+                <Link to="/" onClick={() => dispatch(setMobileNav(false))}>
+                  <Logo size="sm" />
+                </Link>
               </div>
 
               {navBody(false, () => dispatch(setMobileNav(false)))}
