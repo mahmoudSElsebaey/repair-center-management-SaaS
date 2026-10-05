@@ -213,6 +213,7 @@ export default {
       terms: 'الشروط',
       rights: 'جميع الحقوق محفوظة.',
       builtWith: 'مبني بـ React و Express و MongoDB.',
+      builtBy: 'تم تطويره بواسطة محمود السباعي.',
     },
   },
 } as const;
