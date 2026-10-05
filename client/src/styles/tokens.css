@@ -8,3 +8,320 @@
    Deep graphite ink, indigo-to-cyan energy reserved for live/active states,
    amber for operational waiting, teal for completed work.
    ========================================================================= */
+
+:root {
+  /* ---------- Typography ---------- */
+  --font-latin: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-arabic: 'Cairo', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-code: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* Fluid type scale — clamps keep large headings sane on phones. */
+  --text-2xs: 0.6875rem; /* 11px — table meta, overlines */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.8125rem; /* 13px — dense operational UI */
+  --text-base: 0.9375rem; /* 15px */
+  --text-lg: 1.0625rem; /* 17px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
+  --text-3xl: clamp(1.75rem, 1.4rem + 1.2vw, 2.125rem);
+  --text-4xl: clamp(2.125rem, 1.6rem + 2.2vw, 3rem);
+  --text-5xl: clamp(2.5rem, 1.7rem + 3.6vw, 4rem);
+  --text-6xl: clamp(3rem, 1.8rem + 5.2vw, 5.5rem);
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.35;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-widest: 0.16em;
+
+  --weight-light: 300;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  /* ---------- Spacing scale (4px base) ---------- */
+  --space-0: 0px;
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-14: 3.5rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ---------- Radii — machined, not bubbly ---------- */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.75rem;
+  --radius-full: 9999px;
+
+  /* ---------- Layout ---------- */
+  --container-max: 80rem; /* 1280px */
+  --container-narrow: 48rem;
+  --sidebar-width: 16.5rem; /* 264px */
+  --sidebar-width-collapsed: 4.75rem;
+  --topbar-height: 4rem;
+  --header-height: 4.5rem;
+  --drawer-width: 18rem;
+
+  /* ---------- Motion ---------- */
+  --duration-instant: 80ms;
+  --duration-fast: 140ms;
+  --duration-normal: 220ms;
+  --duration-slow: 360ms;
+  --duration-slower: 600ms;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 100;
+  --z-drawer: 300;
+  --z-overlay: 400;
+  --z-modal: 500;
+  --z-toast: 600;
+
+  /* ==========================================================================
+     DARK THEME (default brand experience)
+     ======================================================================= */
+  --ink: #070a12;
+  --ink-deep: #04060c;
+
+  --background: #070a12;
+  --background-subtle: #090d18;
+
+  --surface: #0e1420;
+  --surface-hover: #131b2a;
+  --surface-sunken: #0a0f1a;
+
+  --elevated: #151e2e;
+  --elevated-hover: #1a2436;
+
+  --overlay: rgba(4, 6, 12, 0.72);
+
+  --border: #223049;
+  --border-soft: #18222f;
+  --border-strong: #33456b;
+
+  --foreground: #eef2f8;
+  --foreground-muted: #8a9ab5;
+  --foreground-subtle: #5d6b85;
+  --foreground-inverted: #070a12;
+
+  /* Primary — Fixer indigo */
+  --primary: #4f5bf5;
+  --primary-hover: #6169f7;
+  --primary-active: #4348e0;
+  --primary-soft: rgba(79, 91, 245, 0.14);
+  --primary-ring: rgba(79, 91, 245, 0.45);
+  --primary-foreground: #ffffff;
+
+  /* Secondary — live signal cyan */
+  --secondary: #22d3ee;
+  --secondary-hover: #4fdff5;
+  --secondary-soft: rgba(34, 211, 238, 0.13);
+  --secondary-foreground: #04141a;
+
+  /* Accent — operational waiting amber */
+  --accent: #f59e0b;
+  --accent-hover: #fbb130;
+  --accent-soft: rgba(245, 158, 11, 0.14);
+  --accent-foreground: #1a1000;
+
+  /* Semantic */
+  --success: #14b8a6;
+  --success-hover: #2dd4bf;
+  --success-soft: rgba(20, 184, 166, 0.14);
+  --success-foreground: #04140f;
+
+  --warning: #f59e0b;
+  --warning-soft: rgba(245, 158, 11, 0.14);
+  --warning-foreground: #1a1000;
+
+  --danger: #f04438;
+  --danger-hover: #f2685e;
+  --danger-soft: rgba(240, 68, 56, 0.14);
+  --danger-foreground: #ffffff;
+
+  --info: #60a5fa;
+  --info-soft: rgba(96, 165, 250, 0.14);
+  --info-foreground: #04101f;
+
+  /* Repair workflow status colours — used by the ticket timeline in Phase 04 */
+  --status-received: #8a9ab5;
+  --status-diagnosing: #60a5fa;
+  --status-waiting-customer: #f59e0b;
+  --status-approved: #22d3ee;
+  --status-in-repair: #4f5bf5;
+  --status-waiting-parts: #fb923c;
+  --status-ready: #14b8a6;
+  --status-delivered: #10b981;
+  --status-cancelled: #f04438;
+
+  /* ---------- Gradients ---------- */
+  --gradient-brand: linear-gradient(135deg, #4f5bf5 0%, #22d3ee 100%);
+  --gradient-brand-soft: linear-gradient(
+    135deg,
+    rgba(79, 91, 245, 0.18) 0%,
+    rgba(34, 211, 238, 0.1) 100%
+  );
+  --gradient-surface: linear-gradient(180deg, rgba(21, 30, 46, 0.9) 0%, rgba(14, 20, 32, 0.9) 100%);
+  --gradient-sheen: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(238, 242, 248, 0.06) 45%,
+    transparent 70%
+  );
+  --gradient-grid: linear-gradient(rgba(34, 211, 238, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.055) 1px, transparent 1px);
+  --gradient-fade-bottom: linear-gradient(180deg, transparent 0%, var(--background) 100%);
+
+  /* ---------- Elevation ---------- */
+  --shadow-xs: 0 1px 2px rgba(3, 5, 10, 0.4);
+  --shadow-sm: 0 2px 6px rgba(3, 5, 10, 0.45);
+  --shadow-md: 0 8px 20px -6px rgba(3, 5, 10, 0.6);
+  --shadow-lg: 0 20px 40px -16px rgba(3, 5, 10, 0.7);
+  --shadow-xl: 0 32px 64px -24px rgba(3, 5, 10, 0.8);
+  --shadow-glow-primary: 0 0 0 1px rgba(79, 91, 245, 0.25), 0 12px 32px -12px rgba(79, 91, 245, 0.5);
+  --shadow-glow-secondary: 0 0 0 1px rgba(34, 211, 238, 0.25),
+    0 12px 32px -12px rgba(34, 211, 238, 0.45);
+  --shadow-inset: inset 0 1px 0 rgba(238, 242, 248, 0.05);
+
+  --focus-ring: 0 0 0 2px var(--background), 0 0 0 4px var(--primary-ring);
+
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   LIGHT THEME — same tokens, recalibrated for daylight/office use.
+   ========================================================================= */
+[data-theme='light'] {
+  --ink: #f4f6fb;
+  --ink-deep: #ffffff;
+
+  --background: #f4f6fb;
+  --background-subtle: #eceff7;
+
+  --surface: #ffffff;
+  --surface-hover: #f7f9fd;
+  --surface-sunken: #eef1f8;
+
+  --elevated: #ffffff;
+  --elevated-hover: #f7f9fd;
+
+  --overlay: rgba(15, 23, 42, 0.42);
+
+  --border: #dbe2ee;
+  --border-soft: #e8ecf5;
+  --border-strong: #b9c4d8;
+
+  --foreground: #0d1420;
+  --foreground-muted: #5b6b85;
+  --foreground-subtle: #8b98ad;
+  --foreground-inverted: #ffffff;
+
+  --primary: #4049d8;
+  --primary-hover: #4f5bf5;
+  --primary-active: #363fc0;
+  --primary-soft: rgba(64, 73, 216, 0.1);
+  --primary-ring: rgba(64, 73, 216, 0.35);
+  --primary-foreground: #ffffff;
+
+  --secondary: #0891b2;
+  --secondary-hover: #06a3c7;
+  --secondary-soft: rgba(8, 145, 178, 0.1);
+  --secondary-foreground: #ffffff;
+
+  --accent: #d97706;
+  --accent-hover: #f59e0b;
+  --accent-soft: rgba(217, 119, 6, 0.12);
+  --accent-foreground: #ffffff;
+
+  --success: #0d9488;
+  --success-hover: #14b8a6;
+  --success-soft: rgba(13, 148, 136, 0.12);
+  --success-foreground: #ffffff;
+
+  --warning: #d97706;
+  --warning-soft: rgba(217, 119, 6, 0.12);
+  --warning-foreground: #ffffff;
+
+  --danger: #dc2626;
+  --danger-hover: #ef4444;
+  --danger-soft: rgba(220, 38, 38, 0.1);
+  --danger-foreground: #ffffff;
+
+  --info: #2563eb;
+  --info-soft: rgba(37, 99, 235, 0.1);
+  --info-foreground: #ffffff;
+
+  --status-received: #64748b;
+  --status-diagnosing: #2563eb;
+  --status-waiting-customer: #d97706;
+  --status-approved: #0891b2;
+  --status-in-repair: #4049d8;
+  --status-waiting-parts: #ea580c;
+  --status-ready: #0d9488;
+  --status-delivered: #059669;
+  --status-cancelled: #dc2626;
+
+  --gradient-brand: linear-gradient(135deg, #4049d8 0%, #0891b2 100%);
+  --gradient-brand-soft: linear-gradient(
+    135deg,
+    rgba(64, 73, 216, 0.1) 0%,
+    rgba(8, 145, 178, 0.07) 100%
+  );
+  --gradient-surface: linear-gradient(180deg, #ffffff 0%, #fafbfe 100%);
+  --gradient-sheen: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(13, 20, 32, 0.04) 45%,
+    transparent 70%
+  );
+  --gradient-grid: linear-gradient(rgba(64, 73, 216, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(64, 73, 216, 0.07) 1px, transparent 1px);
+
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.07);
+  --shadow-md: 0 8px 20px -6px rgba(15, 23, 42, 0.12);
+  --shadow-lg: 0 20px 40px -16px rgba(15, 23, 42, 0.16);
+  --shadow-xl: 0 32px 64px -24px rgba(15, 23, 42, 0.2);
+  --shadow-glow-primary: 0 0 0 1px rgba(64, 73, 216, 0.2), 0 12px 28px -14px rgba(64, 73, 216, 0.4);
+  --shadow-glow-secondary: 0 0 0 1px rgba(8, 145, 178, 0.2),
+    0 12px 28px -14px rgba(8, 145, 178, 0.35);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+
+  color-scheme: light;
+}
+
+/* Reduced motion: collapse every token-driven duration. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 0ms;
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-slow: 0ms;
+    --duration-slower: 0ms;
+  }
+}
