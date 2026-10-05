@@ -24,24 +24,25 @@ const SERVICES = [
 ] as const;
 
 export function VisualShowcaseSection() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
-    <section className="border-y border-border bg-surface/20 py-16 sm:py-20">
+    <section className="relative overflow-hidden">
       <div className="rf-container">
-        <div className="mt-10 overflow-hidden rounded-3xl border border-border bg-background/70 shadow-xl backdrop-blur-sm">
+        <div className="w-full overflow-hidden">
           <Swiper
+            key={i18n.language}
             modules={[Autoplay, EffectFade]}
             effect="fade"
             fadeEffect={{ crossFade: true }}
             autoplay={{ delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }}
             loop
             speed={850}
-            className="rf-showcase-swiper"
+            className="rf-showcase-swiper !w-full"
           >
             {SHOWCASE_PANELS.map((panel, index) => (
               <SwiperSlide key={panel.key}>
-                <div className="relative min-h-[520px] overflow-hidden sm:min-h-[620px]">
+                <div className="relative min-h-[78vh] w-full overflow-hidden sm:min-h-[86vh] lg:min-h-[90vh]">
                   <motion.img
                     src={panel.image}
                     alt=""
@@ -54,7 +55,7 @@ export function VisualShowcaseSection() {
                   <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/65 to-background/10 dark:from-background/95 dark:via-background/70 dark:to-background/15" />
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_45%,rgba(79,91,245,0.18),transparent_45%)]" />
 
-                  <div className="relative flex min-h-[520px] items-center sm:min-h-[620px]">
+                  <div className="relative flex min-h-[78vh] items-center sm:min-h-[86vh] lg:min-h-[90vh]">
                     <div className="rf-container w-full">
                       <motion.div
                         key={panel.key}
@@ -63,11 +64,11 @@ export function VisualShowcaseSection() {
                         transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
                         className="max-w-xl drop-shadow-[0_3px_10px_rgba(0,0,0,0.38)] dark:drop-shadow-[0_4px_14px_rgba(0,0,0,0.72)]"
                       >
-                        <p className="rf-overline">{String(index + 1).padStart(2, '0')}</p>
+                        <p className="rf-overline text-white drop-shadow-[0_2px_5px_rgba(0,0,0,0.5)]">{String(index + 1).padStart(2, '0')}</p>
                         <h3 className="mt-3 text-3xl font-bold text-foreground text-balance sm:text-5xl">
                           {t('landing.showcase.panels.' + panel.key + '.title')}
                         </h3>
-                        <p className="mt-5 text-base leading-relaxed text-foreground-muted drop-shadow-[0_2px_7px_rgba(0,0,0,0.28)] dark:drop-shadow-[0_3px_10px_rgba(0,0,0,0.62)] sm:text-lg">
+                        <p className="mt-5 text-base leading-relaxed text-white/95 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)] sm:text-lg">
                           {t('landing.showcase.panels.' + panel.key + '.body')}
                         </p>
                       </motion.div>
