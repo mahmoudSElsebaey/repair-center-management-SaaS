@@ -115,6 +115,16 @@ export default {
       unlockCode: 'Unlock code',
       unlockCodeHint: 'Optional PIN, pattern or password needed to test the device.',
     },
+    types: {
+      smartphone: 'Smartphone',
+      laptop: 'Laptop',
+      tablet: 'Tablet',
+      desktop: 'Desktop',
+      tv: 'Television',
+      appliance: 'Appliance',
+      ac: 'Air conditioner',
+      other: 'Other',
+    },
     categories: {
       phone: 'Phone',
       tablet: 'Tablet',
