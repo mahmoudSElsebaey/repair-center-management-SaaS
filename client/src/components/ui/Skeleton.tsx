@@ -56,7 +56,6 @@ export function SkeletonCard({ className }: { className?: string }) {
 
 /**
  * Table loading placeholder used by DataTable while the first page loads.
- * Matches column count so the layout does not jump when real rows appear.
  */
 export function TableSkeleton({
   columns = 5,
@@ -91,7 +90,10 @@ export function TableSkeleton({
                 {Array.from({ length: columns }).map((_, col) => (
                   <td key={col} className="px-4 py-3">
                     <Skeleton
-                      className={cn('h-4', col === 0 ? 'w-28' : col === columns - 1 ? 'w-16' : 'w-24')}
+                      className={cn(
+                        'h-4',
+                        col === 0 ? 'w-28' : col === columns - 1 ? 'w-16' : 'w-24'
+                      )}
                     />
                   </td>
                 ))}
@@ -100,6 +102,56 @@ export function TableSkeleton({
           </tbody>
         </table>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Full-page loading skeleton (also re-exported for pages that import from ui/Skeleton).
+ * `rows` controls how many content placeholders are shown.
+ */
+export function PageSkeleton({
+  rows = 4,
+  className,
+}: {
+  rows?: number;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn('mx-auto max-w-6xl space-y-6 p-4 sm:p-6', className)}
+      role="status"
+      aria-busy="true"
+      aria-label="Loading page"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-48 sm:w-64" />
+          <Skeleton className="h-4 w-72 max-w-full" />
+        </div>
+        <Skeleton className="h-9 w-28" />
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <Skeleton className="h-9 w-24" />
+        <Skeleton className="h-9 w-24" />
+        <Skeleton className="h-9 w-32" />
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: Math.min(rows, 3) }).map((_, i) => (
+          <SkeletonCard key={i} />
+        ))}
+      </div>
+
+      {rows > 3 && (
+        <div className="space-y-3 rounded-xl border border-border bg-card p-4">
+          <Skeleton className="h-4 w-1/4" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-3/4" />
+        </div>
+      )}
     </div>
   );
 }
