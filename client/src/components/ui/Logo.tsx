@@ -7,24 +7,27 @@ const MARK_SIZES = {
   sm: 'h-7 w-7',
   md: 'h-9 w-9',
   lg: 'h-12 w-12',
+  xl: 'h-20 w-20',
 } as const;
 
 const LOGO_SIZES = {
   sm: 'h-7 w-auto',
   md: 'h-9 w-auto',
   lg: 'h-12 w-auto',
+  xl: 'h-20 w-auto',
 } as const;
 
 const LOGO_MAX_WIDTHS = {
   sm: 'max-w-[112px]',
   md: 'max-w-[144px]',
   lg: 'max-w-[184px]',
+  xl: 'max-w-[360px]',
 } as const;
 
 export interface LogoProps {
   /** `full` shows the uploaded Fixer wordmark; `mark` shows the compact symbol. */
   variant?: 'full' | 'mark';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
   /** Rendered below the wordmark, e.g. the product tagline. */
   suffix?: string;
