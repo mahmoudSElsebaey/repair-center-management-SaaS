@@ -31,7 +31,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'auth.login',
     messageKey: 'activity.auth.login',
     messageParams: { name: 'Ahmed Gamal Sherif' },
-    actorEmail: 'ahmed.sherif@repairflow.app',
+    actorEmail: 'ahmed.sherif@fixer.app',
   },
   {
     daysAgo: 0,
@@ -40,7 +40,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'auth.login',
     messageKey: 'activity.auth.login',
     messageParams: { name: 'Youssef Hany Ragab' },
-    actorEmail: 'youssef.ragab@repairflow.app',
+    actorEmail: 'youssef.ragab@fixer.app',
   },
   {
     daysAgo: 0,
@@ -49,7 +49,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'user.updated',
     messageKey: 'activity.user.updated',
     messageParams: { name: 'Doaa Mostafa Kamel', fields: 'phone' },
-    actorEmail: 'nourhan.abdelaziz@repairflow.app',
+    actorEmail: 'nourhan.abdelaziz@fixer.app',
     entityType: 'User',
     entityLabel: 'Doaa Mostafa Kamel',
   },
@@ -60,7 +60,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'user.created',
     messageKey: 'activity.user.created',
     messageParams: { name: 'Tarek Samir Abdallah', role: 'technician' },
-    actorEmail: 'mahmoud.elsebaey@repairflow.app',
+    actorEmail: 'mahmoud.elsebaey@fixer.app',
     entityType: 'User',
     entityLabel: 'Tarek Samir Abdallah',
   },
@@ -71,7 +71,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'auth.password_changed',
     messageKey: 'activity.auth.passwordChanged',
     messageParams: { name: 'Mostafa Adel Shaker' },
-    actorEmail: 'mostafa.shaker@repairflow.app',
+    actorEmail: 'mostafa.shaker@fixer.app',
   },
   {
     daysAgo: 1,
@@ -80,7 +80,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'auth.login',
     messageKey: 'activity.auth.login',
     messageParams: { name: 'Karim Fathy Mansour' },
-    actorEmail: 'karim.mansour@repairflow.app',
+    actorEmail: 'karim.mansour@fixer.app',
   },
   {
     daysAgo: 1,
@@ -89,7 +89,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'user.updated',
     messageKey: 'activity.user.updated',
     messageParams: { name: 'Hana Walid Farouk', fields: 'locale, phone' },
-    actorEmail: 'karim.mansour@repairflow.app',
+    actorEmail: 'karim.mansour@fixer.app',
     entityType: 'User',
     entityLabel: 'Hana Walid Farouk',
   },
@@ -100,7 +100,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'auth.logout',
     messageKey: 'activity.auth.logout',
     messageParams: { name: 'Menna Hossam Eldin' },
-    actorEmail: 'menna.hossam@repairflow.app',
+    actorEmail: 'menna.hossam@fixer.app',
   },
   {
     daysAgo: 2,
@@ -109,7 +109,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'branch.updated',
     messageKey: 'activity.branch.updated',
     messageParams: { name: 'Smouha Service Point' },
-    actorEmail: 'mahmoud.elsebaey@repairflow.app',
+    actorEmail: 'mahmoud.elsebaey@fixer.app',
     entityType: 'Branch',
     entityLabel: 'Smouha Service Point',
   },
@@ -120,7 +120,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'auth.login',
     messageKey: 'activity.auth.login',
     messageParams: { name: 'Salma Ibrahim Zaki' },
-    actorEmail: 'salma.zaki@repairflow.app',
+    actorEmail: 'salma.zaki@fixer.app',
   },
   {
     daysAgo: 3,
@@ -129,7 +129,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'user.created',
     messageKey: 'activity.user.created',
     messageParams: { name: 'Menna Hossam Eldin', role: 'receptionist' },
-    actorEmail: 'nourhan.abdelaziz@repairflow.app',
+    actorEmail: 'nourhan.abdelaziz@fixer.app',
     entityType: 'User',
     entityLabel: 'Menna Hossam Eldin',
   },
@@ -140,7 +140,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'auth.login',
     messageKey: 'activity.auth.login',
     messageParams: { name: 'Nourhan Abdelaziz' },
-    actorEmail: 'nourhan.abdelaziz@repairflow.app',
+    actorEmail: 'nourhan.abdelaziz@fixer.app',
   },
   {
     daysAgo: 5,
@@ -149,7 +149,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'auth.logout',
     messageKey: 'activity.auth.logout',
     messageParams: { name: 'Ahmed Gamal Sherif' },
-    actorEmail: 'ahmed.sherif@repairflow.app',
+    actorEmail: 'ahmed.sherif@fixer.app',
   },
   {
     daysAgo: 6,
@@ -158,7 +158,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'user.updated',
     messageKey: 'activity.user.updated',
     messageParams: { name: 'Youssef Hany Ragab', fields: 'role' },
-    actorEmail: 'mahmoud.elsebaey@repairflow.app',
+    actorEmail: 'mahmoud.elsebaey@fixer.app',
     entityType: 'User',
     entityLabel: 'Youssef Hany Ragab',
   },
@@ -169,7 +169,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'auth.login',
     messageKey: 'activity.auth.login',
     messageParams: { name: 'Doaa Mostafa Kamel' },
-    actorEmail: 'doaa.kamel@repairflow.app',
+    actorEmail: 'doaa.kamel@fixer.app',
   },
   {
     daysAgo: 10,
@@ -178,7 +178,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'branch.updated',
     messageKey: 'activity.branch.updated',
     messageParams: { name: 'Nasr City Flagship Workshop' },
-    actorEmail: 'mahmoud.elsebaey@repairflow.app',
+    actorEmail: 'mahmoud.elsebaey@fixer.app',
     entityType: 'Branch',
     entityLabel: 'Nasr City Flagship Workshop',
   },
@@ -189,7 +189,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'auth.login',
     messageKey: 'activity.auth.login',
     messageParams: { name: 'Karim Fathy Mansour' },
-    actorEmail: 'karim.mansour@repairflow.app',
+    actorEmail: 'karim.mansour@fixer.app',
   },
   {
     daysAgo: 13,
@@ -198,7 +198,7 @@ export const ACTIVITY_SEED: ActivitySeedEntry[] = [
     action: 'user.deactivated',
     messageKey: 'activity.user.deactivated',
     messageParams: { name: 'Former contractor' },
-    actorEmail: 'mahmoud.elsebaey@repairflow.app',
+    actorEmail: 'mahmoud.elsebaey@fixer.app',
     entityType: 'User',
     entityLabel: 'Former contractor',
   },
@@ -219,7 +219,7 @@ export interface NotificationSeedEntry {
 
 export const NOTIFICATION_SEED: NotificationSeedEntry[] = [
   {
-    recipientEmail: 'karim.mansour@repairflow.app',
+    recipientEmail: 'karim.mansour@fixer.app',
     type: 'system',
     severity: 'info',
     titleKey: 'notifications.seed.welcome.title',
@@ -231,7 +231,7 @@ export const NOTIFICATION_SEED: NotificationSeedEntry[] = [
     read: false,
   },
   {
-    recipientEmail: 'karim.mansour@repairflow.app',
+    recipientEmail: 'karim.mansour@fixer.app',
     type: 'system',
     severity: 'success',
     titleKey: 'notifications.seed.staffAdded.title',
@@ -243,7 +243,7 @@ export const NOTIFICATION_SEED: NotificationSeedEntry[] = [
     read: false,
   },
   {
-    recipientEmail: 'karim.mansour@repairflow.app',
+    recipientEmail: 'karim.mansour@fixer.app',
     type: 'low_stock',
     severity: 'warning',
     titleKey: 'notifications.seed.lowStock.title',
@@ -255,7 +255,7 @@ export const NOTIFICATION_SEED: NotificationSeedEntry[] = [
     read: false,
   },
   {
-    recipientEmail: 'karim.mansour@repairflow.app',
+    recipientEmail: 'karim.mansour@fixer.app',
     type: 'system',
     severity: 'info',
     titleKey: 'notifications.seed.phaseNotice.title',
@@ -265,7 +265,7 @@ export const NOTIFICATION_SEED: NotificationSeedEntry[] = [
     read: true,
   },
   {
-    recipientEmail: 'mahmoud.elsebaey@repairflow.app',
+    recipientEmail: 'mahmoud.elsebaey@fixer.app',
     type: 'system',
     severity: 'info',
     titleKey: 'notifications.seed.ownerDigest.title',
@@ -277,7 +277,7 @@ export const NOTIFICATION_SEED: NotificationSeedEntry[] = [
     read: false,
   },
   {
-    recipientEmail: 'youssef.ragab@repairflow.app',
+    recipientEmail: 'youssef.ragab@fixer.app',
     type: 'system',
     severity: 'info',
     titleKey: 'notifications.seed.technicianReady.title',
@@ -287,7 +287,7 @@ export const NOTIFICATION_SEED: NotificationSeedEntry[] = [
     read: false,
   },
   {
-    recipientEmail: 'doaa.kamel@repairflow.app',
+    recipientEmail: 'doaa.kamel@fixer.app',
     type: 'low_stock',
     severity: 'warning',
     titleKey: 'notifications.seed.lowStock.title',
@@ -299,7 +299,7 @@ export const NOTIFICATION_SEED: NotificationSeedEntry[] = [
     read: false,
   },
   {
-    recipientEmail: 'ahmed.sherif@repairflow.app',
+    recipientEmail: 'ahmed.sherif@fixer.app',
     type: 'system',
     severity: 'info',
     titleKey: 'notifications.seed.frontDesk.title',
