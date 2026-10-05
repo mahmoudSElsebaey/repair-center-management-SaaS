@@ -84,7 +84,7 @@ export function MainLayout() {
             className="rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
             aria-label={t('brand.name')}
           >
-            <Logo size="md" />
+            <Logo size="lg" />
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex" aria-label={t('landing.nav.features')}>
