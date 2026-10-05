@@ -11,6 +11,7 @@ export default {
     greetingEvening: 'Good evening',
     scopeGlobal: 'All branches',
     scopeBranch: 'This branch',
+    unassigned: 'Unassigned',
     metrics: {
       receivedToday: 'Received today',
       activeRepairs: 'Active repairs',
@@ -24,6 +25,7 @@ export default {
       outstanding: 'Outstanding',
       staff: 'Staff',
       branches: 'Branches',
+      activity: 'Activity',
     },
     sections: {
       activityOverTime: 'Activity over time',
