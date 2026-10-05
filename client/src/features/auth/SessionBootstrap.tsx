@@ -76,9 +76,9 @@ export function SessionBootstrap({ children }: { children: ReactNode }) {
           <span
             className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
             role="status"
-            aria-label="Starting RepairFlow"
+            aria-label="Starting Fixer"
           />
-          <p className="text-sm text-foreground-muted">RepairFlow</p>
+          <p className="text-sm text-foreground-muted">Fixer</p>
         </div>
       </div>
     );
