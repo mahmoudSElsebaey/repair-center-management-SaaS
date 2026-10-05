@@ -53,3 +53,53 @@ export function SkeletonCard({ className }: { className?: string }) {
     </div>
   );
 }
+
+/**
+ * Table loading placeholder used by DataTable while the first page loads.
+ * Matches column count so the layout does not jump when real rows appear.
+ */
+export function TableSkeleton({
+  columns = 5,
+  rows = 6,
+  className,
+}: {
+  columns?: number;
+  rows?: number;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn('rf-panel overflow-hidden', className)}
+      role="status"
+      aria-busy="true"
+      aria-label="Loading table"
+    >
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[48rem] border-collapse text-sm">
+          <thead>
+            <tr className="border-b border-border bg-surface-sunken">
+              {Array.from({ length: columns }).map((_, i) => (
+                <th key={i} className="px-4 py-3 text-start">
+                  <Skeleton className="h-3 w-20" />
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {Array.from({ length: rows }).map((_, row) => (
+              <tr key={row} className="border-b border-border-soft last:border-b-0">
+                {Array.from({ length: columns }).map((_, col) => (
+                  <td key={col} className="px-4 py-3">
+                    <Skeleton
+                      className={cn('h-4', col === 0 ? 'w-28' : col === columns - 1 ? 'w-16' : 'w-24')}
+                    />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
