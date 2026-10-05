@@ -39,6 +39,7 @@ export function MainLayout() {
 
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 12);
@@ -46,6 +47,38 @@ export function MainLayout() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (location.pathname !== '/') {
+      setActiveSection(null);
+      return;
+    }
+
+    const elements = SECTIONS
+      .map(({ id }) => document.getElementById(id))
+      .filter((element): element is HTMLElement => Boolean(element));
+
+    if (!elements.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (visible[0]) {
+          setActiveSection(visible[0].target.id);
+        }
+      },
+      {
+        rootMargin: '-25% 0px -60% 0px',
+        threshold: [0.1, 0.25, 0.5, 0.75],
+      }
+    );
+
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, [location.pathname]);
 
   // Close the drawer on navigation and lock the page behind it.
   useEffect(() => {
@@ -93,7 +126,12 @@ export function MainLayout() {
               <a
                 key={section.id}
                 href={sectionHref(section.id)}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-foreground-muted transition-colors duration-fast hover:bg-surface-hover hover:text-foreground"
+                className={cn(
+                  'rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-fast hover:bg-surface-hover hover:text-foreground',
+                  activeSection === section.id
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-foreground-muted'
+                )}
               >
                 {t(section.key)}
               </a>
@@ -166,7 +204,12 @@ export function MainLayout() {
                   key={section.id}
                   href={sectionHref(section.id)}
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-lg px-3 py-3 text-base font-medium text-foreground-muted transition-colors duration-fast hover:bg-surface-hover hover:text-foreground"
+                  className={cn(
+                    'rounded-lg px-3 py-3 text-base font-medium transition-colors duration-fast hover:bg-surface-hover hover:text-foreground',
+                    activeSection === section.id
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-foreground-muted'
+                  )}
                 >
                   {t(section.key)}
                 </a>
