@@ -9,6 +9,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   const productLinks = [
+    { key: 'landing.showcase.services.overline', href: '/#services' },
     { key: 'landing.nav.features', href: '/#features' },
     { key: 'landing.nav.workflow', href: '/#workflow' },
     { key: 'landing.nav.inventory', href: '/#inventory' },
