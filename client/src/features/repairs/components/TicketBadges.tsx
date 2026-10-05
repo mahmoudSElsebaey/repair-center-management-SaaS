@@ -15,7 +15,7 @@ export function StatusBadge({
   className?: string;
 }) {
   const { t } = useTranslation();
-  const styles = STATUS_STYLES[status];
+  const styles = STATUS_STYLES[status] ?? STATUS_STYLES.received;
 
   return (
     <span
