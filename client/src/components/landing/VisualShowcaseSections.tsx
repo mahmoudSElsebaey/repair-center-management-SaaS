@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Autoplay, EffectFade } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -28,8 +28,7 @@ export function VisualShowcaseSection() {
 
   return (
     <section className="relative overflow-hidden">
-      <div className="rf-container">
-        <div className="w-full overflow-hidden">
+      <div className="w-full overflow-hidden">
           <Swiper
             key={i18n.language}
             modules={[Autoplay, EffectFade]}
@@ -65,7 +64,7 @@ export function VisualShowcaseSection() {
                         className="max-w-xl drop-shadow-[0_3px_10px_rgba(0,0,0,0.38)] dark:drop-shadow-[0_4px_14px_rgba(0,0,0,0.72)]"
                       >
                         <p className="rf-overline text-white drop-shadow-[0_2px_5px_rgba(0,0,0,0.5)]">{String(index + 1).padStart(2, '0')}</p>
-                        <h3 className="mt-3 text-3xl font-bold text-foreground text-balance sm:text-5xl">
+                        <h3 className="mt-3 text-3xl font-bold text-white text-balance drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)] sm:text-5xl">
                           {t('landing.showcase.panels.' + panel.key + '.title')}
                         </h3>
                         <p className="mt-5 text-base leading-relaxed text-white/95 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)] sm:text-lg">
@@ -78,7 +77,6 @@ export function VisualShowcaseSection() {
               </SwiperSlide>
             ))}
           </Swiper>
-        </div>
       </div>
     </section>
   );
