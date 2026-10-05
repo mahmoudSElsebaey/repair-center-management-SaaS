@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from '@/store';
 import App from '@/App';
-// Vendor styles first so the Fixer token layer always wins.
+// Load the Fixer design tokens before shared styles so all Tailwind utilities resolve correctly.
 import '@/styles/tokens.css';
 import '@/styles/vendor.css';
 import '@/styles/index.css';
