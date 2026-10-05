@@ -16,5 +16,7 @@ export const reportsApi = {
    * Branch-scoped by the API (super_admin may pass branch).
    */
   analytics: (query: AnalyticsQuery = {}) =>
-    api.get<AnalyticsData>(`/reports/analytics${toQueryString(query as QueryParams)}`),
+    api.get<AnalyticsData>(
+      `/reports/analytics${toQueryString(query as unknown as QueryParams)}`
+    ),
 };

@@ -13,20 +13,24 @@ import type {
 
 type QueryParams = Record<string, string | number | boolean | null | undefined>;
 
+function asQuery(params: object): QueryParams {
+  return params as unknown as QueryParams;
+}
+
 export const appointmentsApi = {
   list: async (
     query: AppointmentQuery = {}
   ): Promise<{ items: Appointment[]; meta?: PaginationMeta }> => {
     const { data, meta } = await requestWithMeta<Appointment[]>({
       method: 'GET',
-      url: `/appointments${toQueryString(query as QueryParams)}`,
+      url: `/appointments${toQueryString(asQuery(query))}`,
     });
     return { items: data ?? [], meta };
   },
 
   calendar: (query: CalendarQuery) =>
     api.get<Appointment[]>(
-      `/appointments/calendar${toQueryString(query as QueryParams)}`
+      `/appointments/calendar${toQueryString(asQuery(query))}`
     ),
 
   get: (id: string) => api.get<AppointmentDetail>(`/appointments/${id}`),
@@ -53,6 +57,6 @@ export const appointmentsApi = {
     excludeId?: string;
   }) =>
     api.get<ConflictResult>(
-      `/appointments/conflicts${toQueryString(params as QueryParams)}`
+      `/appointments/conflicts${toQueryString(asQuery(params))}`
     ),
 };
