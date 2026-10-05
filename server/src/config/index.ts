@@ -27,7 +27,7 @@ function fail(message: string): never {
 
 /**
  * Resolves a JWT secret. In production a missing, short or placeholder secret is
- * a hard failure — RepairFlow refuses to boot with forgeable tokens.
+ * a hard failure — Fixer refuses to boot with forgeable tokens.
  */
 function resolveSecret(name: string, value: string | undefined, devFallback: string): string {
   const raw = (value || '').trim();
