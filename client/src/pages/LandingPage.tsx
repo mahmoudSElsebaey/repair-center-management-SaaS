@@ -14,7 +14,7 @@ import {
   TestimonialsSection,
 } from '@/components/landing/SocialProofSections';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
-import { ServicesShowcaseSection, VisualShowcaseSection } from '@/components/landing/VisualShowcaseSections';
+import { ServicesShowcaseSection, VisualBreakSection, VisualShowcaseSection } from '@/components/landing/VisualShowcaseSections';
 
 /**
  * Public marketing page.
@@ -35,10 +35,20 @@ export default function LandingPage() {
       <HowItWorksSection />
       <WorkflowSection />
       <FeaturesSection />
+      <VisualBreakSection
+        image="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=2200&q=90"
+        title={t('landing.showcase.breaks.inventory.title')}
+        body={t('landing.showcase.breaks.inventory.body')}
+      />
       <InventorySection />
       <TrackingSection />
       <AnalyticsSection />
       <TestimonialsSection />
+      <VisualBreakSection
+        image="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=2200&q=90"
+        title={t('landing.showcase.breaks.pricing.title')}
+        body={t('landing.showcase.breaks.pricing.body')}
+      />
       <PricingSection />
       <CtaSection />
     </PageTransition>
