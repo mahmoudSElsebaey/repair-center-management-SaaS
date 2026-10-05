@@ -1,6 +1,6 @@
-# RepairFlow — Project Phases
+# Fixer — Project Phases
 
-RepairFlow is built in vertical phases. Every phase delivers **frontend + backend + database + UX** as a working slice, ends in a runnable state, and is verified before the next one starts.
+Fixer is built in vertical phases. Every phase delivers **frontend + backend + database + UX** as a working slice, ends in a runnable state, and is verified before the next one starts.
 
 Rule: after each phase the application is installed, run, verified, typechecked and built. Then it stops for review.
 
