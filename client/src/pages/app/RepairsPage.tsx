@@ -94,8 +94,8 @@ export default function RepairsPage() {
               {row.deviceSummary?.displayName ?? '—'}
             </p>
             <p className="mt-0.5 truncate text-2xs text-foreground-subtle">
-              {row.issue.slice(0, 60)}
-              {row.issue.length > 60 && '…'}
+              {(row.issue ?? '').slice(0, 60)}
+              {(row.issue ?? '').length > 60 && '…'}
             </p>
           </div>
         ),
