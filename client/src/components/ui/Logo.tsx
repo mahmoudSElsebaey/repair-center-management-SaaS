@@ -1,5 +1,9 @@
 import { cn } from '@/lib/utils';
 
+/**
+ * Fixer brand mark — gear + wrench “X” (teal accent on slate).
+ * Matches the official Fixer wordmark: Fi + X + er.
+ */
 function FixerMark({ className, title }: { className?: string; title?: string }) {
   return (
     <svg
@@ -10,14 +14,26 @@ function FixerMark({ className, title }: { className?: string; title?: string })
       aria-hidden={title ? undefined : true}
       className={cn('h-9 w-9', className)}
     >
-      <g fill="#304352">
-        <path d="M8.2 18.1 4.8 15l4.1-4.1 3.1 3.4a17.5 17.5 0 0 1 5.1-2.1l.2-4.5h5.8l.2 4.5a17.5 17.5 0 0 1 5.1 2.1l3.1-3.4 4.1 4.1-3.4 3.1a17.5 17.5 0 0 1 2.1 5.1l4.5.2v5.8l-4.5.2a17.5 17.5 0 0 1-2.1 5.1l3.4 3.1-4.1 4.1-3.1-3.4a17.5 17.5 0 0 1-5.1 2.1l-.2 4.5h-5.8l-.2-4.5a17.5 17.5 0 0 1-5.1-2.1l-3.1 3.4-4.1-4.1 3.4-3.1a17.5 17.5 0 0 1-2.1-5.1l-4.5-.2v-5.8l4.5-.2a17.5 17.5 0 0 1 2.1-5.1Z"/>
-      </g>
-      <circle cx="22" cy="26" r="11" fill="var(--background)" />
-      <path d="m14 17 20 22M34 17 14 39" stroke="#10B5AE" strokeWidth="5.2" strokeLinecap="square" />
+      {/* Gear ring (slate) */}
       <path
-        d="M31.3 9.2a7.4 7.4 0 0 0-8.8 9.1l-8.1 8.1a3 3 0 1 0 4.2 4.2l8.1-8.1a7.4 7.4 0 0 0 9.1-8.8l-4.1 3.3-3.6-1-1-3.6 4.2-3.2Z"
+        fill="#304352"
+        d="M24 6.5c.9 0 1.7.1 2.5.3l.9-2.6 3.6 1.2-.7 2.7c1.4.6 2.6 1.5 3.6 2.6l2.6-1.2 2.4 3-2.2 1.8c.7 1.3 1.1 2.7 1.2 4.2h3v3.8h-3c-.1 1.5-.5 2.9-1.2 4.2l2.2 1.8-2.4 3-2.6-1.2c-1 1.1-2.2 2-3.6 2.6l.7 2.7-3.6 1.2-.9-2.6c-.8.2-1.6.3-2.5.3s-1.7-.1-2.5-.3l-.9 2.6-3.6-1.2.7-2.7c-1.4-.6-2.6-1.5-3.6-2.6l-2.6 1.2-2.4-3 2.2-1.8c-.7-1.3-1.1-2.7-1.2-4.2h-3V19.6h3c.1-1.5.5-2.9 1.2-4.2l-2.2-1.8 2.4-3 2.6 1.2c1-1.1 2.2-2 3.6-2.6l-.7-2.7 3.6-1.2.9 2.6c.8-.2 1.6-.3 2.5-.3Z"
+      />
+      {/* Inner disc (follows theme background) */}
+      <circle cx="24" cy="24" r="11.5" fill="var(--background, #fff)" />
+      {/* Secondary gear teeth hint */}
+      <circle cx="24" cy="24" r="9" stroke="#304352" strokeWidth="1.6" fill="none" opacity="0.35" />
+      {/* Wrench forming the X — teal */}
+      <path
         fill="#10B5AE"
+        d="M31.8 9.4a6.6 6.6 0 0 0-8.2 8.1L14.2 27a2.7 2.7 0 1 0 3.8 3.8l9.4-9.4a6.6 6.6 0 0 0 8.1-8.2l-3.7 2.9-3.2-.9-.9-3.2 3.1-2.6Z"
+      />
+      {/* Crossing stroke of the X */}
+      <path
+        stroke="#10B5AE"
+        strokeWidth="4.6"
+        strokeLinecap="round"
+        d="M15.5 15.5 32.5 32.5"
       />
     </svg>
   );
