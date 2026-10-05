@@ -79,6 +79,11 @@ export default {
       cancel: 'Cancel ticket',
     },
     fields: {
+      device: 'Device',
+      priority: 'Priority',
+      issue: 'Reported issue',
+      warrantyDays: 'Warranty period (days)',
+      notes: 'Notes',
       diagnosis: 'Diagnosis',
       diagnosisPlaceholder: 'Record the technician findings…',
       estimatedCost: 'Estimated cost',
