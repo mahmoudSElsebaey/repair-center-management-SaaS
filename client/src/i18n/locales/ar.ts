@@ -13,6 +13,7 @@ import p_invoices from './parts/ar_invoices.ts';
 import p_track from './parts/ar_track.ts';
 import p_appointments from './parts/ar_appointments.ts';
 import p_reports from './parts/ar_reports.ts';
+import p_settings from './parts/ar_settings.ts';
 
 const ar = {
   ...p_core,
@@ -26,6 +27,7 @@ const ar = {
   ...p_track,
   ...p_appointments,
   ...p_reports,
+  ...p_settings,
 } as const;
 
 export default ar;
