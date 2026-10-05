@@ -27,6 +27,9 @@ export const globalLimiter = rateLimit({
   skip: (req) => req.path === '/api/v1/health' || req.path === '/api/v1/ready',
 });
 
+// Backward-compatible name used by app.ts.
+export const apiLimiter = globalLimiter;
+
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: isProd ? 20 : 100,
@@ -55,6 +58,9 @@ export const publicLimiter = rateLimit({
   },
 });
 
+// Dedicated name for the public tracking route.
+export const publicTrackLimiter = publicLimiter;
+
 export const passwordResetLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: isProd ? 5 : 20,
@@ -68,6 +74,3 @@ export const passwordResetLimiter = rateLimit({
     },
   },
 });
-
-// Dedicated name for the public tracking route.
-export const publicTrackLimiter = publicLimiter;
