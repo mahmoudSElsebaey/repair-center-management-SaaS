@@ -1,12 +1,12 @@
 // Auto-generated — en.core
 export default {
   meta: {
-    title: 'RepairFlow — Repair Center Operations Platform',
+    title: 'Fixer — Repair Center Operations Platform',
     description:
       'Run the whole repair operation from intake to warranty: repair tickets, technicians, spare parts, customer approvals, invoices and live tracking.',
   },
   brand: {
-    name: 'RepairFlow',
+    name: 'Fixer',
     tagline: 'Repair operations, under control',
     description:
       'The operations platform for repair businesses — customers, devices, tickets, technicians, parts and payments in one system.',
