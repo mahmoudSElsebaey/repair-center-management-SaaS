@@ -42,7 +42,7 @@ export class ApiError extends Error {
 }
 
 /** Extra flags understood by our interceptors. */
-interface RepairFlowRequestConfig extends InternalAxiosRequestConfig {
+interface FixerRequestConfig extends InternalAxiosRequestConfig {
   /** Skip attaching the bearer token (login, refresh, public tracking). */
   skipAuth?: boolean;
   /** Internal marker preventing infinite refresh recursion. */
@@ -62,7 +62,7 @@ export const http: AxiosInstance = axios.create({
 /* Request — attach the access token                                           */
 /* -------------------------------------------------------------------------- */
 
-http.interceptors.request.use((config: RepairFlowRequestConfig) => {
+http.interceptors.request.use((config: FixerRequestConfig) => {
   if (!config.skipAuth) {
     const session = readSession();
     if (session?.accessToken) {
@@ -106,7 +106,7 @@ function toApiError(error: unknown): ApiError {
     return new ApiError(
       timedOut
         ? 'The server took too long to respond. Please try again.'
-        : 'Cannot reach the RepairFlow server. Check your connection and try again.',
+        : 'Cannot reach the Fixer server. Check your connection and try again.',
       0,
       timedOut ? 'REQUEST_TIMEOUT' : 'NETWORK_ERROR'
     );
@@ -170,7 +170,7 @@ function refreshSession(): Promise<string> {
 http.interceptors.response.use(
   (response) => response,
   async (error: AxiosError<ApiEnvelope<unknown>>) => {
-    const config = error.config as RepairFlowRequestConfig | undefined;
+    const config = error.config as FixerRequestConfig | undefined;
 
     const isAuthEndpoint = Boolean(config?.url?.includes('/auth/'));
     const canRetry = error.response?.status === 401 && config && !config._retried && !isAuthEndpoint;
