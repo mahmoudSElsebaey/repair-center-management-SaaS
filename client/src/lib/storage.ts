@@ -10,9 +10,9 @@ import type { Locale, Theme } from '@/types/domain';
  */
 
 const KEYS = {
-  session: 'repairflow:session',
-  theme: 'repairflow:theme',
-  lang: 'repairflow:lang',
+  session: 'fixer:session',
+  theme: 'fixer:theme',
+  lang: 'fixer:lang',
 } as const;
 
 function safeGet(key: string): string | null {
