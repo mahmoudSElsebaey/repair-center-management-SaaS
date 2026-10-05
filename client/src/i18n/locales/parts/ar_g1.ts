@@ -79,6 +79,11 @@ export default {
       cancel: 'إلغاء التذكرة',
     },
     fields: {
+      device: 'الجهاز',
+      priority: 'الأولوية',
+      issue: 'المشكلة',
+      warrantyDays: 'مدة الضمان (بالأيام)',
+      notes: 'ملاحظات',
       diagnosis: 'التشخيص',
       diagnosisPlaceholder: 'سجّل نتيجة فحص الفني…',
       estimatedCost: 'التكلفة التقديرية',
