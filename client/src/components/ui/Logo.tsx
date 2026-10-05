@@ -47,9 +47,9 @@ const TEXT_SIZES = {
 export function Logo({ variant = 'full', size = 'md', className, suffix }: LogoProps) {
   return (
     <span className={cn('inline-flex items-center gap-2.5', className)}>
-      <FixerMark className={MARK_SIZES[size]} title={variant === 'mark' ? 'Fixer' : undefined} />
-
-      {variant === 'full' && (
+      {variant === 'mark' ? (
+        <FixerMark className={MARK_SIZES[size]} title="Fixer" />
+      ) : (
         <span className="flex min-w-0 flex-col leading-none">
           <span
             className={cn(
