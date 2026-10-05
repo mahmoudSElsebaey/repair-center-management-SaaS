@@ -1,5 +1,8 @@
-import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { Autoplay, EffectFade } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/effect-fade';
 import { BarChart3, Boxes, ClipboardList, CreditCard, QrCode, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Section, SectionHeading } from '@/components/layout/Section';
@@ -20,51 +23,12 @@ const SERVICES = [
   { key: 'analytics', icon: BarChart3, image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1400&q=90' },
 ] as const;
 
-function ImmersivePanel({
-  panel,
-  index,
-}: {
-  panel: (typeof SHOWCASE_PANELS)[number];
-  index: number;
-}) {
-  const { t } = useTranslation();
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  const imageY = useTransform(scrollYProgress, [0, 1], ['-7%', '7%']);
-  const imageScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.08, 1.02, 1.08]);
-
-  return (
-    <section ref={ref} className="relative min-h-[82vh] overflow-hidden">
-      <motion.div className="absolute inset-0" style={{ y: imageY, scale: imageScale }} aria-hidden="true">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(' + panel.image + ')' }} />
-        <div className="absolute inset-0 bg-black/65" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(79,91,245,0.22),transparent_55%)]" />
-      </motion.div>
-      <div className="relative flex min-h-[82vh] items-center py-20 sm:py-28">
-        <div className="rf-container w-full">
-          <Reveal>
-            <div className="max-w-2xl rounded-2xl border border-white/15 bg-black/35 p-7 shadow-2xl backdrop-blur-md sm:p-10">
-              <p className="rf-overline text-white/70">0{index + 1}</p>
-              <h3 className="mt-3 text-3xl font-bold text-white text-balance sm:text-5xl">
-                {t('landing.showcase.panels.' + panel.key + '.title')}
-              </h3>
-              <p className="mt-5 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg">
-                {t('landing.showcase.panels.' + panel.key + '.body')}
-              </p>
-            </div>
-          </Reveal>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export function VisualShowcaseSection() {
   const { t } = useTranslation();
 
   return (
-    <div className="border-y border-border bg-black">
-      <div className="rf-container py-16 sm:py-20">
+    <section className="border-y border-border bg-surface/20 py-16 sm:py-20">
+      <div className="rf-container">
         <Reveal>
           <SectionHeading
             align="start"
@@ -73,11 +37,58 @@ export function VisualShowcaseSection() {
             subtitle={t('landing.showcase.subtitle')}
           />
         </Reveal>
+
+        <div className="mt-10 overflow-hidden rounded-3xl border border-border bg-background/70 shadow-xl backdrop-blur-sm">
+          <Swiper
+            modules={[Autoplay, EffectFade]}
+            effect="fade"
+            fadeEffect={{ crossFade: true }}
+            autoplay={{ delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }}
+            loop
+            speed={850}
+            className="rf-showcase-swiper"
+          >
+            {SHOWCASE_PANELS.map((panel, index) => (
+              <SwiperSlide key={panel.key}>
+                <div className="relative min-h-[520px] overflow-hidden sm:min-h-[620px]">
+                  <motion.img
+                    src={panel.image}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover"
+                    initial={{ scale: 1.08 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: false }}
+                    transition={{ duration: 4, ease: [0.22, 1, 0.36, 1] }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/65 to-background/10 dark:from-background/95 dark:via-background/70 dark:to-background/15" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_45%,rgba(79,91,245,0.18),transparent_45%)]" />
+
+                  <div className="relative flex min-h-[520px] items-center sm:min-h-[620px]">
+                    <div className="rf-container w-full">
+                      <motion.div
+                        key={panel.key}
+                        initial={{ opacity: 0, y: 28, x: -18 }}
+                        animate={{ opacity: 1, y: 0, x: 0 }}
+                        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
+                        className="max-w-xl"
+                      >
+                        <p className="rf-overline">{String(index + 1).padStart(2, '0')}</p>
+                        <h3 className="mt-3 text-3xl font-bold text-foreground text-balance sm:text-5xl">
+                          {t('landing.showcase.panels.' + panel.key + '.title')}
+                        </h3>
+                        <p className="mt-5 text-base leading-relaxed text-foreground-muted sm:text-lg">
+                          {t('landing.showcase.panels.' + panel.key + '.body')}
+                        </p>
+                      </motion.div>
+                    </div>
+                  </div>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
-      {SHOWCASE_PANELS.map((panel, index) => (
-        <ImmersivePanel key={panel.key} panel={panel} index={index} />
-      ))}
-    </div>
+    </section>
   );
 }
 
