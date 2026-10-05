@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -13,7 +13,7 @@ import { Logo } from '@/components/ui/Logo';
 import { LanguageToggle } from '@/components/layout/LanguageToggle';
 import { ThemeToggle } from '@/components/layout/ThemeToggle';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
-import { findNavItem } from '@/config/navigation';
+import { findNavItem, searchableNavItems } from '@/config/navigation';
 import { authApi } from '@/features/auth/authApi';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setMobileNav } from '@/store/uiSlice';
@@ -22,32 +22,38 @@ import { cn, initials } from '@/lib/utils';
 
 type ApiState = 'checking' | 'online' | 'offline';
 
-/**
- * Operations topbar.
- *
- * Owns the three things that must be reachable from anywhere: where am I (the
- * page title), global search, and my account. It also surfaces live API health,
- * which in practice is the fastest way for staff to know whether a failed save
- * was their fault or the server's.
- */
 export function Topbar() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const prefersReduced = useReducedMotion();
 
   const user = useAppSelector((state) => state.auth.user);
   const [profileOpen, setProfileOpen] = useState(false);
   const [apiState, setApiState] = useState<ApiState>('checking');
+  const [query, setQuery] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const navItem = findNavItem(location.pathname);
   const pageTitle = navItem ? t(navItem.labelKey) : t('dashboard.title');
 
-  // Health probe — proves the client can actually reach the API it is bound to.
+  const navHits = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return searchableNavItems(user?.role)
+      .map((item) => ({ item, label: t(item.labelKey) }))
+      .filter(({ label, item }) => {
+        const hay = `${label} ${item.key} ${item.path}`.toLowerCase();
+        return hay.includes(q);
+      })
+      .slice(0, 8);
+  }, [query, user?.role, t]);
+
   useEffect(() => {
     let cancelled = false;
-
     void authApi
       .health()
       .then(() => {
@@ -56,23 +62,19 @@ export function Topbar() {
       .catch(() => {
         if (!cancelled) setApiState('offline');
       });
-
     return () => {
       cancelled = true;
     };
   }, []);
 
-  // Close the account menu on outside click or Escape.
   useEffect(() => {
     if (!profileOpen) return;
-
     const handlePointerDown = (event: MouseEvent) => {
       if (!menuRef.current?.contains(event.target as Node)) setProfileOpen(false);
     };
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setProfileOpen(false);
     };
-
     document.addEventListener('mousedown', handlePointerDown);
     document.addEventListener('keydown', handleKeyDown);
     return () => {
@@ -82,8 +84,32 @@ export function Topbar() {
   }, [profileOpen]);
 
   useEffect(() => {
+    if (!searchOpen) return;
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!searchRef.current?.contains(event.target as Node)) setSearchOpen(false);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSearchOpen(false);
+    };
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [searchOpen]);
+
+  useEffect(() => {
     setProfileOpen(false);
+    setSearchOpen(false);
+    setQuery('');
   }, [location.pathname]);
+
+  const goTo = (path: string) => {
+    setSearchOpen(false);
+    setQuery('');
+    navigate(path);
+  };
 
   const statusTone = {
     checking: 'bg-foreground-subtle',
@@ -109,7 +135,7 @@ export function Topbar() {
           <Menu className="h-4 w-4" aria-hidden="true" />
         </button>
 
-        <Link to="/app" className="lg:hidden" aria-label={t('brand.name')}>
+        <Link to="/" className="lg:hidden" aria-label={t('brand.name')}>
           <Logo variant="mark" size="sm" />
         </Link>
 
@@ -118,28 +144,76 @@ export function Topbar() {
           <p className="truncate text-xs text-foreground-subtle">{t('dashboard.subtitle')}</p>
         </div>
 
-        {/* Global search */}
-        <div className="relative mx-auto hidden w-full max-w-md md:block">
+        {/* Global search — navigates to matching console sections */}
+        <div className="relative mx-auto hidden w-full max-w-md md:block" ref={searchRef}>
           <Search
             className="pointer-events-none absolute inset-y-0 start-0 ms-3 my-auto h-4 w-4 text-foreground-subtle"
             aria-hidden="true"
           />
           <input
             type="search"
-            disabled
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setSearchOpen(true);
+            }}
+            onFocus={() => setSearchOpen(true)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && navHits[0]) {
+                e.preventDefault();
+                goTo(navHits[0].item.path);
+              }
+            }}
             aria-label={t('common.search')}
             placeholder={t('dashboardShell.searchPlaceholder')}
-            title={t('common.comingSoon')}
             className={cn(
               'h-9 w-full rounded-lg border border-border bg-surface-sunken ps-9 pe-3 text-sm',
               'text-foreground placeholder:text-foreground-subtle',
-              'disabled:cursor-not-allowed disabled:opacity-70'
+              'focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/45'
             )}
           />
+
+          <AnimatePresence>
+            {searchOpen && query.trim() && (
+              <motion.div
+                initial={prefersReduced ? { opacity: 0 } : { opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: prefersReduced ? 0 : 0.12 }}
+                className="absolute inset-x-0 top-[calc(100%+0.35rem)] z-raised overflow-hidden rounded-xl border border-border bg-elevated shadow-lg"
+                role="listbox"
+              >
+                {navHits.length === 0 ? (
+                  <p className="px-4 py-3 text-sm text-foreground-subtle">{t('settings.searchEmpty')}</p>
+                ) : (
+                  <ul className="py-1">
+                    {navHits.map(({ item, label }) => {
+                      const Icon = item.icon;
+                      return (
+                        <li key={item.key}>
+                          <button
+                            type="button"
+                            role="option"
+                            onClick={() => goTo(item.path)}
+                            className="flex w-full items-center gap-3 px-4 py-2.5 text-start text-sm text-foreground-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+                          >
+                            <Icon className="h-4 w-4 shrink-0" aria-hidden />
+                            <span className="flex-1 truncate">{label}</span>
+                            <span className="text-2xs text-foreground-subtle" dir="ltr">
+                              {item.path}
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <div className="ms-auto flex items-center gap-2">
-          {/* API health */}
           <span
             className="hidden items-center gap-2 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs text-foreground-muted sm:inline-flex"
             title={`${t('dashboardShell.apiStatus')}: ${statusLabel}`}
@@ -151,10 +225,8 @@ export function Topbar() {
 
           <LanguageToggle />
           <ThemeToggle />
-
           <NotificationBell />
 
-          {/* Account menu */}
           <div className="relative" ref={menuRef}>
             <button
               type="button"
@@ -198,14 +270,9 @@ export function Topbar() {
                     <MenuLink to="/app/profile" icon={<UserRound className="h-4 w-4" />}>
                       {t('auth.profile.title')}
                     </MenuLink>
-
-                    <span
-                      className="flex cursor-not-allowed items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-foreground-subtle/70"
-                      title={t('common.comingSoon')}
-                    >
-                      <Settings className="h-4 w-4" aria-hidden="true" />
-                      {t('dashboardShell.accountSettings')}
-                    </span>
+                    <MenuLink to="/app/settings" icon={<Settings className="h-4 w-4" />}>
+                      {t('nav.settings')}
+                    </MenuLink>
                   </div>
                 </motion.div>
               )}
