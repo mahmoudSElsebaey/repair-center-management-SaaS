@@ -2,9 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-  AlertCircle,
   ArrowLeft,
-  CalendarClock,
   CheckCircle2,
   HandCoins,
   Info,
@@ -34,7 +32,7 @@ import { useAppSelector } from '@/store/hooks';
 import type { RepairDetail, RepairStatus } from '@/features/repairs/types';
 import { HAPPY_PATH, happyPathIndex } from '@/features/repairs/workflow';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
-import { activeLocale, translate } from '@/lib/i18nText';
+import { activeLocale } from '@/lib/i18nText';
 import { cn, formatCurrency, formatDate, getErrorMessage } from '@/lib/utils';
 
 const APPROVAL_ACTION: RepairStatus = 'approved';
@@ -464,16 +462,14 @@ export default function RepairDetailPage() {
                 )}
                 {ticket.completedAt && (
                   <div className="flex items-center justify-between gap-3">
-                    <dt className="text-foreground-subtle">{t('repairs.completedAt')}</dt>
+                    <dt className="text-foreground-subtle">{t('repairs.completed')}</dt>
                     <dd className="numeric text-foreground">{formatDate(ticket.completedAt, locale)}</dd>
                   </div>
                 )}
-                {ticket.deliveredAt && (
-                  <div className="flex items-center justify-between gap-3">
-                    <dt className="text-foreground-subtle">{t('repairs.deliveredAt')}</dt>
-                    <dd className="numeric text-foreground">{formatDate(ticket.deliveredAt, locale)}</dd>
-                  </div>
-                )}
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="text-foreground-subtle">{t('common.updated')}</dt>
+                  <dd className="numeric text-foreground">{formatDate(ticket.updatedAt, locale)}</dd>
+                </div>
               </dl>
             </Card>
           </div>
@@ -482,29 +478,32 @@ export default function RepairDetailPage() {
         <Modal
           open={pendingAction !== null}
           onClose={() => !isSubmitting && setPendingAction(null)}
-          title={pendingAction ? t(`repairs.actions.${actionKeyFor(pendingAction)}`) : ''}
+          title={pendingAction ? t(`repairs.status.${pendingAction}`) : ''}
           footer={
             <>
-              <Button variant="outline" onClick={() => setPendingAction(null)} disabled={isSubmitting}>
+              <Button variant="outline" disabled={isSubmitting} onClick={() => setPendingAction(null)}>
                 {t('common.cancel')}
               </Button>
-              <Button onClick={() => void confirmAction()} isLoading={isSubmitting}>
+              <Button
+                variant={pendingAction === 'cancelled' ? 'danger' : 'primary'}
+                isLoading={isSubmitting}
+                onClick={() => void confirmAction()}
+              >
                 {t('common.confirm')}
               </Button>
             </>
           }
         >
-          <div className="space-y-4">
+          <div className="space-y-3">
             <Textarea
-              label={t('repairs.fields.note')}
-              rows={3}
+              label={t('repairs.actionNote')}
               value={actionNote}
               onChange={(e) => setActionNote(e.target.value)}
+              rows={3}
             />
             {pendingAction === CANCEL_ACTION && (
-              <Textarea
-                label={t('repairs.fields.rejectionReason')}
-                rows={2}
+              <Input
+                label={t('repairs.rejectionReason')}
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
               />
@@ -518,67 +517,43 @@ export default function RepairDetailPage() {
           title={t('common.edit')}
           footer={
             <>
-              <Button variant="outline" onClick={() => setEditOpen(false)} disabled={isSubmitting}>
+              <Button variant="outline" disabled={isSubmitting} onClick={() => setEditOpen(false)}>
                 {t('common.cancel')}
               </Button>
-              <Button onClick={() => void saveEdits()} isLoading={isSubmitting}>
+              <Button isLoading={isSubmitting} onClick={() => void saveEdits()}>
                 {t('common.save')}
               </Button>
             </>
           }
         >
-          <div className="space-y-4">
+          <div className="space-y-3">
             <Textarea
-              label={t('repairs.fields.diagnosis')}
-              placeholder={t('repairs.fields.diagnosisPlaceholder')}
-              rows={4}
+              label={t('repairs.diagnosisSection')}
               value={editDiagnosis}
               onChange={(e) => setEditDiagnosis(e.target.value)}
+              rows={4}
             />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Input
-                label={t('repairs.fields.estimatedCost')}
-                type="number"
-                min={0}
-                step="0.01"
-                dir="ltr"
-                value={editEstimated}
-                onChange={(e) => setEditEstimated(e.target.value)}
-              />
-              <Input
-                label={t('repairs.fields.finalCost')}
-                type="number"
-                min={0}
-                step="0.01"
-                dir="ltr"
-                value={editFinal}
-                onChange={(e) => setEditFinal(e.target.value)}
-              />
-            </div>
+            <Input
+              label={t('repairs.estimate')}
+              type="number"
+              min={0}
+              step="0.01"
+              dir="ltr"
+              value={editEstimated}
+              onChange={(e) => setEditEstimated(e.target.value)}
+            />
+            <Input
+              label={t('repairs.final')}
+              type="number"
+              min={0}
+              step="0.01"
+              dir="ltr"
+              value={editFinal}
+              onChange={(e) => setEditFinal(e.target.value)}
+            />
           </div>
         </Modal>
       </div>
     </PageTransition>
   );
-}
-
-function actionKeyFor(status: RepairStatus): string {
-  switch (status) {
-    case 'approved':
-      return 'recordApproval';
-    case 'cancelled':
-      return 'cancel';
-    case 'ready':
-      return 'markReady';
-    case 'delivered':
-      return 'deliver';
-    case 'waiting_parts':
-      return 'waitForParts';
-    case 'waiting_customer':
-      return 'sendForApproval';
-    case 'diagnosing':
-      return 'startDiagnosis';
-    default:
-      return 'startRepair';
-  }
 }
