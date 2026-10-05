@@ -33,6 +33,8 @@ export default {
     emptyBody: 'سجّل جهازاً لعميل لفتح تذكرة صيانة.', brand: 'الماركة', model: 'الموديل',
     serial: 'السيريال / IMEI', owner: 'المالك', category: 'الفئة', color: 'اللون', condition: 'الحالة',
     created: 'تم تسجيل الجهاز', updated: 'تم تحديث الجهاز', archivedToast: 'تمت أرشفة الجهاز',
+    archiveConfirmTitle: 'أرشفة هذا الجهاز؟',
+    archiveConfirmBody: 'يُخفى الجهاز من القوائم النشطة. ويُحفظ سجل الصيانة والسجلات المرتبطة به.',
     detailTitle: 'بيانات الجهاز', issueSection: 'المشكلة المُبلَّغ عنها',
     conditionSection: 'حالة الجهاز وبياناته', ownerSection: 'المالك', registeredOn: 'تاريخ التسجيل',
     accessoriesNone: 'لا توجد ملحقات مسجّلة.', notesSection: 'ملاحظات', noNotes: 'لا توجد ملاحظات.',
