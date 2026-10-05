@@ -140,3 +140,32 @@ export function ServicesShowcaseSection() {
     </Section>
   );
 }
+
+
+export function VisualBreakSection({
+  image,
+  title,
+  body,
+}: {
+  image: string;
+  title: string;
+  body: string;
+}) {
+  return (
+    <section
+      className="relative min-h-[58vh] overflow-hidden bg-cover bg-center bg-fixed"
+      style={{ backgroundImage: 'url(' + image + ')' }}
+    >
+      <div className="absolute inset-0 bg-black/65" aria-hidden="true" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(79,91,245,0.22),transparent_60%)]" aria-hidden="true" />
+      <div className="relative flex min-h-[58vh] items-center justify-center px-6 py-20 text-center">
+        <Reveal>
+          <div className="max-w-3xl rounded-2xl border border-white/15 bg-black/30 p-8 shadow-2xl backdrop-blur-md sm:p-12">
+            <h2 className="text-3xl font-bold text-white text-balance sm:text-5xl">{title}</h2>
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/75 sm:text-lg">{body}</p>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
