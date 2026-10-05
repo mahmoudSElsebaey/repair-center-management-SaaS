@@ -7,9 +7,6 @@ import { Logo } from '@/components/ui/Logo';
 export function SiteFooter() {
   const { t } = useTranslation();
   const year = new Date().getFullYear();
-  const location = useLocation();
-  const navigate = useNavigate();
-
   const productLinks = [
     { key: 'landing.showcase.services.overline', href: '/#services' },
     { key: 'landing.nav.features', href: '/#features' },
