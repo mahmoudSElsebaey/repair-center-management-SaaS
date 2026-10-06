@@ -280,9 +280,9 @@ export function MainLayout() {
           title={t('landing.floating.whatsapp')}
           whileHover={prefersReduced ? undefined : { scale: 1.06, y: -2 }}
           whileTap={prefersReduced ? undefined : { scale: 0.96 }}
-          className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-[#25D366] text-white shadow-xl shadow-[#25D366]/20 transition-colors duration-fast hover:bg-[#20bd5a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]/60"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-[#25D366]/20 transition-transform duration-fast hover:scale-105 hover:bg-[#20bd5a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]/60"
         >
-          <MessageCircle className="h-6 w-6" strokeWidth={2.2} aria-hidden="true" />
+          <MessageCircle className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
         </motion.a>
       </div>
     </div>
