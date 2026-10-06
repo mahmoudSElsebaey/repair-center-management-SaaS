@@ -1,7 +1,6 @@
 import express from 'express';
-import type { Application, Request, Response } from 'express';
+import type { Application, Request, Response, RequestHandler } from 'express';
 import cors from 'cors';
-import helmetModule from 'helmet';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import { config } from './config/index.js';
@@ -20,11 +19,17 @@ import appointmentRoutes from './routes/appointmentRoutes.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { apiLimiter } from './middleware/rateLimit.js';
 
-/** helmet@8 CJS/ESM interop under NodeNext */
-const helmet =
-  typeof helmetModule === 'function'
-    ? helmetModule
-    : ((helmetModule as unknown as { default: typeof helmetModule }).default as typeof helmetModule);
+/**
+ * helmet@8 ships dual CJS/ESM; under NodeNext the default import type is not
+ * always callable. Resolve at runtime and cast for TypeScript.
+ */
+import helmetImport from 'helmet';
+type HelmetFactory = (options?: Record<string, unknown>) => RequestHandler;
+const helmet = (
+  typeof helmetImport === 'function'
+    ? helmetImport
+    : (helmetImport as unknown as { default: HelmetFactory }).default
+) as HelmetFactory;
 
 export const API_PREFIX = '/api/v1';
 

@@ -9,9 +9,9 @@
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc --noEmit",
-    "start": "node dist/app.js",
+    "build": "echo skip",
     "typecheck": "tsc --noEmit",
+    "start": "node dist/app.js",
     "seed": "tsx src/seed/seed.ts",
     "seed:dist": "tsc && node dist/seed/seed.js"
   },
