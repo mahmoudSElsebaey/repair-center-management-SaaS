@@ -5,10 +5,10 @@ dotenv.config();
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProduction = nodeEnv === 'production';
 const isTest = nodeEnv === 'test';
+const isVercel = Boolean(process.env.VERCEL);
 
 const MIN_SECRET_LENGTH = 32;
 
-/** Explicit placeholder fragments that must never survive into production. */
 const WEAK_SECRET_MARKERS = [
   'change_me',
   'changeme',
@@ -19,15 +19,15 @@ const WEAK_SECRET_MARKERS = [
   'replace_me',
 ];
 
+/** On Vercel throw (caught by api handler). Locally exit. */
 function fail(message: string): never {
   console.error(`[config] FATAL: ${message}`);
+  if (isVercel) {
+    throw new Error(`[config] ${message}`);
+  }
   process.exit(1);
 }
 
-/**
- * Resolves a JWT secret. In production a missing, short or placeholder secret is
- * a hard failure — Fixer refuses to boot with forgeable tokens.
- */
 function resolveSecret(name: string, value: string | undefined, devFallback: string): string {
   const raw = (value || '').trim();
 
@@ -37,12 +37,11 @@ function resolveSecret(name: string, value: string | undefined, devFallback: str
     fail(`${name} must be set in production and be at least ${MIN_SECRET_LENGTH} characters.`);
   }
   if (WEAK_SECRET_MARKERS.some((marker) => raw.toLowerCase().includes(marker))) {
-    fail(`${name} looks like a placeholder value — refusing to start in production.`);
+    fail(`${name} looks like a placeholder value — set a real random secret.`);
   }
   return raw;
 }
 
-/** Accepts a single origin or a comma-separated list, for preview deployments. */
 function parseClientOrigins(raw: string | undefined): string | string[] {
   const value = (raw || 'http://localhost:5173').trim();
   if (value.includes(',')) {
@@ -61,7 +60,7 @@ if (isProduction && !process.env.MONGODB_URI) {
 const mongodbUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/fixer';
 
 if (isProduction && /localhost|127\.0\.0\.1/.test(mongodbUri)) {
-  fail('MONGODB_URI points at localhost — set a MongoDB Atlas connection string in production.');
+  fail('MONGODB_URI points at localhost — set a MongoDB Atlas connection string.');
 }
 
 const cloudinary = {
@@ -71,15 +70,12 @@ const cloudinary = {
   folder: (process.env.CLOUDINARY_FOLDER || 'fixer').trim(),
 };
 
-/** Uploads degrade gracefully when Cloudinary is not configured. */
 export const isCloudinaryConfigured = Boolean(
   cloudinary.cloudName && cloudinary.apiKey && cloudinary.apiSecret
 );
 
 if (isProduction && !isCloudinaryConfigured) {
-  console.warn(
-    '[config] Cloudinary is not configured — media upload endpoints will reject requests until credentials are set.'
-  );
+  console.warn('[config] Cloudinary not configured — uploads will be unavailable.');
 }
 
 export const config = {
@@ -87,7 +83,7 @@ export const config = {
   isProduction,
   isTest,
   port: Number(process.env.PORT) || 5000,
-  clientUrl: parseClientOrigins(process.env.CLIENT_URL),
+  clientUrl: parseClientOrigins(process.env.CLIENT_URL || process.env.CLIENT_ORIGIN),
   mongodbUri,
   isCloudinaryConfigured,
   cloudinary,
