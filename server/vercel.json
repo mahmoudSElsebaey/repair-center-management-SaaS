@@ -1,22 +1,15 @@
 {
   "version": 2,
-  "buildCommand": "echo 'Vercel compiles api/[...path].ts via @vercel/node'",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api/[...path]" }
-  ],
-  "functions": {
-    "api/[...path].ts": {
-      "maxDuration": 30
-    }
-  },
-  "headers": [
+  "builds": [
     {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-      ]
+      "src": "api/[...path].ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/api/[...path].ts"
     }
   ]
 }

@@ -19,32 +19,21 @@ import appointmentRoutes from './routes/appointmentRoutes.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { apiLimiter } from './middleware/rateLimit.js';
 
-/**
- * helmet@8 ships dual CJS/ESM; under NodeNext the default import type is not
- * always callable. Resolve at runtime and cast for TypeScript.
- */
 import helmetImport from 'helmet';
-type HelmetFactory = (options?: Record<string, unknown>) => RequestHandler;
-const helmet = (
-  typeof helmetImport === 'function'
-    ? helmetImport
-    : (helmetImport as unknown as { default: HelmetFactory }).default
-) as HelmetFactory;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const helmet = ((helmetImport as any).default ?? helmetImport) as (
+  options?: Record<string, unknown>
+) => RequestHandler;
 
 export const API_PREFIX = '/api/v1';
 
 const app: Application = express();
 
-/**
- * Vercel terminates TLS in front of the function, so the real client IP arrives
- * in X-Forwarded-For. Rate limiting needs to trust exactly one proxy hop.
- */
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
 
 app.use(
   helmet({
-    // The upload/Serve endpoints are consumed by a separate Vercel origin.
     crossOriginResourcePolicy: { policy: 'cross-origin' },
     contentSecurityPolicy: config.isProduction ? undefined : false,
   })
@@ -67,7 +56,6 @@ if (!config.isTest) {
   app.use(morgan(config.isProduction ? 'combined' : 'dev'));
 }
 
-/** Liveness + dependency probe. Used by deployment checks and the QA pass. */
 app.get(`${API_PREFIX}/health`, (_req: Request, res: Response) => {
   const MONGO_STATES: Record<number, string> = {
     0: 'disconnected',

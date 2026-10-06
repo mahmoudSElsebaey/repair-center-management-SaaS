@@ -9,11 +9,10 @@
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "echo skip",
+    "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "start": "node dist/app.js",
-    "seed": "tsx src/seed/seed.ts",
-    "seed:dist": "tsc && node dist/seed/seed.js"
+    "start": "tsx src/server.ts",
+    "seed": "tsx src/seed/seed.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

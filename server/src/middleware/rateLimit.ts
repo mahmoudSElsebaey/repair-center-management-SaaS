@@ -1,13 +1,14 @@
 /**
  * Phase 14 — Layered rate limits.
- *
- * - globalLimiter: broad protection for authenticated API
- * - authLimiter: stricter on login / refresh / password
- * - publicLimiter: public track endpoint (already rate-limited in Phase 09; keep aligned)
  */
 
-import rateLimit from 'express-rate-limit';
+import rateLimitImport from 'express-rate-limit';
+import type { Request } from 'express';
 import { env, isProd } from '../config/env.js';
+
+// express-rate-limit CJS/ESM interop under NodeNext / Vercel TypeScript
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const rateLimit = ((rateLimitImport as any).default ?? rateLimitImport) as typeof rateLimitImport;
 
 const windowMs = env.RATE_LIMIT_WINDOW_MS;
 
@@ -23,15 +24,13 @@ export const globalLimiter = rateLimit({
       message: 'Too many requests. Please try again later.',
     },
   },
-  // Skip health checks so probes never trip the limit
-  skip: (req) => req.path === '/api/v1/health' || req.path === '/api/v1/ready',
+  skip: (req: Request) => req.path === '/api/v1/health' || req.path === '/api/v1/ready',
 });
 
-// Backward-compatible name used by app.ts.
 export const apiLimiter = globalLimiter;
 
 export const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: isProd ? 20 : 100,
   standardHeaders: true,
   legacyHeaders: false,
@@ -58,11 +57,10 @@ export const publicLimiter = rateLimit({
   },
 });
 
-// Dedicated name for the public tracking route.
 export const publicTrackLimiter = publicLimiter;
 
 export const passwordResetLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: isProd ? 5 : 20,
   standardHeaders: true,
   legacyHeaders: false,
