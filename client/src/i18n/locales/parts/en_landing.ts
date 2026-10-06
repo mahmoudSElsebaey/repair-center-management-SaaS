@@ -1,6 +1,10 @@
 // Auto-generated — en.landing
 export default {
   landing: {
+    floating: {
+      backToTop: 'Back to top',
+      whatsapp: 'Contact us on WhatsApp',
+    },
     nav: {
       how: 'How it works',
       workflow: 'Workflow',
