@@ -41,11 +41,8 @@ export class ApiError extends Error {
   }
 }
 
-/** Extra flags understood by our interceptors. */
 interface FixerRequestConfig extends InternalAxiosRequestConfig {
-  /** Skip attaching the bearer token (login, refresh, public tracking). */
   skipAuth?: boolean;
-  /** Internal marker preventing infinite refresh recursion. */
   _retried?: boolean;
 }
 
@@ -58,10 +55,6 @@ export const http: AxiosInstance = axios.create({
   },
 });
 
-/* -------------------------------------------------------------------------- */
-/* Request — attach the access token                                           */
-/* -------------------------------------------------------------------------- */
-
 http.interceptors.request.use((config: FixerRequestConfig) => {
   if (!config.skipAuth) {
     const session = readSession();
@@ -72,11 +65,6 @@ http.interceptors.request.use((config: FixerRequestConfig) => {
   return config;
 });
 
-/* -------------------------------------------------------------------------- */
-/* Response — normalise errors, refresh on 401 once                            */
-/* -------------------------------------------------------------------------- */
-
-/** Subscribers waiting for the in-flight refresh to settle. */
 type RefreshWaiter = {
   resolve: (token: string) => void;
   reject: (error: unknown) => void;
@@ -85,7 +73,6 @@ type RefreshWaiter = {
 let refreshInFlight: Promise<string> | null = null;
 let waiters: RefreshWaiter[] = [];
 
-/** Set by the auth layer so a hard session failure can navigate to /login. */
 let onSessionExpired: (() => void) | null = null;
 
 export function registerSessionExpiredHandler(handler: () => void): void {
@@ -96,10 +83,38 @@ function notifySessionExpired(): void {
   onSessionExpired?.();
 }
 
+/** Support both `{ message, code }` and `{ error: { message, code } }` envelopes. */
+function extractErrorPayload(data: unknown): {
+  message?: string;
+  code?: string;
+  errors?: { path: string; message: string }[];
+} {
+  if (!data || typeof data !== 'object') return {};
+  const root = data as Record<string, unknown>;
+  const nested =
+    root.error && typeof root.error === 'object'
+      ? (root.error as Record<string, unknown>)
+      : null;
+
+  const message =
+    (typeof nested?.message === 'string' && nested.message) ||
+    (typeof root.message === 'string' && root.message) ||
+    undefined;
+  const code =
+    (typeof nested?.code === 'string' && nested.code) ||
+    (typeof root.code === 'string' && root.code) ||
+    undefined;
+  const errors = (nested?.details ?? nested?.errors ?? root.errors) as
+    | { path: string; message: string }[]
+    | undefined;
+
+  return { message, code, errors };
+}
+
 function toApiError(error: unknown): ApiError {
   if (error instanceof ApiError) return error;
 
-  const axiosError = error as AxiosError<ApiEnvelope<unknown>>;
+  const axiosError = error as AxiosError<unknown>;
 
   if (!axiosError.response) {
     const timedOut = axiosError.code === 'ECONNABORTED';
@@ -113,23 +128,16 @@ function toApiError(error: unknown): ApiError {
   }
 
   const { status, data } = axiosError.response;
-  const payload = (data ?? {}) as ApiEnvelope<unknown>;
+  const extracted = extractErrorPayload(data);
 
   return new ApiError(
-    payload.message || axiosError.message || 'Request failed',
+    extracted.message || axiosError.message || 'Request failed',
     status,
-    payload.code || 'REQUEST_FAILED',
-    payload.errors
+    extracted.code || 'REQUEST_FAILED',
+    extracted.errors
   );
 }
 
-/**
- * Exchanges the stored refresh token for a new pair.
- *
- * Concurrent 401s share a single refresh request — without this, a dashboard
- * firing six parallel calls would rotate the refresh token six times and
- * invalidate its own session.
- */
 function refreshSession(): Promise<string> {
   if (refreshInFlight) return refreshInFlight;
 
@@ -169,7 +177,7 @@ function refreshSession(): Promise<string> {
 
 http.interceptors.response.use(
   (response) => response,
-  async (error: AxiosError<ApiEnvelope<unknown>>) => {
+  async (error: AxiosError<unknown>) => {
     const config = error.config as FixerRequestConfig | undefined;
 
     const isAuthEndpoint = Boolean(config?.url?.includes('/auth/'));
@@ -179,7 +187,6 @@ http.interceptors.response.use(
       config._retried = true;
 
       try {
-        // Join an in-flight refresh rather than starting a competing one.
         const token =
           refreshInFlight !== null
             ? await new Promise<string>((resolve, reject) => {
@@ -203,28 +210,23 @@ http.interceptors.response.use(
   }
 );
 
-/* -------------------------------------------------------------------------- */
-/* Thin typed helpers                                                          */
-/* -------------------------------------------------------------------------- */
-
-/** Unwraps the envelope and returns `data`, throwing a normalised ApiError. */
 export async function request<T>(config: AxiosRequestConfig & { skipAuth?: boolean }): Promise<T> {
   const response = await http.request<ApiEnvelope<T>>(config as AxiosRequestConfig);
   const payload = response.data;
 
   if (!payload || payload.success === false) {
+    const extracted = extractErrorPayload(payload);
     throw new ApiError(
-      payload?.message || 'The server returned an unexpected response',
+      extracted.message || payload?.message || 'The server returned an unexpected response',
       response.status,
-      payload?.code || 'MALFORMED_RESPONSE',
-      payload?.errors
+      extracted.code || payload?.code || 'MALFORMED_RESPONSE',
+      extracted.errors || payload?.errors
     );
   }
 
   return payload.data as T;
 }
 
-/** Same as `request`, but keeps the pagination envelope. */
 export async function requestWithMeta<T>(
   config: AxiosRequestConfig & { skipAuth?: boolean }
 ): Promise<{ data: T; meta?: ApiEnvelope<T>['meta'] }> {
@@ -232,11 +234,12 @@ export async function requestWithMeta<T>(
   const payload = response.data;
 
   if (!payload || payload.success === false) {
+    const extracted = extractErrorPayload(payload);
     throw new ApiError(
-      payload?.message || 'The server returned an unexpected response',
+      extracted.message || payload?.message || 'The server returned an unexpected response',
       response.status,
-      payload?.code || 'MALFORMED_RESPONSE',
-      payload?.errors
+      extracted.code || payload?.code || 'MALFORMED_RESPONSE',
+      extracted.errors || payload?.errors
     );
   }
 

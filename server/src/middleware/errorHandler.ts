@@ -1,30 +1,31 @@
 /**
  * Phase 14 — Central production error handler.
- *
- * - Never leak stack traces or internal messages in production.
- * - Maps known AppError / Zod / Mongoose errors to stable codes.
- * - Logs full detail server-side with request id.
  */
 
 import type { ErrorRequestHandler, Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 import { isProd } from '../config/env.js';
 import { logger } from '../utils/logger.js';
+import { AppError as UtilAppError } from '../utils/AppError.js';
 
-export class AppError extends Error {
-  constructor(
-    public statusCode: number,
-    public code: string,
-    message: string,
-    public details?: unknown
-  ) {
-    super(message);
-    this.name = 'AppError';
-  }
-}
+/** Re-export so older imports keep working; prefer utils/AppError in controllers. */
+export { UtilAppError as AppError };
 
 function requestId(req: Request): string {
   return (req.headers['x-request-id'] as string) || 'unknown';
+}
+
+function isOperationalAppError(
+  err: unknown
+): err is { statusCode: number; code: string; message: string; details?: unknown; errors?: unknown } {
+  if (!err || typeof err !== 'object') return false;
+  const e = err as Record<string, unknown>;
+  return (
+    typeof e.statusCode === 'number' &&
+    typeof e.code === 'string' &&
+    typeof e.message === 'string' &&
+    (e.name === 'AppError' || e.isOperational === true || err instanceof UtilAppError)
+  );
 }
 
 export const notFoundHandler = (req: Request, res: Response) => {
@@ -45,7 +46,6 @@ export const errorHandler: ErrorRequestHandler = (
 ) => {
   const rid = requestId(req);
 
-  // Zod validation
   if (err instanceof ZodError) {
     logger.warn({ rid, issues: err.issues }, 'Validation error');
     return res.status(400).json({
@@ -61,8 +61,7 @@ export const errorHandler: ErrorRequestHandler = (
     });
   }
 
-  // Known application errors
-  if (err instanceof AppError) {
+  if (isOperationalAppError(err)) {
     if (err.statusCode >= 500) {
       logger.error({ rid, code: err.code, err }, err.message);
     } else {
@@ -73,12 +72,13 @@ export const errorHandler: ErrorRequestHandler = (
       error: {
         code: err.code,
         message: err.message,
-        ...(err.details && !isProd ? { details: err.details } : {}),
+        ...(!isProd && (err.details || err.errors)
+          ? { details: err.details ?? err.errors }
+          : {}),
       },
     });
   }
 
-  // Mongoose duplicate key
   if (
     typeof err === 'object' &&
     err !== null &&
@@ -95,7 +95,6 @@ export const errorHandler: ErrorRequestHandler = (
     });
   }
 
-  // CORS errors from cors middleware
   if (err instanceof Error && err.message.startsWith('CORS blocked')) {
     logger.warn({ rid }, err.message);
     return res.status(403).json({
@@ -104,19 +103,17 @@ export const errorHandler: ErrorRequestHandler = (
     });
   }
 
-  // Fallback — never expose internals in production
-  logger.error({ rid, err }, 'Unhandled error');
-  const message =
-    isProd || !(err instanceof Error)
-      ? 'An unexpected error occurred'
-      : err.message;
+  const rawMessage = err instanceof Error ? err.message : String(err);
+  logger.error({ rid, err, rawMessage }, 'Unhandled error');
 
   res.status(500).json({
     success: false,
     error: {
       code: 'INTERNAL_ERROR',
-      message,
-      ...(isProd ? {} : { stack: err instanceof Error ? err.stack : undefined }),
+      // Keep message generic in production; include rid for log correlation
+      message: isProd ? 'An unexpected error occurred' : rawMessage,
+      requestId: rid,
+      ...(!isProd && err instanceof Error ? { stack: err.stack } : {}),
     },
   });
 };
