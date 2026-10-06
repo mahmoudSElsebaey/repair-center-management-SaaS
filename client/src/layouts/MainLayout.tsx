@@ -100,7 +100,7 @@ export function MainLayout() {
 
 
 
-  const whatsappUrl = 'https://wa.me/201022674412';
+  const whatsappUrl = 'https://wa.me/20226704412';
   const scrollToTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 
   /**
