@@ -18,13 +18,10 @@ import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { ApiError } from '@/lib/apiClient';
 import { getErrorMessage } from '@/lib/utils';
 
-/**
- * Sign-in screen.
- *
- * The whole vertical slice lives here: Zod validation with localised inline
- * messages, a real POST to `/auth/login`, tokens persisted through Redux, and a
- * redirect to the page the user originally asked for.
- */
+/** Same as server/src/seed/manifest.ts SEED_PASSWORD */
+const DEMO_PASSWORD =
+  (import.meta.env.VITE_DEMO_PASSWORD as string | undefined)?.trim() || 'Fixer@2026';
+
 export default function LoginPage() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -47,7 +44,6 @@ export default function LoginPage() {
     mode: 'onBlur',
   });
 
-  /** Redirect target captured by ProtectedRoute, defaulting to the console. */
   const from = (location.state as { from?: string } | null)?.from ?? '/app';
 
   const onSubmit = async (values: LoginFormValues) => {
@@ -79,7 +75,6 @@ export default function LoginPage() {
     }
   };
 
-  /** Translates a Zod message key coming out of the resolver. */
   const fieldError = (message?: string) =>
     message ? t(message, { defaultValue: message }) : undefined;
 
@@ -163,9 +158,7 @@ export default function LoginPage() {
         useLabel={t('auth.login.useAccount')}
         onSelect={(email) => {
           setValue('email', email, { shouldValidate: true });
-          setValue('password', import.meta.env.VITE_DEMO_PASSWORD ?? '', {
-            shouldValidate: true,
-          });
+          setValue('password', DEMO_PASSWORD, { shouldValidate: true });
         }}
       />
 

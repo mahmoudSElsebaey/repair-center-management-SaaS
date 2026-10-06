@@ -6,20 +6,28 @@ import { cn } from '@/lib/utils';
 /**
  * Demo credentials helper.
  *
- * The addresses come from `VITE_DEMO_ACCOUNTS` rather than being hardcoded, so
- * a deployment can ship the panel, point it at its own demo tenant, or omit the
- * variable entirely to hide it. All seeded accounts share one password, which
- * is stated plainly instead of being concealed.
+ * Defaults match server/src/seed/data/staff.ts + SEED_PASSWORD (Fixer@2026).
+ * Override with VITE_DEMO_ACCOUNTS=role:email,role:email if needed.
  */
 interface DemoAccount {
   role: string;
   email: string;
 }
 
-function parseDemoAccounts(raw: string | undefined): DemoAccount[] {
-  if (!raw) return [];
+/** Must stay in sync with server/src/seed/data/staff.ts */
+const SEED_DEMO_ACCOUNTS: DemoAccount[] = [
+  { role: 'super_admin', email: 'mahmoud.elsebaey@fixer.app' },
+  { role: 'admin', email: 'nourhan.abdelaziz@fixer.app' },
+  { role: 'manager', email: 'karim.mansour@fixer.app' },
+  { role: 'technician', email: 'youssef.ragab@fixer.app' },
+  { role: 'receptionist', email: 'ahmed.sherif@fixer.app' },
+  { role: 'inventory_manager', email: 'doaa.kamel@fixer.app' },
+];
 
-  return raw
+function parseDemoAccounts(raw: string | undefined): DemoAccount[] {
+  if (!raw?.trim()) return SEED_DEMO_ACCOUNTS;
+
+  const parsed = raw
     .split(',')
     .map((entry) => entry.trim())
     .filter(Boolean)
@@ -28,6 +36,8 @@ function parseDemoAccounts(raw: string | undefined): DemoAccount[] {
       return { role: role || 'technician', email: email || '' };
     })
     .filter((account) => account.email.length > 0);
+
+  return parsed.length > 0 ? parsed : SEED_DEMO_ACCOUNTS;
 }
 
 export function DemoAccountsPanel({
