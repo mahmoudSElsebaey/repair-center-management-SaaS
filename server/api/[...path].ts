@@ -1,18 +1,14 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { Request, Response } from 'express';
 
 /**
  * Vercel serverless entry.
- * Dynamic import so config/boot failures become a JSON 500 instead of
- * FUNCTION_INVOCATION_FAILED with an empty body.
+ * Dynamic imports so config failures return JSON instead of FUNCTION_INVOCATION_FAILED.
  */
-export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
-): Promise<void> {
+export default async function handler(req: Request, res: Response): Promise<void> {
   try {
-    const { default: mongoose } = await import('mongoose');
+    const mongoose = (await import('mongoose')).default;
     const { config } = await import('../src/config/index.js');
-    const { default: app } = await import('../src/app.js');
+    const app = (await import('../src/app.js')).default;
 
     if (mongoose.connection.readyState !== 1) {
       await mongoose.connect(config.mongodbUri, {
@@ -21,26 +17,17 @@ export default async function handler(
       });
     }
 
-    // Express app as request listener
-    await new Promise<void>((resolve) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      app(req as any, res as any, () => resolve());
-      // If Express already ended the response, resolve on finish
-      res.on?.('finish', () => resolve());
-      // Fallback: if headers already sent, we're done
-      if (res.headersSent) resolve();
-    });
+    app(req, res);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    const stack = error instanceof Error ? error.stack : undefined;
-    console.error('[vercel] boot/handler failed:', message, stack);
+    console.error('[vercel] boot/handler failed:', message);
 
     if (!res.headersSent) {
       res.status(500).json({
         success: false,
         code: 'BOOT_FAILED',
         message,
-        hint: 'Check Vercel env vars: NODE_ENV, MONGODB_URI, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, CLIENT_URL',
+        hint: 'Check Vercel env: NODE_ENV, MONGODB_URI, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, CLIENT_URL',
       });
     }
   }
