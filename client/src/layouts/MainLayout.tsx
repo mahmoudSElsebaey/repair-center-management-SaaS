@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
-import { LayoutDashboard, Menu, X } from 'lucide-react';
+import { ArrowUp, LayoutDashboard, Menu, MessageCircle, X } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/Button';
 import { LanguageToggle } from '@/components/layout/LanguageToggle';
@@ -40,9 +40,13 @@ export function MainLayout() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 12);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 12);
+      setShowBackToTop(window.scrollY > 420);
+    };
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -93,6 +97,11 @@ export function MainLayout() {
       document.body.style.overflow = overflow;
     };
   }, [menuOpen]);
+
+
+
+  const whatsappUrl = 'https://wa.me/201022674412';
+  const scrollToTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 
   /**
    * Anchor links must work from any route. On a sub-page we navigate home first
@@ -243,6 +252,39 @@ export function MainLayout() {
       </main>
 
       <SiteFooter />
+
+      <div className="fixed bottom-5 end-5 z-50 flex flex-col items-end gap-3 sm:bottom-7 sm:end-7">
+        <AnimatePresence>
+          {showBackToTop && (
+            <motion.button
+              type="button"
+              onClick={scrollToTop}
+              aria-label={t('landing.floating.backToTop')}
+              title={t('landing.floating.backToTop')}
+              initial={prefersReduced ? { opacity: 0 } : { opacity: 0, scale: 0.75, y: 14 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={prefersReduced ? { opacity: 0 } : { opacity: 0, scale: 0.75, y: 14 }}
+              transition={{ duration: prefersReduced ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="group flex h-12 w-12 items-center justify-center rounded-full border border-primary/25 bg-background/90 text-primary shadow-lg shadow-primary/10 backdrop-blur-xl transition-transform duration-fast hover:-translate-y-1 hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+            >
+              <ArrowUp className="h-5 w-5 transition-transform duration-fast group-hover:-translate-y-0.5" aria-hidden="true" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+
+        <motion.a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t('landing.floating.whatsapp')}
+          title={t('landing.floating.whatsapp')}
+          whileHover={prefersReduced ? undefined : { scale: 1.06, y: -2 }}
+          whileTap={prefersReduced ? undefined : { scale: 0.96 }}
+          className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-[#25D366] text-white shadow-xl shadow-[#25D366]/20 transition-colors duration-fast hover:bg-[#20bd5a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]/60"
+        >
+          <MessageCircle className="h-6 w-6" strokeWidth={2.2} aria-hidden="true" />
+        </motion.a>
+      </div>
     </div>
   );
 }
