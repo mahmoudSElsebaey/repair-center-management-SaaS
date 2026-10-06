@@ -1,8 +1,15 @@
 {
   "version": 2,
+  "buildCommand": "npm run build",
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/[...path]" }
   ],
+  "functions": {
+    "api/[...path].ts": {
+      "maxDuration": 30,
+      "includeFiles": "dist/**"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",
