@@ -1,6 +1,10 @@
 // Auto-generated — ar.landing
 export default {
   landing: {
+    floating: {
+      backToTop: 'العودة إلى الأعلى',
+      whatsapp: 'تواصل معنا عبر واتساب',
+    },
     nav: {
       how: 'كيف يعمل',
       workflow: 'سير العمل',
