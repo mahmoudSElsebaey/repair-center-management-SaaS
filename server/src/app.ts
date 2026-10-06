@@ -1,7 +1,7 @@
 import express from 'express';
 import type { Application, Request, Response } from 'express';
 import cors from 'cors';
-import helmet from 'helmet';
+import helmetModule from 'helmet';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import { config } from './config/index.js';
@@ -19,6 +19,12 @@ import trackRoutes from './routes/trackRoutes.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { apiLimiter } from './middleware/rateLimit.js';
+
+/** helmet@8 CJS/ESM interop under NodeNext */
+const helmet =
+  typeof helmetModule === 'function'
+    ? helmetModule
+    : ((helmetModule as unknown as { default: typeof helmetModule }).default as typeof helmetModule);
 
 export const API_PREFIX = '/api/v1';
 

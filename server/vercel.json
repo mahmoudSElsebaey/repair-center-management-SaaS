@@ -1,13 +1,12 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
+  "buildCommand": "echo 'Vercel compiles api/[...path].ts via @vercel/node'",
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/[...path]" }
   ],
   "functions": {
     "api/[...path].ts": {
-      "maxDuration": 30,
-      "includeFiles": "dist/**"
+      "maxDuration": 30
     }
   },
   "headers": [
