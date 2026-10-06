@@ -8,16 +8,15 @@ const isTest = nodeEnv === 'test';
 
 const MIN_SECRET_LENGTH = 32;
 
-/** Placeholder fragments that must never survive into production. */
+/** Explicit placeholder fragments that must never survive into production. */
 const WEAK_SECRET_MARKERS = [
   'change_me',
   'changeme',
-  'dev_access',
-  'dev_refresh',
+  'dev_access_secret',
+  'dev_refresh_secret',
   'your_super_secure',
-  'secret',
-  'password',
   'placeholder',
+  'replace_me',
 ];
 
 function fail(message: string): never {
@@ -72,14 +71,14 @@ const cloudinary = {
   folder: (process.env.CLOUDINARY_FOLDER || 'fixer').trim(),
 };
 
-/** Uploads degrade gracefully in development, but are mandatory in production. */
+/** Uploads degrade gracefully when Cloudinary is not configured. */
 export const isCloudinaryConfigured = Boolean(
   cloudinary.cloudName && cloudinary.apiKey && cloudinary.apiSecret
 );
 
 if (isProduction && !isCloudinaryConfigured) {
-  fail(
-    'CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET are all required in production.'
+  console.warn(
+    '[config] Cloudinary is not configured — media upload endpoints will reject requests until credentials are set.'
   );
 }
 
@@ -103,12 +102,8 @@ export const config = {
       process.env.JWT_REFRESH_SECRET,
       'dev_refresh_secret_change_me_min_32_chars_flow'
     ),
-    accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m',
-    refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '30d',
+    accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || process.env.JWT_ACCESS_EXPIRES || '15m',
+    refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || process.env.JWT_REFRESH_EXPIRES || '30d',
   },
   apiVersion: process.env.API_VERSION || '0.1.0',
 } as const;
-
-if (isProduction && !isCloudinaryConfigured) {
-  console.warn('[config] Cloudinary is not configured — upload endpoints will reject requests.');
-}

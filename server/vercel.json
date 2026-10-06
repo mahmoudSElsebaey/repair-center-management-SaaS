@@ -1,15 +1,16 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/[...path].ts",
-      "use": "@vercel/node"
-    }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/[...path]" }
   ],
-  "routes": [
+  "headers": [
     {
-      "src": "/(.*)",
-      "dest": "/api/[...path].ts"
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
     }
   ]
 }
