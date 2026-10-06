@@ -18,9 +18,11 @@ import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { ApiError } from '@/lib/apiClient';
 import { getErrorMessage } from '@/lib/utils';
 
-/** Same as server/src/seed/manifest.ts SEED_PASSWORD */
-const DEMO_PASSWORD =
-  (import.meta.env.VITE_DEMO_PASSWORD as string | undefined)?.trim() || 'Fixer@2026';
+/**
+ * Must match server/src/seed/manifest.ts → SEED_PASSWORD.
+ * Hardcoded so a wrong VITE_DEMO_PASSWORD on Vercel cannot break demo login.
+ */
+const DEMO_PASSWORD = 'Fixer@2026';
 
 export default function LoginPage() {
   const { t } = useTranslation();
