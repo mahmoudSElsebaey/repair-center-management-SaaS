@@ -33,17 +33,18 @@ function baseFields() {
 function write(level: Level, obj: Record<string, unknown> | string, msg?: string) {
   if (!shouldLog(level)) return;
 
-  const payload =
+  const payload: Record<string, unknown> =
     typeof obj === 'string'
       ? { ...baseFields(), level, msg: obj }
       : { ...baseFields(), level, ...obj, ...(msg ? { msg } : {}) };
 
   // Avoid serialising Error poorly
   if (payload.err instanceof Error) {
+    const err = payload.err;
     payload.err = {
-      name: payload.err.name,
-      message: payload.err.message,
-      stack: isProd ? undefined : payload.err.stack,
+      name: err.name,
+      message: err.message,
+      stack: isProd ? undefined : err.stack,
     };
   }
 
